@@ -218,9 +218,7 @@ function Get-GetSysmonConfigRules
         $EventType = @('ALL')
     )
 
-    Begin
-    {
-    }
+    Begin{}
     Process
     {
         [xml]$Config = Get-Content -Path $ConfigFile
@@ -250,9 +248,7 @@ function Get-GetSysmonConfigRules
 
         }
     }
-    End
-    {
-    }
+    End{}
 }
 
 
@@ -409,32 +405,62 @@ function Set-SysmonConfigOption
 .EXAMPLE
    Another example of how to use this cmdlet
 #>
-function Update-SysmonRuleDefaultAction
+function Set-SysmonRuleAction
 {
     [CmdletBinding()]
-    [OutputType([int])]
     Param
     (
-        # Param1 help description
+        # Path to XML config file.
         [Parameter(Mandatory=$true,
                    ValueFromPipelineByPropertyName=$true,
                    Position=0)]
-        $Param1,
+        [ValidateScript({Test-Path -Path $_})]
+        $ConfigFile,
 
-        # Param2 help description
-        [int]
-        $Param2
+        # Event type to update.
+        [Parameter(Mandatory=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=1)]
+        [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
+                     'ProcessTerminate', 'ImageLoad', 'DriverLoad')]
+        [string[]]
+        $EventType,
+
+        # Action for event type rule and filters.
+        [Parameter(Mandatory=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=2)]
+        [ValidateSet('Include', 'Exclude')]
+        [String]
+        $Action
     )
 
-    Begin
-    {
-    }
+    Begin{}
     Process
     {
+        $ConfXML = [xml](Get-Content -Path $ConfigFile)
+        $FileLocation = (Resolve-Path -Path $ConfigFile).Path
+        $Rules = $ConfXML.Sysmon.Rules
+        foreach($Type in $EventType)
+        {
+            $RuleData = $Rules.SelectSingleNode("//Rules/$($Type)")
+            if($RuleData -ne $null)
+            {
+                $RuleData.SetAttribute('default',($Action.ToLower()))
+            }
+            else
+            {
+                Write-Verbose -Message "No rule for $($Type) was found."
+                Write-Verbose -Message "Creating rule for event type with action of $($Action)"
+                $TypeElement = $ConfXML.CreateElement($Type)
+                [void]$ConfXML.Sysmon.Rules.AppendChild($TypeElement)
+                $RuleData = $Rules.SelectSingleNode("//Rules/$($Type)")
+                $RuleData.SetAttribute('default',($Action.ToLower()))
+            }
+        }
+        $ConfXML.Save($FileLocation)
     }
-    End
-    {
-    }
+    End{}
 }
 
 ###### Non-Public Functions ######
