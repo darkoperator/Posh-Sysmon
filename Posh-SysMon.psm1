@@ -94,14 +94,14 @@ function New-SysmonConfiguration
         {
             Write-Verbose -Message 'Enabling network connection logging.'
             $xmlWriter.WriteStartElement('Network')
-            $xmlWriter.WriteEndElement()
+            $xmlWriter.WriteFullEndElement()
         }
 
         if ($ImageLoading)
         {
             Write-Verbose -Message 'Enabling image loading loggong.'
             $xmlWriter.WriteStartElement('ImageLoading ')
-            $xmlWriter.WriteEndElement()
+            $xmlWriter.WriteFullEndElement()
         }
         
         # Configuration
@@ -109,7 +109,7 @@ function New-SysmonConfiguration
 
         # Create empty rule section.
         $xmlWriter.WriteStartElement('Rules')
-        $xmlWriter.WriteEndElement()
+        $xmlWriter.WriteFullEndElement()
 
         # Sysmon
         $xmlWriter.WriteEndElement()
@@ -440,13 +440,16 @@ function Set-SysmonRuleAction
     {
         $ConfXML = [xml](Get-Content -Path $ConfigFile)
         $FileLocation = (Resolve-Path -Path $ConfigFile).Path
-        $Rules = $ConfXML.Sysmon.Rules
+        $Rules = $ConfXML.SelectSingleNode('//Sysmon/Rules')
+
         foreach($Type in $EventType)
         {
             $RuleData = $Rules.SelectSingleNode("//Rules/$($Type)")
             if($RuleData -ne $null)
             {
+                Write-Verbose -Message "Setting as default action for $($Type) the action of $($Action)."
                 $RuleData.SetAttribute('default',($Action.ToLower()))
+                Write-Verbose -Message 'Action has been set.'
             }
             else
             {
@@ -456,11 +459,129 @@ function Set-SysmonRuleAction
                 [void]$ConfXML.Sysmon.Rules.AppendChild($TypeElement)
                 $RuleData = $Rules.SelectSingleNode("//Rules/$($Type)")
                 $RuleData.SetAttribute('default',($Action.ToLower()))
+                Write-Verbose -Message 'Action has been set.'
             }
         }
         $ConfXML.Save($FileLocation)
     }
     End{}
+}
+
+
+<#
+.Synopsis
+   Short description
+.DESCRIPTION
+   Long description
+.EXAMPLE
+   Example of how to use this cmdlet
+.EXAMPLE
+   Another example of how to use this cmdlet
+#>
+function New-SysmonRuleFilter
+{
+    [CmdletBinding()]
+    [OutputType([int])]
+    Param
+    (
+        # Path to XML config file.
+        [Parameter(Mandatory=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=0)]
+        [ValidateScript({Test-Path -Path $_})]
+        $ConfigFile,
+
+        # Event type to create filter for.
+        [Parameter(Mandatory=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=1)]
+        [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
+                     'ProcessTerminate', 'ImageLoad', 'DriverLoad')]
+        [string]
+        $EventType,
+
+        # Condition for filtering against and event field.
+        [Parameter(Mandatory=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=2)]
+        [ValidateSet('Is', 'IsNot', 'Contains', 'Excludes', 'Image',
+                     'BeginWith', 'EndWith', 'LessThan', 'MoreThan')]
+        [string]
+        $Condition,
+
+        # Event field to filter on.
+        [Parameter(Mandatory=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=3)]
+        [string]
+        $EventField,
+
+        # Value of Event Field to filter on.
+        [Parameter(Mandatory=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=4)]
+        [string[]]
+        $Value
+    )
+
+    Begin
+    {
+    }
+    Process
+    {
+        # Open and read XML file.
+        $ConfXML = [xml](Get-Content -Path $ConfigFile)
+        $FileLocation = (Resolve-Path -Path $ConfigFile).Path
+        $Rules = $ConfXML.SelectSingleNode('//Sysmon/Rules')
+
+        # Select the proper condition string.
+        switch ($Condition)
+        {
+            'Is' {$ConditionString = 'is'}
+            'IsNot' {$ConditionString = 'is not'}
+            'Contains' {$ConditionString = 'contains'}
+            'Excludes' {$ConditionString = 'excludes'}
+            'Image' {$ConditionString = 'image'}
+            'BeginWith' {$ConditionString = 'begin with'}
+            'EndWith' {$ConditionString = 'end with'}
+            'LessThan' {$ConditionString = 'less than'}
+            'MoreThan' {$ConditionString = 'more than'}
+            Default {$ConditionString = 'is'}
+        }
+
+        # Check if the event type exists if not create it.
+        if ($Rules -eq '')
+        {
+            $RuleData -eq $null
+        }
+        else
+        {
+            $RuleData = $Rules.SelectSingleNode("//Rules/$($EventType)")
+        }
+
+        if($RuleData -eq $null)
+        {
+            Write-Verbose -Message "No rule for $($EventType) was found."
+            Write-Verbose -Message 'Creating rule for event type with default action if Exclude'
+            $TypeElement = $ConfXML.CreateElement($EventType)
+            [void]$Rules.AppendChild($TypeElement)
+            $RuleData = $Rules.SelectSingleNode("//Rules/$($EventType)")
+            Write-Verbose -Message 'Rule created succesfully'
+        }
+
+        # For each value for the event type create a filter.
+        foreach($val in $value)
+        {
+            $FieldElement = $ConfXML.CreateElement($EventField)
+            $Filter = $RuleData.AppendChild($FieldElement)
+            $Filter.SetAttribute('condition',$Condition)
+            $filter.InnerText = $val
+        }
+        $ConfXML.Save($FileLocation)
+    }
+    End
+    {
+    }
 }
 
 ###### Non-Public Functions ######
