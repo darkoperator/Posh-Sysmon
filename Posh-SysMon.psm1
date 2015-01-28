@@ -280,9 +280,28 @@ function Get-SysmonRules
    Adds or modifyies existing config options in a Sysmon XML
    config file.
 .EXAMPLE
-   Example of how to use this cmdlet
-.EXAMPLE
-   Another example of how to use this cmdlet
+    Get-SysmonConfigOption -ConfigFile .\pc_cofig.xml 
+
+    Hashing      : SHA1,IMPHASH
+    Network      : Enabled
+    ImageLoading : Enabled
+    Comment      : 
+
+
+    PS C:\> Set-SysmonConfigOption -ConfigFile .\pc_cofig.xml -ImageLoading Disable -Verbose
+    VERBOSE: Disabling Image Loading logging.
+    VERBOSE: Logging Image Loading has been disabled.
+    VERBOSE: Options have been set on C:\Users\Carlos Perez\Documents\Posh-Sysmon\pc_cofig.xml
+
+    PS C:\> Get-SysmonConfigOption -ConfigFile .\pc_cofig.xml 
+
+    Hashing      : SHA1,IMPHASH
+    Network      : Enabled
+    ImageLoading : Disabled
+    Comment      : 
+
+    Disable image loading logging on the config file.
+
 #>
 function Set-SysmonConfigOption
 {
