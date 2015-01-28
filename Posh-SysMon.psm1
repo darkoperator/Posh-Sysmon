@@ -172,7 +172,7 @@ function Get-SysmonConfigOption
         }
 
         # Check if network traffic is being logged.
-        if ($Config.Sysmon.Configuration.SelectNodes('//Configuration/Network'))
+        if ($Config.Sysmon.Configuration.SelectSingleNode('//Configuration/Network'))
         {
             $ObjOptions['Network'] = 'Enabled'
         }
@@ -182,7 +182,7 @@ function Get-SysmonConfigOption
         }
 
         # Check if image loading is being logged.
-        if ($Config.Sysmon.Configuration.SelectNodes('//Configuration/ImageLoading'))
+        if ($Config.Sysmon.Configuration.SelectSingleNode('//Configuration/ImageLoading'))
         {
             $ObjOptions['ImageLoading'] = 'Enabled'
         }
@@ -216,7 +216,7 @@ function Get-SysmonConfigOption
     ImageLoading : Enabled
     Comment      : Config for helpdesk PCs.
 #>
-function Get-GetSysmonRules
+function Get-SysmonRules
 {
     [CmdletBinding()]
     Param
