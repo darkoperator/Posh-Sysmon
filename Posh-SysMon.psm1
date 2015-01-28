@@ -308,14 +308,16 @@ function Set-SysmonConfigOption
         [Parameter(Mandatory=$False,
                    ValueFromPipelineByPropertyName=$true,
                    Position=2)]
-        [Switch]
+        [ValidateSet('Enable', 'Disable')]
+        [string]
         $Network,
 
         # Log process loading of modules.
         [Parameter(Mandatory=$False,
                    ValueFromPipelineByPropertyName=$true,
                    Position=3)]
-        [Switch]
+        [ValidateSet('Enable', 'Disable')]
+        [string]
         $ImageLoading,
 
         # Comment for purpose of the configuration file.
@@ -323,7 +325,7 @@ function Set-SysmonConfigOption
                    ValueFromPipelineByPropertyName=$true,
                    Position=4)]
         [String]
-        $Comment
+        $Comment = $null
     )
 
     Begin{}
@@ -360,39 +362,76 @@ function Set-SysmonConfigOption
         }
 
         # Update Image Loading monitoring option if selected.
-        if($ImageLoading)
+        if($ImageLoading.Length -ne 0)
         {
-            Write-Verbose -Message 'Enabling image loading logging option.'
-            if($ConfXML.SelectSingleNode('//Sysmon/Configuration/ImageLoading') -ne $null)
+            $Node = $ConfXML.SelectSingleNode('//Sysmon/Configuration/ImageLoading')
+
+            if ($ImageLoading -eq 'Enable')
             {
-                Write-Verbose -Message 'ImageLoading login already enabled.'
+                Write-Verbose -Message 'Enabling image loading logging option.'
+                if ($Node -ne $null)
+                {
+                    Write-Verbose -Message 'ImageLoading login already enabled.'
+                }
+                else
+                {
+                    $ImageLoadingElement = $ConfXML.CreateElement('ImageLoading')
+                    [void]$ConfXML.Sysmon.Configuration.AppendChild($ImageLoadingElement)
+                    Write-Verbose -Message 'Image loading logging option has been enabled.'
+                }
             }
             else
             {
-                $ImageLoadingElement = $ConfXML.CreateElement('ImageLoading')
-                [void]$ConfXML.Sysmon.Configuration.AppendChild($ImageLoadingElement)
-                Write-Verbose -Message 'Image loading logging option has been enabled.'
+                if ($Node -ne $null)
+                {
+                    Write-Verbose -Message 'Disabling Image Loading logging.'
+                    [void]$Node.ParentNode.RemoveChild($Node)
+                    Write-Verbose -Message 'Logging Image Loading has been disabled.'
+                }
+                else
+                {
+                    Write-Verbose -Message 'No action taken since image loading option was not enabled.'
+                }
+            
             }
         }
 
         # Update Network monitoring option if selected.
-        if($Network)
+        if($Network.Length -ne 0)
         {
-            Write-Verbose -Message 'Enabling network logging option.'
-            if($ConfXML.SelectSingleNode('//Sysmon/Configuration/Network') -ne $null)
+            $NetworkNode = $ConfXML.SelectSingleNode('//Sysmon/Configuration/Network')
+            if ($Network -eq 'Enable')
             {
-                Write-Verbose -Message 'Network loggin already enabled.'
+                Write-Verbose -Message 'Enabling network logging option.'
+                if( $NetworkNode -ne $null)
+                {
+                    Write-Verbose -Message 'Network loggin already enabled.'
+                }
+                else
+                {
+                    $NetworkElement = $ConfXML.CreateElement('Network')
+                    [void]$ConfXML.Sysmon.Configuration.AppendChild($NetworkElement)
+                    Write-Verbose -Message 'Network logging option has been enabled.'
+                }
             }
             else
             {
-                $NetworkElement = $ConfXML.CreateElement('Network')
-                [void]$ConfXML.Sysmon.Configuration.AppendChild($NetworkElement)
-                Write-Verbose -Message 'Image loading logging option has been enabled.'
+                if ($NetworkNode -ne $null)
+                {
+                    Write-Verbose -Message 'Disabling network connection logging.'
+                    [void]$NetworkNode.ParentNode.RemoveChild($NetworkNode)
+                    Write-Verbose -Message 'Logging network connections has been disabled.'
+                }
+                else
+                {
+                    Write-Verbose -Message 'No action taken since Network option was not enabled.'
+                }
+            
             }
         }
 
         # Update comment or create a new one if present.
-        if ($Comment -ne $null)
+        if ($Comment.Length -ne 0)
         {
             Write-Verbose -Message 'Updating comment for config file.'
             if($ConfXML.'#comment' -ne $null)
@@ -421,9 +460,28 @@ function Set-SysmonConfigOption
    default is exclude. This default is set for event type and affects
    all filters under it.
 .EXAMPLE
-   Example of how to use this cmdlet
-.EXAMPLE
-   Another example of how to use this cmdlet
+    Get-GetSysmonRules -ConfigFile .\pc_cofig.xml -EventType NetworkConnect
+    
+    
+     EventType     : NetworkConnect
+     Scope         : Filtered
+     DefaultAction : Exclude
+     Filters       : {@{EventField=image; Condition=Is; Value=iexplorer.exe}}
+
+    PS C:\> Set-SysmonRuleAction -ConfigFile .\pc_cofig.xml -EventType NetworkConnect -Action Include -Verbose
+    VERBOSE: Setting as default action for NetworkConnect the action of Include.
+    VERBOSE: Action has been set.
+
+    PS C:\> Get-GetSysmonRules -ConfigFile .\pc_cofig.xml -EventType NetworkConnect
+
+
+    EventType     : NetworkConnect
+    Scope         : Filtered
+    DefaultAction : Include
+    Filters       : {@{EventField=image; Condition=Is; Value=iexplorer.exe}}
+
+   
+   Change default rule action causing the filter to ignore all traffic from iexplorer.exe.
 #>
 function Set-SysmonRuleAction
 {
@@ -510,8 +568,6 @@ function Set-SysmonRuleAction
 
 
     Create a filter to capture all network connections from iexplorer.exe.
-.EXAMPLE
-   Another example of how to use this cmdlet
 #>
 function New-SysmonRuleFilter
 {
