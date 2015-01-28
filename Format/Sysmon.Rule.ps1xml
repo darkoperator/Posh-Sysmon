@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-16"?>
+<Configuration>
+<ViewDefinitions>
+<View>
+    <Name>Sysmon.Rule</Name>
+    <ViewSelectedBy>
+        <TypeName>Sysmon.Rule</TypeName>
+    </ViewSelectedBy>
+    <ListControl>
+        <ListEntries>
+            <ListEntry>
+                <ListItems>
+                    <ListItem> 
+                        <Label>EventType</Label>
+                        <PropertyName>EventType</PropertyName>
+                    </ListItem>
+                    <ListItem>
+                        <Label>Scope</Label>
+                        <PropertyName>Scope</PropertyName>
+                    </ListItem>
+                    <ListItem>
+                        <Label>DefaultAction</Label>
+                        <PropertyName>DefaultAction</PropertyName>
+                    </ListItem>
+                    <ListItem>
+                        <Label>Filters</Label>
+                        <PropertyName>Filters</PropertyName>
+                    </ListItem>
+                    </ListItems>
+            </ListEntry>
+        </ListEntries>
+    </ListControl>
+</View>
+</ViewDefinitions>
+</Configuration>

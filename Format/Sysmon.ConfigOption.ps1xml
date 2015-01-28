@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-16"?>
+<Configuration>
+<ViewDefinitions>
+<View>
+    <Name>Sysmon.ConfigOption</Name>
+    <ViewSelectedBy>
+        <TypeName>Sysmon.ConfigOption</TypeName>
+    </ViewSelectedBy>
+    <ListControl>
+        <ListEntries>
+            <ListEntry>
+                <ListItems>
+                    <ListItem> 
+                        <Label>Hashing</Label>
+                        <PropertyName>Hashing</PropertyName>
+                    </ListItem>
+                    <ListItem>
+                        <Label>Network</Label>
+                        <PropertyName>Network</PropertyName>
+                    </ListItem>
+                    <ListItem>
+                        <Label>ImageLoading</Label>
+                        <PropertyName>ImageLoading</PropertyName>
+                    </ListItem>
+                    <ListItem>
+                        <Label>Comment</Label>
+                        <PropertyName>Comment</PropertyName>
+                    </ListItem>
+                    </ListItems>
+            </ListEntry>
+        </ListEntries>
+    </ListControl>
+</View>
+</ViewDefinitions>
+</Configuration>

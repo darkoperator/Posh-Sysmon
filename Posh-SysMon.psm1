@@ -8,9 +8,13 @@
    and a descriptive comment can be given when generating the
    XML config file.
 .EXAMPLE
-   Example of how to use this cmdlet
-.EXAMPLE
-   Another example of how to use this cmdlet
+    New-SysmonConfiguration -ConfigFile .\pc_cofig.xml -HashingAlgorithm SHA1,IMPHASH -Network -ImageLoading -Comment "Config for helpdesk PCs." -Verbose 
+   VERBOSE: Enabling hashing algorithms : SHA1,IMPHASH
+   VERBOSE: Enabling network connection logging.
+   VERBOSE: Enabling image loading logging.
+   VERBOSE: Config file created as C:\\pc_cofig.xml
+
+   Create a configuration file that will log all network connction, image loading and sets a descriptive comment.
 #>
 function New-SysmonConfiguration
 {
@@ -133,11 +137,13 @@ function New-SysmonConfiguration
    Gets the config options set on a Sysmon XML config file
    and their default values.
 .EXAMPLE
-   Example of how to use this cmdlet
-.EXAMPLE
-   Another example of how to use this cmdlet
+   Get-SysmonConfigOptions -ConfigFile .\pc_cofig.xml -Verbose
+    Hashing      : SHA1,IMPHASH
+    Network      : Enabled
+    ImageLoading : Enabled
+    Comment      : Config for helpdesk PCs.
 #>
-function Get-SysmonConfigOptions
+function Get-SysmonConfigOption
 {
     [CmdletBinding()]
     Param
@@ -155,6 +161,15 @@ function Get-SysmonConfigOptions
     {
         [xml]$Config = Get-Content -Path $ConfigFile
         $ObjOptions = @{}
+
+        if ($Config.Sysmon.Configuration.SelectSingleNode('//Configuration/Hashing'))
+        {
+            $ObjOptions['Hashing'] = $config.Sysmon.Configuration.Hashing
+        }
+        else
+        {
+            $ObjOptions['Hashing'] = ''   
+        }
 
         # Check if network traffic is being logged.
         if ($Config.Sysmon.Configuration.SelectNodes('//Configuration/Network'))
@@ -177,7 +192,9 @@ function Get-SysmonConfigOptions
         }
 
         $ObjOptions['Comment'] = $Config.'#comment'   
-        [pscustomobject]$ObjOptions
+        $ConfigObj = [pscustomobject]$ObjOptions
+        $ConfigObj.pstypenames.insert(0,'Sysmon.ConfigOption')
+        $ConfigObj
 
     }
     End{}
@@ -192,9 +209,12 @@ function Get-SysmonConfigOptions
    Gets configured rules and their filters on a Sysmon XML 
    config file for each event type.
 .EXAMPLE
-   Example of how to use this cmdlet
-.EXAMPLE
-   Another example of how to use this cmdlet
+    Get-SysmonConfigOptions -ConfigFile .\pc_cofig.xml -Verbose
+
+    Hashing      : SHA1,IMPHASH
+    Network      : Enabled
+    ImageLoading : Enabled
+    Comment      : Config for helpdesk PCs.
 #>
 function Get-GetSysmonRules
 {
@@ -474,7 +494,22 @@ function Set-SysmonRuleAction
 .DESCRIPTION
    Creates a filter for an event field for an event type in a Sysmon XML.
 .EXAMPLE
-   Example of how to use this cmdlet
+   New-SysmonRuleFilter -ConfigFile .\pc_cofig.xml -EventType NetworkConnect -EventField image -Condition Is -Value 'iexplorer.exe' -Verbose
+    
+    VERBOSE: No rule for NetworkConnect was found.
+    VERBOSE: Creating rule for event type with default action if Exclude
+    VERBOSE: Rule created succesfully
+
+    C:\PS>Get-GetSysmonRules -ConfigFile .\pc_cofig.xml -EventType NetworkConnect
+
+
+    EventType     : NetworkConnect
+    Scope         : Filtered
+    DefaultAction : Exclude
+    Filters       : {@{EventField=image; Condition=Is; Value=iexplorer.exe}}
+
+
+    Create a filter to capture all network connections from iexplorer.exe.
 .EXAMPLE
    Another example of how to use this cmdlet
 #>
