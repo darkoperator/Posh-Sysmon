@@ -196,7 +196,7 @@ function Get-SysmonConfigOptions
 .EXAMPLE
    Another example of how to use this cmdlet
 #>
-function Get-GetSysmonConfigRules
+function Get-GetSysmonRules
 {
     [CmdletBinding()]
     Param
@@ -254,10 +254,10 @@ function Get-GetSysmonConfigRules
 
 <#
 .Synopsis
-   Adds or modifyies existing config options on a Sysmon XML
+   Adds or modifyies existing config options in a Sysmon XML
    config file.
 .DESCRIPTION
-   Adds or modifyies existing config options on a Sysmon XML
+   Adds or modifyies existing config options in a Sysmon XML
    config file.
 .EXAMPLE
    Example of how to use this cmdlet
@@ -456,7 +456,7 @@ function Set-SysmonRuleAction
                 Write-Verbose -Message "No rule for $($Type) was found."
                 Write-Verbose -Message "Creating rule for event type with action of $($Action)"
                 $TypeElement = $ConfXML.CreateElement($Type)
-                [void]$ConfXML.Sysmon.Rules.AppendChild($TypeElement)
+                [void]$Rules.AppendChild($TypeElement)
                 $RuleData = $Rules.SelectSingleNode("//Rules/$($Type)")
                 $RuleData.SetAttribute('default',($Action.ToLower()))
                 Write-Verbose -Message 'Action has been set.'
@@ -470,9 +470,9 @@ function Set-SysmonRuleAction
 
 <#
 .Synopsis
-   Short description
+   Creates a filter for an event field for an event type in a Sysmon XML.
 .DESCRIPTION
-   Long description
+   Creates a filter for an event field for an event type in a Sysmon XML.
 .EXAMPLE
    Example of how to use this cmdlet
 .EXAMPLE
