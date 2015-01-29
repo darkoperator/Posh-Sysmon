@@ -216,7 +216,7 @@ function Get-SysmonConfigOption
     ImageLoading : Enabled
     Comment      : Config for helpdesk PCs.
 #>
-function Get-SysmonRules
+function Get-SysmonRule
 {
     [CmdletBinding()]
     Param
@@ -472,13 +472,15 @@ function Set-SysmonConfigOption
 
 <#
 .Synopsis
-   Updates the default action of a event type rule.
+   Creates a Rule and sets its default action.
 .DESCRIPTION
-   Updates the default action taken by a event type rule. The
-   default is exclude. This default is set for event type and affects
-   all filters under it.
+   Creates a rules for a specified Event Type and sets the default action 
+   for the rule and filters under it. Ir a rule alreade exists it udates 
+   the default action taken by a event type rule if one aready 
+   present. The default is exclude. This default is set for event type 
+   and affects all filters under it.
 .EXAMPLE
-    Get-GetSysmonRules -ConfigFile .\pc_cofig.xml -EventType NetworkConnect
+    Get-GetSysmonRule -ConfigFile .\pc_cofig.xml -EventType NetworkConnect
     
     
      EventType     : NetworkConnect
@@ -486,11 +488,11 @@ function Set-SysmonConfigOption
      DefaultAction : Exclude
      Filters       : {@{EventField=image; Condition=Is; Value=iexplorer.exe}}
 
-    PS C:\> Set-SysmonRuleAction -ConfigFile .\pc_cofig.xml -EventType NetworkConnect -Action Include -Verbose
+    PS C:\> Set-SysmonRulen -ConfigFile .\pc_cofig.xml -EventType NetworkConnect -Action Include -Verbose
     VERBOSE: Setting as default action for NetworkConnect the action of Include.
     VERBOSE: Action has been set.
 
-    PS C:\> Get-GetSysmonRules -ConfigFile .\pc_cofig.xml -EventType NetworkConnect
+    PS C:\> Get-GetSysmonRule -ConfigFile .\pc_cofig.xml -EventType NetworkConnect
 
 
     EventType     : NetworkConnect
@@ -501,7 +503,7 @@ function Set-SysmonConfigOption
    
    Change default rule action causing the filter to ignore all traffic from iexplorer.exe.
 #>
-function Set-SysmonRuleAction
+function Set-SysmonRule
 {
     [CmdletBinding()]
     Param
@@ -523,12 +525,12 @@ function Set-SysmonRuleAction
         $EventType,
 
         # Action for event type rule and filters.
-        [Parameter(Mandatory=$true,
+        [Parameter(Mandatory=$false,
                    ValueFromPipelineByPropertyName=$true,
                    Position=2)]
         [ValidateSet('Include', 'Exclude')]
         [String]
-        $Action
+        $Action = 'Exclude'
     )
 
     Begin{}
