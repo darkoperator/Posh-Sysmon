@@ -262,8 +262,7 @@ function Get-SysmonRules
             if($RuleData -ne $null)
             {
                 Write-Verbose -Message "$($Type) Rule Found."
-                process_rules($RuleData)
-    
+                Get-RuleWithFilter($RuleData)
             }
 
         }
@@ -679,9 +678,11 @@ function New-SysmonRuleFilter
             Write-Verbose -Message 'Rule created succesfully'
         }
 
+        Write-Verbose -Message "Creating filters for event type $($EventType)."
         # For each value for the event type create a filter.
         foreach($val in $value)
         {
+            Write-Verbose -Message "Creating filter for event filed $($EventField) with condition $($Condition) for value $($val)."
             $FieldElement = $ConfXML.CreateElement($EventField)
             $Filter = $RuleData.AppendChild($FieldElement)
             $Filter.SetAttribute('condition',$Condition)
@@ -695,7 +696,7 @@ function New-SysmonRuleFilter
 }
 
 ###### Non-Public Functions ######
-function process_rules($Rules)
+function Get-RuleWithFilter($Rules)
 {
     $RuleObjOptions = @{}
 
