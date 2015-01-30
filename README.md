@@ -5,6 +5,13 @@ All functions in the PowerShell module include help information and example of u
 
 # Installation
 
+To install the module from a PowerShell v3 session run:
+<pre>
+iex (New-Object Net.WebClient).DownloadString("https://gist.githubusercontent.com/darkoperator/3f9da4b780b5a0206bca/raw/f9d15c4f95675f71bf6be21dcbee6b0fa9c8ac4c/posh-sysmoninstall.ps1")
+</pre>
+
+The script that is being ran is the following during installation:
+
 ```PowerShell
 # Make sure the module is not loaded
 Remove-Module posh-sysmon -ErrorAction SilentlyContinue
@@ -31,6 +38,13 @@ Write-Host "Module has been installed" -ForegroundColor Green
 Import-Module -Name Posh-Sysmon
 Get-Command -Module Posh-Sysmon
 ```
+# Change Log
+
+## Version 0.1
+* Initial version for Sysmon 2.0 with XML Schema 1.0
+
+# Examples
+
 ## Create a XML Configuration File
 
 <pre>
