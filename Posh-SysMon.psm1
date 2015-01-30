@@ -22,20 +22,23 @@ function New-SysmonConfiguration
     [OutputType([int])]
     Param
     (
-        # Specify one or more hash algorithms used for image identification 
+        # Path to write XML config file.
         [Parameter(Mandatory=$true,
                    ValueFromPipelineByPropertyName=$true,
                    Position=0)]
+        [Alias('Path')]
+        [String]
+        $ConfigFile,
+
+        # Specify one or more hash algorithms used for image identification 
+        [Parameter(Mandatory=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=1)]
         [ValidateSet('ALL', 'MD5', 'SHA1', 'SHA256', 'IMPHASH')]
         [string[]]
         $HashingAlgorithm,
 
-        # Path to write XML config file.
-        [Parameter(Mandatory=$true,
-                   ValueFromPipelineByPropertyName=$true,
-                   Position=1)]
-        [String]
-        $ConfigFile,
+        
 
         # Log Network Connections
         [Parameter(Mandatory=$False,
@@ -153,6 +156,7 @@ function Get-SysmonConfigOption
                    ValueFromPipelineByPropertyName=$true,
                    Position=0)]
         [ValidateScript({Test-Path -Path $_})]
+        [Alias('Path')]
         $ConfigFile
     )
 
@@ -226,6 +230,8 @@ function Get-SysmonRule
                    ValueFromPipelineByPropertyName=$true,
                    Position=0)]
         [ValidateScript({Test-Path -Path $_})]
+        [Alias('Path')]
+        [string]
         $ConfigFile,
 
         # Event type to parse rules for.
@@ -307,20 +313,22 @@ function Set-SysmonConfigOption
     [CmdletBinding()]
     Param
     (
-        # Specify one or more hash algorithms used for image identification 
-        [Parameter(Mandatory=$false,
-                   ValueFromPipelineByPropertyName=$true,
-                   Position=0)]
-        [ValidateSet('ALL', 'MD5', 'SHA1', 'SHA256', 'IMPHASH')]
-        [string[]]
-        $HashingAlgorithm,
 
         # Path to XML config file.
         [Parameter(Mandatory=$true,
                    ValueFromPipelineByPropertyName=$true,
-                   Position=1)]
+                   Position=0)]
+        [Alias('Path')]
         [String]
         $ConfigFile,
+
+        # Specify one or more hash algorithms used for image identification 
+        [Parameter(Mandatory=$false,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=1)]
+        [ValidateSet('ALL', 'MD5', 'SHA1', 'SHA256', 'IMPHASH')]
+        [string[]]
+        $HashingAlgorithm,
 
         # Log Network Connections
         [Parameter(Mandatory=$False,
@@ -513,6 +521,7 @@ function Set-SysmonRule
                    ValueFromPipelineByPropertyName=$true,
                    Position=0)]
         [ValidateScript({Test-Path -Path $_})]
+        [Alias('Path')]
         $ConfigFile,
 
         # Event type to update.
@@ -602,6 +611,7 @@ function New-SysmonRuleFilter
                    ValueFromPipelineByPropertyName=$true,
                    Position=0)]
         [ValidateScript({Test-Path -Path $_})]
+        [Alias('Path')]
         $ConfigFile,
 
         # Event type to create filter for.
@@ -637,9 +647,7 @@ function New-SysmonRuleFilter
         $Value
     )
 
-    Begin
-    {
-    }
+    Begin{}
     Process
     {
         # Open and read XML file.
@@ -696,9 +704,7 @@ function New-SysmonRuleFilter
 
         $ConfXML.Save($FileLocation)
     }
-    End
-    {
-    }
+    End{}
 }
 
 
@@ -722,6 +728,7 @@ function Remove-SysmonRule
                    ValueFromPipelineByPropertyName=$true,
                    Position=0)]
         [ValidateScript({Test-Path -Path $_})]
+        [Alias('Path')]
         $ConfigFile,
 
         # Event type to remove. It is case sensitive.
@@ -734,9 +741,7 @@ function Remove-SysmonRule
         $EventType
     )
 
-    Begin
-    {
-    }
+    Begin{}
     Process
     {
         # Open and read XML file.
@@ -759,9 +764,7 @@ function Remove-SysmonRule
         }
         $ConfXML.Save($FileLocation)
     }
-    End
-    {
-    }
+    End{}
 }
 
 
@@ -799,6 +802,7 @@ function Remove-SysmonRuleFilter
                    ValueFromPipelineByPropertyName=$true,
                    Position=0)]
         [ValidateScript({Test-Path -Path $_})]
+        [Alias('Path')]
         $ConfigFile,
 
         # Event type to update.
@@ -834,9 +838,7 @@ function Remove-SysmonRuleFilter
         $Value
     )
 
-    Begin
-    {
-    }
+    Begin{}
     Process
     {
         # Open and read XML file.
@@ -907,9 +909,7 @@ function Remove-SysmonRuleFilter
 
         $ConfXML.Save($FileLocation)
     }
-    End
-    {
-    }
+    End{}
 }
 
 
