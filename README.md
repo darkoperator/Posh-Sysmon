@@ -1,7 +1,36 @@
 # Posh-Sysmon
-PowerShell module for creating and managing Sysinternals Sysmon config files.
+PowerShell 3.0 or above module for creating and managing Sysinternals Sysmon config files. System Monitor ([Sysmon](https://technet.microsoft.com/en-us/sysinternals/dn798348)) is a Windows system service and device driver that is part of the SysInternal tools from Microsoft. It is written by Mark Russinovich and Thomas Garnier to monitor a Windows system actions and log such actions in to the Windows Event Log. When the tool is installed on a system it can be given a XML configuration file so as to control what is logged and the same file can be used to update the configuration of a previously installed instance of the tool. 
 
+All functions in the PowerShell module include help information and example of usage that can be view using the Get-Help cmdlet. 
 
+# Installation
+
+```PowerShell
+# Make sure the module is not loaded
+Remove-Module posh-sysmon -ErrorAction SilentlyContinue
+# Download latest version
+$webclient = New-Object System.Net.WebClient
+$url = "https://github.com/darkoperator/Posh-Sysmon/archive/master.zip"
+Write-Host "Downloading latest version of Posh-Sysmon from $url" -ForegroundColor Cyan
+$file = "$($env:TEMP)\Posh-Sysmon.zip"
+$webclient.DownloadFile($url,$file)
+Write-Host "File saved to $file" -ForegroundColor Green
+# Unblock and Decompress
+Unblock-File -Path $file
+$targetondisk = "$($env:USERPROFILE)\Documents\WindowsPowerShell\Modules"
+New-Item -ItemType Directory -Force -Path $targetondisk | out-null
+$shell_app=new-object -com shell.application
+$zip_file = $shell_app.namespace($file)
+Write-Host "Uncompressing the Zip file to $($targetondisk)" -ForegroundColor Cyan
+$destination = $shell_app.namespace($targetondisk)
+$destination.Copyhere($zip_file.items(), 0x10)
+# Rename and import
+Write-Host "Renaming folder" -ForegroundColor Cyan
+Rename-Item -Path ($targetondisk+"\Posh-Sysmon-master") -NewName "Posh-Sysmon" -Force
+Write-Host "Module has been installed" -ForegroundColor Green
+Import-Module -Name Posh-Sysmon
+Get-Command -Module Posh-Sysmon
+```
 ## Create a XML Configuration File
 
 <pre>
