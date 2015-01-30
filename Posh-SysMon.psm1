@@ -2,9 +2,9 @@
 
 <#
 .Synopsis
-   Creates a new Sysmon XML config file.
+   Creates a new Sysmon XML configuration file.
 .DESCRIPTION
-   Creates a new Sysmon XML config file. Configuration options
+   Creates a new Sysmon XML configuration file. Configuration options
    and a descriptive comment can be given when generating the
    XML config file.
 .EXAMPLE
@@ -132,9 +132,9 @@ function New-SysmonConfiguration
 
 <#
 .Synopsis
-   Gets the config options set on a Sysmon XML config file.
+   Gets the config options set on a Sysmon XML configuration file.
 .DESCRIPTION
-   Gets the config options set on a Sysmon XML config file
+   Gets the config options set on a Sysmon XML configuration file
    and their default values.
 .EXAMPLE
    Get-SysmonConfigOptions -ConfigFile .\pc_cofig.xml -Verbose
@@ -203,10 +203,10 @@ function Get-SysmonConfigOption
 
 <#
 .Synopsis
-   Gets configured rules and their filters on a Sysmon XML 
+   Gets configured rules and their filters on a Sysmon XML configuration file.
    config file.
 .DESCRIPTION
-   Gets configured rules and their filters on a Sysmon XML 
+   Gets configured rules and their filters on a Sysmon XML configuration file.
    config file for each event type.
 .EXAMPLE
     Get-SysmonConfigOptions -ConfigFile .\pc_cofig.xml -Verbose
@@ -273,10 +273,10 @@ function Get-SysmonRule
 
 <#
 .Synopsis
-   Adds or modifyies existing config options in a Sysmon XML
+   Adds or modifyies existing config options in a Sysmon XML configuration file.
    config file.
 .DESCRIPTION
-   Adds or modifyies existing config options in a Sysmon XML
+   Adds or modifyies existing config options in a Sysmon XML configuration file.
    config file.
 .EXAMPLE
     Get-SysmonConfigOption -ConfigFile .\pc_cofig.xml 
@@ -472,7 +472,7 @@ function Set-SysmonConfigOption
 
 <#
 .Synopsis
-   Creates a Rule and sets its default action.
+   Creates a Rule and sets its default action in a Sysmon configuration XML file.
 .DESCRIPTION
    Creates a rules for a specified Event Type and sets the default action 
    for the rule and filters under it. Ir a rule alreade exists it udates 
@@ -570,9 +570,9 @@ function Set-SysmonRule
 
 <#
 .Synopsis
-   Creates a filter for an event field for an event type in a Sysmon XML.
+   Creates a filter for an event field for an event type in a Sysmon XML configuration file.
 .DESCRIPTION
-   Creates a filter for an event field for an event type in a Sysmon XML.
+   Creates a filter for an event field for an event type in a Sysmon XML configuration file.
 .EXAMPLE
    New-SysmonRuleFilter -ConfigFile .\pc_cofig.xml -EventType NetworkConnect -EventField image -Condition Is -Value 'iexplorer.exe' -Verbose
     
@@ -704,13 +704,13 @@ function New-SysmonRuleFilter
 
 <#
 .Synopsis
-   Short description
+   Removes on or more rules from a Sysmon XML configuration file.
 .DESCRIPTION
-   Long description
+   Removes on or more rules from a Sysmon XML configuration file.
 .EXAMPLE
-   Example of how to use this cmdlet
-.EXAMPLE
-   Another example of how to use this cmdlet
+   PS C:\> Remove-SysmonRule -ConfigFile .\pc_marketing.xml -EventType ImageLoad,NetworkConnect -Verbose
+   VERBOSE: Removed rule for ImageLoad.
+   VERBOSE: Removed rule for NetworkConnect.
 #>
 function Remove-SysmonRule
 {
@@ -724,7 +724,7 @@ function Remove-SysmonRule
         [ValidateScript({Test-Path -Path $_})]
         $ConfigFile,
 
-        # Event type to update.
+        # Event type to remove. It is case sensitive.
         [Parameter(Mandatory=$true,
                    ValueFromPipelineByPropertyName=$true,
                    Position=1)]
@@ -768,13 +768,26 @@ function Remove-SysmonRule
 
 <#
 .Synopsis
-   Short description
+   Remove on or more filter from a rule in a Sysmon XML configuration file.
 .DESCRIPTION
-   Long description
+   Remove on or more filter from a rule in a Sysmon XML configuration file.
 .EXAMPLE
-   Example of how to use this cmdlet
-.EXAMPLE
-   Another example of how to use this cmdlet
+   Remove-SysmonRuleFilter -ConfigFile .\pc_marketing.xml -EventType NetworkConnect -Condition Image -EventField Image -Value $images -Verbose
+   VERBOSE: Filter for field Image with confition Image and value of C:\Windows\System32\svchost.exe removed.
+   VERBOSE: Filter for field Image with confition Image and value of C:\Program Files (x86)\Internet Explorer\iexplore.exe removed.
+   VERBOSE: Filter for field Image with confition Image and value of C:\Program Files\Internet Explorer\iexplore.exe removed.
+   VERBOSE: Filter for field Image with confition Image and value of C:\Program Files (x86)\Google\Chrome\Application\chrome.exe removed.
+   VERBOSE: Filter for field Image with confition Image and value of C:\Program Files (x86)\PuTTY\putty.exe removed.
+   VERBOSE: Filter for field Image with confition Image and value of C:\Program Files (x86)\PuTTY\plink.exe removed.
+   VERBOSE: Filter for field Image with confition Image and value of C:\Program Files (x86)\PuTTY\pscp.exe removed.
+   VERBOSE: Filter for field Image with confition Image and value of C:\Program Files (x86)\PuTTY\psftp.exe removed.
+
+   EventType     : NetworkConnect
+   Scope         : All Events
+   DefaultAction : Exclude
+   Filters       :
+
+   Remove a series of filter where a list f values are saved in a array.
 #>
 function Remove-SysmonRuleFilter
 {
