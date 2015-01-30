@@ -233,7 +233,7 @@ function Get-SysmonRule
                    ValueFromPipelineByPropertyName=$true,
                    Position=1)]
         [ValidateSet('ALL', 'NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
-                     'ProcessTerminate', 'ImageLoad', 'DriverLoad')]
+                     'ProcessTerminate', 'ImageLoad', 'DriverLoad', IgnoreCase = $false)]
         [string[]]
         $EventType = @('ALL')
     )
@@ -520,7 +520,7 @@ function Set-SysmonRule
                    ValueFromPipelineByPropertyName=$true,
                    Position=1)]
         [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
-                     'ProcessTerminate', 'ImageLoad', 'DriverLoad')]
+                     'ProcessTerminate', 'ImageLoad', 'DriverLoad', IgnoreCase = $false)]
         [string[]]
         $EventType,
 
@@ -559,6 +559,8 @@ function Set-SysmonRule
                 $RuleData.SetAttribute('default',($Action.ToLower()))
                 Write-Verbose -Message 'Action has been set.'
             }
+
+            Get-RuleWithFilter($RuleData)
         }
         $ConfXML.Save($FileLocation)
     }
@@ -607,7 +609,7 @@ function New-SysmonRuleFilter
                    ValueFromPipelineByPropertyName=$true,
                    Position=1)]
         [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
-                     'ProcessTerminate', 'ImageLoad', 'DriverLoad')]
+                     'ProcessTerminate', 'ImageLoad', 'DriverLoad', IgnoreCase = $false)]
         [string]
         $EventType,
 
@@ -690,12 +692,213 @@ function New-SysmonRuleFilter
             $Filter.SetAttribute('condition',$Condition)
             $filter.InnerText = $val
         }
+        Get-RuleWithFilter($RuleData)
+
         $ConfXML.Save($FileLocation)
     }
     End
     {
     }
 }
+
+
+<#
+.Synopsis
+   Short description
+.DESCRIPTION
+   Long description
+.EXAMPLE
+   Example of how to use this cmdlet
+.EXAMPLE
+   Another example of how to use this cmdlet
+#>
+function Remove-SysmonRule
+{
+    [CmdletBinding()]
+    Param
+    (
+        # Path to XML config file.
+        [Parameter(Mandatory=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=0)]
+        [ValidateScript({Test-Path -Path $_})]
+        $ConfigFile,
+
+        # Event type to update.
+        [Parameter(Mandatory=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=1)]
+        [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
+                     'ProcessTerminate', 'ImageLoad', 'DriverLoad',  IgnoreCase = $false)]
+        [string[]]
+        $EventType
+    )
+
+    Begin
+    {
+    }
+    Process
+    {
+        # Open and read XML file.
+        $ConfXML = [xml](Get-Content -Path $ConfigFile)
+        $FileLocation = (Resolve-Path -Path $ConfigFile).Path
+        $Rules = $ConfXML.SelectSingleNode('//Sysmon/Rules')
+
+        foreach($Type in $EventType)
+        {
+            $Rule = $Rules.SelectSingleNode("//Rules/$($Type)")
+            if ($Rule -ne $null)
+            {
+                [void]$Rule.ParentNode.RemoveChild($Rule)
+                Write-Verbose -Message "Removed rule for $($Type)."
+            }
+            else
+            {
+                Write-Warning -Message "Did not found a rule for $($Type)"
+            }
+        }
+        $ConfXML.Save($FileLocation)
+    }
+    End
+    {
+    }
+}
+
+
+
+<#
+.Synopsis
+   Short description
+.DESCRIPTION
+   Long description
+.EXAMPLE
+   Example of how to use this cmdlet
+.EXAMPLE
+   Another example of how to use this cmdlet
+#>
+function Remove-SysmonRuleFilter
+{
+    [CmdletBinding()]
+    Param
+    (
+        # Path to XML config file.
+        [Parameter(Mandatory=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=0)]
+        [ValidateScript({Test-Path -Path $_})]
+        $ConfigFile,
+
+        # Event type to update.
+        [Parameter(Mandatory=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=1)]
+        [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
+                     'ProcessTerminate', 'ImageLoad', 'DriverLoad', IgnoreCase = $false)]
+        [string[]]
+        $EventType,
+
+        # Condition for filtering against and event field.
+        [Parameter(Mandatory=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=2)]
+        [ValidateSet('Is', 'IsNot', 'Contains', 'Excludes', 'Image',
+                     'BeginWith', 'EndWith', 'LessThan', 'MoreThan')]
+        [string]
+        $Condition,
+
+        # Event field to filter on.
+        [Parameter(Mandatory=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=3)]
+        [string]
+        $EventField,
+
+        # Value of Event Field to filter on.
+        [Parameter(Mandatory=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=4)]
+        [string[]]
+        $Value
+    )
+
+    Begin
+    {
+    }
+    Process
+    {
+        # Open and read XML file.
+        $ConfXML = [xml](Get-Content -Path $ConfigFile)
+        $FileLocation = (Resolve-Path -Path $ConfigFile).Path
+        $Rules = $ConfXML.SelectSingleNode('//Sysmon/Rules')
+
+        # Select the proper condition string.
+        switch ($Condition)
+        {
+            'Is' {$ConditionString = 'is'}
+            'IsNot' {$ConditionString = 'is not'}
+            'Contains' {$ConditionString = 'contains'}
+            'Excludes' {$ConditionString = 'excludes'}
+            'Image' {$ConditionString = 'image'}
+            'BeginWith' {$ConditionString = 'begin with'}
+            'EndWith' {$ConditionString = 'end with'}
+            'LessThan' {$ConditionString = 'less than'}
+            'MoreThan' {$ConditionString = 'more than'}
+            Default {$ConditionString = 'is'}
+        }
+
+        # Check if the event type exists if not create it.
+        if ($Rules -eq '')
+        {
+            Write-Error -Message 'Rule element does not exist. This appears to not be a valid config file'
+            return
+        }
+        else
+        {
+            $EventRule = $Rules.SelectSingleNode("//Rules/$($EventType)")
+        }
+
+        if($EventRule -eq $null)
+        {
+            Write-Warning -Message "No rule for $($EventType) was found."
+            return
+        }
+        $Filters = $EventRule.SelectNodes('*')
+        if ($Filters.count -gt 0)
+        {
+            foreach($val in $Value)
+            {
+                foreach($Filter in $Filters)
+                {
+                    if ($Filter.Name -eq $EventField)
+                    {
+                        if (($Filter.condition -eq $null) -and ($Condition -eq 'is') -and ($Filter.'#text' -eq $val))
+                        {
+                            [void]$Filter.ParentNode.RemoveChild($Filter)
+                            Write-Verbose -Message "Filter for field $($EventField) with confition $($Condition) and value of $($val) removed."
+                        }
+                        elseif (($Filter.condition -eq $Condition) -and ($Filter.'#text' -eq $val))
+                        {
+                            [void]$Filter.ParentNode.RemoveChild($Filter)
+                            Write-Verbose -Message "Filter for field $($EventField) with confition $($Condition) and value of $($val) removed."
+                        }
+                    }
+                }
+            }
+            Get-RuleWithFilter($EventRule)
+        }
+        else
+        {
+            Write-Warning -Message "This event type has no filters configured."
+            return
+        }
+
+        $ConfXML.Save($FileLocation)
+    }
+    End
+    {
+    }
+}
+
 
 ###### Non-Public Functions ######
 function Get-RuleWithFilter($Rules)

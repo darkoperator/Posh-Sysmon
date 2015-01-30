@@ -51,7 +51,7 @@ PS C:\> $images = 'C:\Windows\System32\svchost.exe',
 PS C:\> New-SysmonRuleFilter -ConfigFile .\pc_marketing.xml -EventType NetworkConnect -Condition Image -EventField Image -Value $images -Verbose
 VERBOSE: No rule for NetworkConnect was found.
 VERBOSE: Creating rule for event type with default action if Exclude
-VERBOSE: Rule created succesfully
+VERBOSE: Rule created successfully
 VERBOSE: Creating filters for event type NetworkConnect.
 VERBOSE: Creating filter for event filed Image with condition Image for value C:\Windows\System32\svchost.exe.
 VERBOSE: Creating filter for event filed Image with condition Image for value C:\Program Files (x86)\Internet Explorer\iexplore.exe.
@@ -61,12 +61,20 @@ VERBOSE: Creating filter for event filed Image with condition Image for value C:
 VERBOSE: Creating filter for event filed Image with condition Image for value C:\Program Files (x86)\PuTTY\plink.exe.
 VERBOSE: Creating filter for event filed Image with condition Image for value C:\Program Files (x86)\PuTTY\pscp.exe.
 VERBOSE: Creating filter for event filed Image with condition Image for value C:\Program Files (x86)\PuTTY\psftp.exe.
+
+EventType     : NetworkConnect
+Scope         : Filtered
+DefaultAction : Exclude
+Filters       : {@{EventField=Image; Condition=Image; Value=C:\Windows\System32\svchost.exe}, 
+                @{EventField=Image; Condition=Image; Value=C:\Program Files (x86)\Internet Explorer\iexplore.exe}, 
+                @{EventField=Image; Condition=Image; Value=C:\Program Files\Internet Explorer\iexplore.exe}, 
+                @{EventField=Image; Condition=Image; Value=C:\Program Files (x86)\Google\Chrome\Application\chrome.exe}...}
 </pre>
 
 ## Get configured Rules and Filters
 
 <pre>
-PS C:\> Get-SysmonRules -ConfigFile .\pc_marketing.xml
+PS C:\> Get-SysmonRule -ConfigFile .\pc_marketing.xml
 
 
 EventType     : NetworkConnect
@@ -93,4 +101,59 @@ Image        Image        C:\Program Files (x86)\PuTTY\pscp.exe
 Image        Image        C:\Program Files (x86)\PuTTY\psftp.exe
 
 
+</pre>
+
+## Create or Update a Rule and its Default Action
+
+<pre>
+
+PS C:\> Set-SysmonRule -ConfigFile .\pc_marketing.xml -EventType ImageLoad -Verbose
+VERBOSE: No rule for ImageLoad was found.
+VERBOSE: Creating rule for event type with action of Exclude
+VERBOSE: Action has been set.
+
+EventType     : ImageLoad
+Scope         : All Events
+DefaultAction : Exclude
+Filters       :
+
+</pre>
+
+## Remove One or More Filters
+
+<pre>
+PS C:\> Get-SysmonRule -ConfigFile .\pc_marketing.xml -EventType NetworkConnect
+
+EventType     : NetworkConnect
+Scope         : Filtered
+DefaultAction : Exclude
+Filters       : {@{EventField=Image; Condition=Image; Value=C:\Windows\System32\svchost.exe}, 
+                @{EventField=Image; Condition=Image; Value=C:\Program Files (x86)\Internet Explorer\iexplore.exe}, 
+                @{EventField=Image; Condition=Image; Value=C:\Program Files\Internet Explorer\iexplore.exe}, 
+                @{EventField=Image; Condition=Image; Value=C:\Program Files (x86)\Google\Chrome\Application\chrome.exe}...}
+
+
+PS C:\> Remove-SysmonRuleFilter -ConfigFile .\pc_marketing.xml -EventType NetworkConnect -Condition Image -EventField Image -Value $images -Verbose
+VERBOSE: Filter for field Image with confition Image and value of C:\Windows\System32\svchost.exe removed.
+VERBOSE: Filter for field Image with confition Image and value of C:\Program Files (x86)\Internet Explorer\iexplore.exe removed.
+VERBOSE: Filter for field Image with confition Image and value of C:\Program Files\Internet Explorer\iexplore.exe removed.
+VERBOSE: Filter for field Image with confition Image and value of C:\Program Files (x86)\Google\Chrome\Application\chrome.exe removed.
+VERBOSE: Filter for field Image with confition Image and value of C:\Program Files (x86)\PuTTY\putty.exe removed.
+VERBOSE: Filter for field Image with confition Image and value of C:\Program Files (x86)\PuTTY\plink.exe removed.
+VERBOSE: Filter for field Image with confition Image and value of C:\Program Files (x86)\PuTTY\pscp.exe removed.
+VERBOSE: Filter for field Image with confition Image and value of C:\Program Files (x86)\PuTTY\psftp.exe removed.
+
+
+EventType     : NetworkConnect
+Scope         : All Events
+DefaultAction : Exclude
+Filters       :
+</pre>
+
+## Remove Rule
+
+<pre>
+PS C:\> Remove-SysmonRule -ConfigFile .\pc_marketing.xml -EventType ImageLoad,NetworkConnect -Verbose
+VERBOSE: Removed rule for ImageLoad.
+VERBOSE: Removed rule for NetworkConnect.
 </pre>
