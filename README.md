@@ -44,6 +44,7 @@ Get-Command -Module Posh-Sysmon
 * Change option ConfigFile to Path and LiteralPath so as to match other cmdlets that work with files.
 * Fixed typos on verbose messages and examples.
 * Functions should work better now when passing files through the pipeline using Get-ChildItem.
+
 ## Version 0.1
 * Initial version for Sysmon 2.0 with XML Schema 1.0
 
