@@ -19,16 +19,14 @@
 function New-SysmonConfiguration
 {
     [CmdletBinding()]
-    [OutputType([int])]
     Param
     (
         # Path to write XML config file.
         [Parameter(Mandatory=$true,
                    ValueFromPipelineByPropertyName=$true,
                    Position=0)]
-        [Alias('Path')]
         [String]
-        $ConfigFile,
+        $Path,
 
         # Specify one or more hash algorithms used for image identification 
         [Parameter(Mandatory=$true,
@@ -74,7 +72,7 @@ function New-SysmonConfiguration
             $Hash = $HashingAlgorithm -join ','
         }
 
-        $ConfXML = ($ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($ConfigFile))
+        $ConfXML = ($ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($Path))
        
         # get an XMLTextWriter to create the XML
         
@@ -140,7 +138,7 @@ function New-SysmonConfiguration
    Gets the config options set on a Sysmon XML configuration file
    and their default values.
 .EXAMPLE
-   Get-SysmonConfigOptions -ConfigFile .\pc_cofig.xml -Verbose
+   Get-SysmonConfigOptions -Path .\pc_cofig.xml -Verbose
     Hashing      : SHA1,IMPHASH
     Network      : Enabled
     ImageLoading : Enabled
@@ -148,22 +146,52 @@ function New-SysmonConfiguration
 #>
 function Get-SysmonConfigOption
 {
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = 'Path')]
     Param
     (
         # Path to XML config file.
         [Parameter(Mandatory=$true,
                    ValueFromPipelineByPropertyName=$true,
+                   ParameterSetName='Path',
                    Position=0)]
         [ValidateScript({Test-Path -Path $_})]
-        [Alias('Path')]
-        $ConfigFile
+        $Path,
+
+        # Path to XML config file.
+        [Parameter(Mandatory=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   ParameterSetName='LiteralPath',
+                   Position=0)]
+        [ValidateScript({Test-Path -Path $_})]
+        [Alias('PSPath')]
+        $LiteralPath
     )
 
     Begin{}
     Process
     {
-        [xml]$Config = Get-Content -Path $ConfigFile
+        # Check if the file is a valid XML file and if not raise and error. 
+        try
+        {
+            switch($psCmdlet.ParameterSetName)
+            {
+                'Path'        {[xml]$Config = Get-Content -Path $Path}
+                'LiteralPath' {[xml]$Config = Get-Content -LiteralPath $LiteralPath}
+            }
+        }
+        catch [System.Management.Automation.PSInvalidCastException]
+        {
+            Write-Error -Message 'Specified file does not appear to be a XML file.'
+            return
+        }
+        
+        # Validate the XML file is a valid Sysmon file.
+        if ($Config.SelectSingleNode('//Sysmon') -eq $null)
+        {
+            Write-Error -Message 'XML file is not a valid Sysmon config file.'
+            return
+        }
+
         $ObjOptions = @{}
 
         if ($Config.Sysmon.Configuration.SelectSingleNode('//Configuration/Hashing'))
@@ -213,7 +241,7 @@ function Get-SysmonConfigOption
    Gets configured rules and their filters on a Sysmon XML configuration file.
    config file for each event type.
 .EXAMPLE
-    Get-SysmonConfigOptions -ConfigFile .\pc_cofig.xml -Verbose
+    Get-SysmonConfigOptions -Path .\pc_cofig.xml -Verbose
 
     Hashing      : SHA1,IMPHASH
     Network      : Enabled
@@ -222,17 +250,25 @@ function Get-SysmonConfigOption
 #>
 function Get-SysmonRule
 {
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = 'Path')]
     Param
     (
         # Path to XML config file.
         [Parameter(Mandatory=$true,
                    ValueFromPipelineByPropertyName=$true,
+                   ParameterSetName='Path',
                    Position=0)]
         [ValidateScript({Test-Path -Path $_})]
-        [Alias('Path')]
-        [string]
-        $ConfigFile,
+        $Path,
+
+        # Path to XML config file.
+        [Parameter(Mandatory=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   ParameterSetName='LiteralPath',
+                   Position=0)]
+        [ValidateScript({Test-Path -Path $_})]
+        [Alias('PSPath')]
+        $LiteralPath,
 
         # Event type to parse rules for.
         [Parameter(Mandatory=$false,
@@ -247,7 +283,28 @@ function Get-SysmonRule
     Begin{}
     Process
     {
-        [xml]$Config = Get-Content -Path $ConfigFile
+        # Check if the file is a valid XML file and if not raise and error. 
+        try
+        {
+            switch($psCmdlet.ParameterSetName)
+            {
+                'Path'        {[xml]$Config = Get-Content -Path $Path}
+                'LiteralPath' {[xml]$Config = Get-Content -LiteralPath $LiteralPath}
+            }
+        }
+        catch [System.Management.Automation.PSInvalidCastException]
+        {
+            Write-Error -Message 'Specified file does not appear to be a XML file.'
+            return
+        }
+        
+        # Validate the XML file is a valid Sysmon file.
+        if ($Config.SelectSingleNode('//Sysmon') -eq $null)
+        {
+            Write-Error -Message 'XML file is not a valid Sysmon config file.'
+            return
+        }
+
 
         # Collect all individual rules if they exist.
         $Rules = $Config.Sysmon.Rules
@@ -285,7 +342,7 @@ function Get-SysmonRule
    Adds or modifyies existing config options in a Sysmon XML configuration file.
    config file.
 .EXAMPLE
-    Get-SysmonConfigOption -ConfigFile .\pc_cofig.xml 
+    Get-SysmonConfigOption -Path .\pc_cofig.xml 
 
     Hashing      : SHA1,IMPHASH
     Network      : Enabled
@@ -293,12 +350,12 @@ function Get-SysmonRule
     Comment      : 
 
 
-    PS C:\> Set-SysmonConfigOption -ConfigFile .\pc_cofig.xml -ImageLoading Disable -Verbose
+    PS C:\> Set-SysmonConfigOption -Path .\pc_cofig.xml -ImageLoading Disable -Verbose
     VERBOSE: Disabling Image Loading logging.
     VERBOSE: Logging Image Loading has been disabled.
     VERBOSE: Options have been set on C:\Users\Carlos Perez\Documents\Posh-Sysmon\pc_cofig.xml
 
-    PS C:\> Get-SysmonConfigOption -ConfigFile .\pc_cofig.xml 
+    PS C:\> Get-SysmonConfigOption -Path .\pc_cofig.xml 
 
     Hashing      : SHA1,IMPHASH
     Network      : Enabled
@@ -310,17 +367,25 @@ function Get-SysmonRule
 #>
 function Set-SysmonConfigOption
 {
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = 'Path')]
     Param
     (
+        # Path to XML config file.
+        [Parameter(Mandatory=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   ParameterSetName='Path',
+                   Position=0)]
+        [ValidateScript({Test-Path -Path $_})]
+        $Path,
 
         # Path to XML config file.
         [Parameter(Mandatory=$true,
                    ValueFromPipelineByPropertyName=$true,
+                   ParameterSetName='LiteralPath',
                    Position=0)]
-        [Alias('Path')]
-        [String]
-        $ConfigFile,
+        [ValidateScript({Test-Path -Path $_})]
+        [Alias('PSPath')]
+        $LiteralPath,
 
         # Specify one or more hash algorithms used for image identification 
         [Parameter(Mandatory=$false,
@@ -357,8 +422,37 @@ function Set-SysmonConfigOption
     Begin{}
     Process
     {
-        $ConfXML = [xml](Get-Content -Path $ConfigFile)
-        $FileLocation = (Resolve-Path -Path $ConfigFile).Path
+        # Check if the file is a valid XML file and if not raise and error. 
+        try
+        {
+            switch($psCmdlet.ParameterSetName)
+            {
+                'Path'
+                {
+                    [xml]$Config = Get-Content -Path $Path
+                    $FileLocation = (Resolve-Path -Path $ConfigFile).Path
+                }
+
+                'LiteralPath' 
+                {
+                    [xml]$Config = Get-Content -LiteralPath $LiteralPath
+                    $FileLocation = (Resolve-Path -LiteralPath $ConfigFile).Path
+                }
+            }
+        }
+        catch [System.Management.Automation.PSInvalidCastException]
+        {
+            Write-Error -Message 'Specified file does not appear to be a XML file.'
+            return
+        }
+        
+        # Validate the XML file is a valid Sysmon file.
+        if ($Config.SelectSingleNode('//Sysmon') -eq $null)
+        {
+            Write-Error -Message 'XML file is not a valid Sysmon config file.'
+            return
+        }
+        
 
         # Update hashing algorithm option if selected.
         if ($HashingAlgorithm -ne $null)
@@ -478,6 +572,7 @@ function Set-SysmonConfigOption
     End{}
 }
 
+
 <#
 .Synopsis
    Creates a Rule and sets its default action in a Sysmon configuration XML file.
@@ -488,7 +583,7 @@ function Set-SysmonConfigOption
    present. The default is exclude. This default is set for event type 
    and affects all filters under it.
 .EXAMPLE
-    Get-GetSysmonRule -ConfigFile .\pc_cofig.xml -EventType NetworkConnect
+    Get-GetSysmonRule -Path .\pc_cofig.xml -EventType NetworkConnect
     
     
      EventType     : NetworkConnect
@@ -496,11 +591,11 @@ function Set-SysmonConfigOption
      DefaultAction : Exclude
      Filters       : {@{EventField=image; Condition=Is; Value=iexplorer.exe}}
 
-    PS C:\> Set-SysmonRulen -ConfigFile .\pc_cofig.xml -EventType NetworkConnect -Action Include -Verbose
+    PS C:\> Set-SysmonRulen -Path .\pc_cofig.xml -EventType NetworkConnect -Action Include -Verbose
     VERBOSE: Setting as default action for NetworkConnect the action of Include.
     VERBOSE: Action has been set.
 
-    PS C:\> Get-GetSysmonRule -ConfigFile .\pc_cofig.xml -EventType NetworkConnect
+    PS C:\> Get-GetSysmonRule -Path .\pc_cofig.xml -EventType NetworkConnect
 
 
     EventType     : NetworkConnect
@@ -513,16 +608,25 @@ function Set-SysmonConfigOption
 #>
 function Set-SysmonRule
 {
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = 'Path')]
     Param
     (
         # Path to XML config file.
         [Parameter(Mandatory=$true,
                    ValueFromPipelineByPropertyName=$true,
+                   ParameterSetName='Path',
                    Position=0)]
         [ValidateScript({Test-Path -Path $_})]
-        [Alias('Path')]
-        $ConfigFile,
+        $Path,
+
+        # Path to XML config file.
+        [Parameter(Mandatory=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   ParameterSetName='LiteralPath',
+                   Position=0)]
+        [ValidateScript({Test-Path -Path $_})]
+        [Alias('PSPath')]
+        $LiteralPath,
 
         # Event type to update.
         [Parameter(Mandatory=$true,
@@ -545,8 +649,37 @@ function Set-SysmonRule
     Begin{}
     Process
     {
-        $ConfXML = [xml](Get-Content -Path $ConfigFile)
-        $FileLocation = (Resolve-Path -Path $ConfigFile).Path
+        # Check if the file is a valid XML file and if not raise and error. 
+        try
+        {
+            switch($psCmdlet.ParameterSetName)
+            {
+                'Path'
+                {
+                    [xml]$Config = Get-Content -Path $Path
+                    $FileLocation = (Resolve-Path -Path $ConfigFile).Path
+                }
+
+                'LiteralPath' 
+                {
+                    [xml]$Config = Get-Content -LiteralPath $LiteralPath
+                    $FileLocation = (Resolve-Path -LiteralPath $ConfigFile).Path
+                }
+            }
+        }
+        catch [System.Management.Automation.PSInvalidCastException]
+        {
+            Write-Error -Message 'Specified file does not appear to be a XML file.'
+            return
+        }
+        
+        # Validate the XML file is a valid Sysmon file.
+        if ($Config.SelectSingleNode('//Sysmon') -eq $null)
+        {
+            Write-Error -Message 'XML file is not a valid Sysmon config file.'
+            return
+        }
+
         $Rules = $ConfXML.SelectSingleNode('//Sysmon/Rules')
 
         foreach($Type in $EventType)
@@ -583,13 +716,13 @@ function Set-SysmonRule
 .DESCRIPTION
    Creates a filter for an event field for an event type in a Sysmon XML configuration file.
 .EXAMPLE
-   New-SysmonRuleFilter -ConfigFile .\pc_cofig.xml -EventType NetworkConnect -EventField image -Condition Is -Value 'iexplorer.exe' -Verbose
+   New-SysmonRuleFilter -Path .\pc_cofig.xml -EventType NetworkConnect -EventField image -Condition Is -Value 'iexplorer.exe' -Verbose
     
     VERBOSE: No rule for NetworkConnect was found.
     VERBOSE: Creating rule for event type with default action if Exclude
     VERBOSE: Rule created succesfully
 
-    C:\PS>Get-GetSysmonRules -ConfigFile .\pc_cofig.xml -EventType NetworkConnect
+    C:\PS>Get-GetSysmonRules -Path .\pc_cofig.xml -EventType NetworkConnect
 
 
     EventType     : NetworkConnect
@@ -602,17 +735,25 @@ function Set-SysmonRule
 #>
 function New-SysmonRuleFilter
 {
-    [CmdletBinding()]
-    [OutputType([int])]
+    [CmdletBinding(DefaultParameterSetName = 'Path')]
     Param
     (
         # Path to XML config file.
         [Parameter(Mandatory=$true,
                    ValueFromPipelineByPropertyName=$true,
+                   ParameterSetName='Path',
                    Position=0)]
         [ValidateScript({Test-Path -Path $_})]
-        [Alias('Path')]
-        $ConfigFile,
+        $Path,
+
+        # Path to XML config file.
+        [Parameter(Mandatory=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   ParameterSetName='LiteralPath',
+                   Position=0)]
+        [ValidateScript({Test-Path -Path $_})]
+        [Alias('PSPath')]
+        $LiteralPath,
 
         # Event type to create filter for.
         [Parameter(Mandatory=$true,
@@ -650,9 +791,37 @@ function New-SysmonRuleFilter
     Begin{}
     Process
     {
-        # Open and read XML file.
-        $ConfXML = [xml](Get-Content -Path $ConfigFile)
-        $FileLocation = (Resolve-Path -Path $ConfigFile).Path
+        # Check if the file is a valid XML file and if not raise and error. 
+        try
+        {
+            switch($psCmdlet.ParameterSetName)
+            {
+                'Path'
+                {
+                    [xml]$Config = Get-Content -Path $Path
+                    $FileLocation = (Resolve-Path -Path $ConfigFile).Path
+                }
+
+                'LiteralPath' 
+                {
+                    [xml]$Config = Get-Content -LiteralPath $LiteralPath
+                    $FileLocation = (Resolve-Path -LiteralPath $ConfigFile).Path
+                }
+            }
+        }
+        catch [System.Management.Automation.PSInvalidCastException]
+        {
+            Write-Error -Message 'Specified file does not appear to be a XML file.'
+            return
+        }
+        
+        # Validate the XML file is a valid Sysmon file.
+        if ($Config.SelectSingleNode('//Sysmon') -eq $null)
+        {
+            Write-Error -Message 'XML file is not a valid Sysmon config file.'
+            return
+        }
+
         $Rules = $ConfXML.SelectSingleNode('//Sysmon/Rules')
 
         # Select the proper condition string.
@@ -714,22 +883,31 @@ function New-SysmonRuleFilter
 .DESCRIPTION
    Removes on or more rules from a Sysmon XML configuration file.
 .EXAMPLE
-   PS C:\> Remove-SysmonRule -ConfigFile .\pc_marketing.xml -EventType ImageLoad,NetworkConnect -Verbose
+   PS C:\> Remove-SysmonRule -Path .\pc_marketing.xml -EventType ImageLoad,NetworkConnect -Verbose
    VERBOSE: Removed rule for ImageLoad.
    VERBOSE: Removed rule for NetworkConnect.
 #>
 function Remove-SysmonRule
 {
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = 'Path')]
     Param
     (
         # Path to XML config file.
         [Parameter(Mandatory=$true,
                    ValueFromPipelineByPropertyName=$true,
+                   ParameterSetName='Path',
                    Position=0)]
         [ValidateScript({Test-Path -Path $_})]
-        [Alias('Path')]
-        $ConfigFile,
+        $Path,
+
+        # Path to XML config file.
+        [Parameter(Mandatory=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   ParameterSetName='LiteralPath',
+                   Position=0)]
+        [ValidateScript({Test-Path -Path $_})]
+        [Alias('PSPath')]
+        $LiteralPath,
 
         # Event type to remove. It is case sensitive.
         [Parameter(Mandatory=$true,
@@ -744,9 +922,37 @@ function Remove-SysmonRule
     Begin{}
     Process
     {
-        # Open and read XML file.
-        $ConfXML = [xml](Get-Content -Path $ConfigFile)
-        $FileLocation = (Resolve-Path -Path $ConfigFile).Path
+        # Check if the file is a valid XML file and if not raise and error. 
+        try
+        {
+            switch($psCmdlet.ParameterSetName)
+            {
+                'Path'
+                {
+                    [xml]$Config = Get-Content -Path $Path
+                    $FileLocation = (Resolve-Path -Path $ConfigFile).Path
+                }
+
+                'LiteralPath' 
+                {
+                    [xml]$Config = Get-Content -LiteralPath $LiteralPath
+                    $FileLocation = (Resolve-Path -LiteralPath $ConfigFile).Path
+                }
+            }
+        }
+        catch [System.Management.Automation.PSInvalidCastException]
+        {
+            Write-Error -Message 'Specified file does not appear to be a XML file.'
+            return
+        }
+        
+        # Validate the XML file is a valid Sysmon file.
+        if ($Config.SelectSingleNode('//Sysmon') -eq $null)
+        {
+            Write-Error -Message 'XML file is not a valid Sysmon config file.'
+            return
+        }
+
         $Rules = $ConfXML.SelectSingleNode('//Sysmon/Rules')
 
         foreach($Type in $EventType)
@@ -768,22 +974,21 @@ function Remove-SysmonRule
 }
 
 
-
 <#
 .Synopsis
    Remove on or more filter from a rule in a Sysmon XML configuration file.
 .DESCRIPTION
    Remove on or more filter from a rule in a Sysmon XML configuration file.
 .EXAMPLE
-   Remove-SysmonRuleFilter -ConfigFile .\pc_marketing.xml -EventType NetworkConnect -Condition Image -EventField Image -Value $images -Verbose
-   VERBOSE: Filter for field Image with confition Image and value of C:\Windows\System32\svchost.exe removed.
-   VERBOSE: Filter for field Image with confition Image and value of C:\Program Files (x86)\Internet Explorer\iexplore.exe removed.
-   VERBOSE: Filter for field Image with confition Image and value of C:\Program Files\Internet Explorer\iexplore.exe removed.
-   VERBOSE: Filter for field Image with confition Image and value of C:\Program Files (x86)\Google\Chrome\Application\chrome.exe removed.
-   VERBOSE: Filter for field Image with confition Image and value of C:\Program Files (x86)\PuTTY\putty.exe removed.
-   VERBOSE: Filter for field Image with confition Image and value of C:\Program Files (x86)\PuTTY\plink.exe removed.
-   VERBOSE: Filter for field Image with confition Image and value of C:\Program Files (x86)\PuTTY\pscp.exe removed.
-   VERBOSE: Filter for field Image with confition Image and value of C:\Program Files (x86)\PuTTY\psftp.exe removed.
+   Remove-SysmonRuleFilter -Path .\pc_marketing.xml -EventType NetworkConnect -Condition Image -EventField Image -Value $images -Verbose
+   VERBOSE: Filter for field Image with condition Image and value of C:\Windows\System32\svchost.exe removed.
+   VERBOSE: Filter for field Image with condition Image and value of C:\Program Files (x86)\Internet Explorer\iexplore.exe removed.
+   VERBOSE: Filter for field Image with condition Image and value of C:\Program Files\Internet Explorer\iexplore.exe removed.
+   VERBOSE: Filter for field Image with condition Image and value of C:\Program Files (x86)\Google\Chrome\Application\chrome.exe removed.
+   VERBOSE: Filter for field Image with condition Image and value of C:\Program Files (x86)\PuTTY\putty.exe removed.
+   VERBOSE: Filter for field Image with condition Image and value of C:\Program Files (x86)\PuTTY\plink.exe removed.
+   VERBOSE: Filter for field Image with condition Image and value of C:\Program Files (x86)\PuTTY\pscp.exe removed.
+   VERBOSE: Filter for field Image with condition Image and value of C:\Program Files (x86)\PuTTY\psftp.exe removed.
 
    EventType     : NetworkConnect
    Scope         : All Events
@@ -794,16 +999,25 @@ function Remove-SysmonRule
 #>
 function Remove-SysmonRuleFilter
 {
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName = 'Path')]
     Param
     (
         # Path to XML config file.
         [Parameter(Mandatory=$true,
                    ValueFromPipelineByPropertyName=$true,
+                   ParameterSetName='Path',
                    Position=0)]
         [ValidateScript({Test-Path -Path $_})]
-        [Alias('Path')]
-        $ConfigFile,
+        $Path,
+
+        # Path to XML config file.
+        [Parameter(Mandatory=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   ParameterSetName='LiteralPath',
+                   Position=0)]
+        [ValidateScript({Test-Path -Path $_})]
+        [Alias('PSPath')]
+        $LiteralPath,
 
         # Event type to update.
         [Parameter(Mandatory=$true,
@@ -841,9 +1055,37 @@ function Remove-SysmonRuleFilter
     Begin{}
     Process
     {
-        # Open and read XML file.
-        $ConfXML = [xml](Get-Content -Path $ConfigFile)
-        $FileLocation = (Resolve-Path -Path $ConfigFile).Path
+        # Check if the file is a valid XML file and if not raise and error. 
+        try
+        {
+            switch($psCmdlet.ParameterSetName)
+            {
+                'Path'
+                {
+                    [xml]$Config = Get-Content -Path $Path
+                    $FileLocation = (Resolve-Path -Path $ConfigFile).Path
+                }
+
+                'LiteralPath' 
+                {
+                    [xml]$Config = Get-Content -LiteralPath $LiteralPath
+                    $FileLocation = (Resolve-Path -LiteralPath $ConfigFile).Path
+                }
+            }
+        }
+        catch [System.Management.Automation.PSInvalidCastException]
+        {
+            Write-Error -Message 'Specified file does not appear to be a XML file.'
+            return
+        }
+        
+        # Validate the XML file is a valid Sysmon file.
+        if ($Config.SelectSingleNode('//Sysmon') -eq $null)
+        {
+            Write-Error -Message 'XML file is not a valid Sysmon config file.'
+            return
+        }
+
         $Rules = $ConfXML.SelectSingleNode('//Sysmon/Rules')
 
         # Select the proper condition string.
@@ -889,12 +1131,12 @@ function Remove-SysmonRuleFilter
                         if (($Filter.condition -eq $null) -and ($Condition -eq 'is') -and ($Filter.'#text' -eq $val))
                         {
                             [void]$Filter.ParentNode.RemoveChild($Filter)
-                            Write-Verbose -Message "Filter for field $($EventField) with confition $($Condition) and value of $($val) removed."
+                            Write-Verbose -Message "Filter for field $($EventField) with condition $($Condition) and value of $($val) removed."
                         }
                         elseif (($Filter.condition -eq $Condition) -and ($Filter.'#text' -eq $val))
                         {
                             [void]$Filter.ParentNode.RemoveChild($Filter)
-                            Write-Verbose -Message "Filter for field $($EventField) with confition $($Condition) and value of $($val) removed."
+                            Write-Verbose -Message "Filter for field $($EventField) with condition $($Condition) and value of $($val) removed."
                         }
                     }
                 }
