@@ -8,7 +8,7 @@
    and a descriptive comment can be given when generating the
    XML config file.
 .EXAMPLE
-    New-SysmonConfiguration -ConfigFile .\pc_cofig.xml -HashingAlgorithm SHA1,IMPHASH -Network -ImageLoading -Comment "Config for helpdesk PCs." -Verbose 
+    New-SysmonConfiguration -Path .\pc_cofig.xml -HashingAlgorithm SHA1,IMPHASH -Network -ImageLoading -Comment "Config for helpdesk PCs." -Verbose 
    VERBOSE: Enabling hashing algorithms : SHA1,IMPHASH
    VERBOSE: Enabling network connection logging.
    VERBOSE: Enabling image loading logging.
@@ -430,13 +430,13 @@ function Set-SysmonConfigOption
                 'Path'
                 {
                     [xml]$Config = Get-Content -Path $Path
-                    $FileLocation = (Resolve-Path -Path $ConfigFile).Path
+                    $FileLocation = (Resolve-Path -Path $Path).Path
                 }
 
                 'LiteralPath' 
                 {
                     [xml]$Config = Get-Content -LiteralPath $LiteralPath
-                    $FileLocation = (Resolve-Path -LiteralPath $ConfigFile).Path
+                    $FileLocation = (Resolve-Path -LiteralPath $LiteralPath).Path
                 }
             }
         }
@@ -657,13 +657,13 @@ function Set-SysmonRule
                 'Path'
                 {
                     [xml]$Config = Get-Content -Path $Path
-                    $FileLocation = (Resolve-Path -Path $ConfigFile).Path
+                    $FileLocation = (Resolve-Path -Path $Path).Path
                 }
 
                 'LiteralPath' 
                 {
                     [xml]$Config = Get-Content -LiteralPath $LiteralPath
-                    $FileLocation = (Resolve-Path -LiteralPath $ConfigFile).Path
+                    $FileLocation = (Resolve-Path -LiteralPath $LiteralPath).Path
                 }
             }
         }
@@ -799,13 +799,13 @@ function New-SysmonRuleFilter
                 'Path'
                 {
                     [xml]$Config = Get-Content -Path $Path
-                    $FileLocation = (Resolve-Path -Path $ConfigFile).Path
+                    $FileLocation = (Resolve-Path -Path $Path).Path
                 }
 
                 'LiteralPath' 
                 {
                     [xml]$Config = Get-Content -LiteralPath $LiteralPath
-                    $FileLocation = (Resolve-Path -LiteralPath $ConfigFile).Path
+                    $FileLocation = (Resolve-Path -LiteralPath $LiteralPath).Path
                 }
             }
         }
@@ -930,13 +930,13 @@ function Remove-SysmonRule
                 'Path'
                 {
                     [xml]$Config = Get-Content -Path $Path
-                    $FileLocation = (Resolve-Path -Path $ConfigFile).Path
+                    $FileLocation = (Resolve-Path -Path $Path).Path
                 }
 
                 'LiteralPath' 
                 {
                     [xml]$Config = Get-Content -LiteralPath $LiteralPath
-                    $FileLocation = (Resolve-Path -LiteralPath $ConfigFile).Path
+                    $FileLocation = (Resolve-Path -LiteralPath $LiteralPath).Path
                 }
             }
         }
@@ -1063,13 +1063,13 @@ function Remove-SysmonRuleFilter
                 'Path'
                 {
                     [xml]$Config = Get-Content -Path $Path
-                    $FileLocation = (Resolve-Path -Path $ConfigFile).Path
+                    $FileLocation = (Resolve-Path -Path $Path).Path
                 }
 
                 'LiteralPath' 
                 {
                     [xml]$Config = Get-Content -LiteralPath $LiteralPath
-                    $FileLocation = (Resolve-Path -LiteralPath $ConfigFile).Path
+                    $FileLocation = (Resolve-Path -LiteralPath $LiteralPath).Path
                 }
             }
         }
@@ -1145,7 +1145,7 @@ function Remove-SysmonRuleFilter
         }
         else
         {
-            Write-Warning -Message "This event type has no filters configured."
+            Write-Warning -Message 'This event type has no filters configured.'
             return
         }
 
