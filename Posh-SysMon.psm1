@@ -309,6 +309,12 @@ function Get-SysmonRule
         # Collect all individual rules if they exist.
         $Rules = $Config.Sysmon.Rules
 
+        if ($Rules.length -eq 0)
+        {
+            Write-Warning -Message 'No rules are present in the specified config file.'
+            return
+        }
+
         if ($EventType -contains 'ALL')
         {
             $TypesToParse = @('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
@@ -468,15 +474,15 @@ function Set-SysmonConfigOption
             }
 
             # Check if Hashing Alorithm node exists.
-            if($ConfXML.SelectSingleNode('//Sysmon/Configuration/Hashing') -ne $null)
+            if($Config.SelectSingleNode('//Sysmon/Configuration/Hashing') -ne $null)
             {
-                $ConfXML.Sysmon.Configuration.Hashing = $Hash    
+                $Config.Sysmon.Configuration.Hashing = $Hash    
             }
             else
             {
-                $HashElement = $ConfXML.CreateElement('Hashing')
-                [void]$ConfXML.Sysmon.Configuration.AppendChild($HashElement)
-                $ConfXML.Sysmon.Configuration.Hashing = $Hash 
+                $HashElement = $Config.CreateElement('Hashing')
+                [void]$Config.Sysmon.Configuration.AppendChild($HashElement)
+                $Config.Sysmon.Configuration.Hashing = $Hash 
             }
             Write-Verbose -Message 'Hashing option has been updated.'
         }
@@ -484,7 +490,7 @@ function Set-SysmonConfigOption
         # Update Image Loading monitoring option if selected.
         if($ImageLoading.Length -ne 0)
         {
-            $Node = $ConfXML.SelectSingleNode('//Sysmon/Configuration/ImageLoading')
+            $Node = $Config.SelectSingleNode('//Sysmon/Configuration/ImageLoading')
 
             if ($ImageLoading -eq 'Enable')
             {
@@ -495,8 +501,8 @@ function Set-SysmonConfigOption
                 }
                 else
                 {
-                    $ImageLoadingElement = $ConfXML.CreateElement('ImageLoading')
-                    [void]$ConfXML.Sysmon.Configuration.AppendChild($ImageLoadingElement)
+                    $ImageLoadingElement = $Config.CreateElement('ImageLoading')
+                    [void]$Config.Sysmon.Configuration.AppendChild($ImageLoadingElement)
                     Write-Verbose -Message 'Image loading logging option has been enabled.'
                 }
             }
@@ -519,7 +525,7 @@ function Set-SysmonConfigOption
         # Update Network monitoring option if selected.
         if($Network.Length -ne 0)
         {
-            $NetworkNode = $ConfXML.SelectSingleNode('//Sysmon/Configuration/Network')
+            $NetworkNode = $Config.SelectSingleNode('//Sysmon/Configuration/Network')
             if ($Network -eq 'Enable')
             {
                 Write-Verbose -Message 'Enabling network logging option.'
@@ -529,8 +535,8 @@ function Set-SysmonConfigOption
                 }
                 else
                 {
-                    $NetworkElement = $ConfXML.CreateElement('Network')
-                    [void]$ConfXML.Sysmon.Configuration.AppendChild($NetworkElement)
+                    $NetworkElement = $Config.CreateElement('Network')
+                    [void]$Config.Sysmon.Configuration.AppendChild($NetworkElement)
                     Write-Verbose -Message 'Network logging option has been enabled.'
                 }
             }
@@ -554,20 +560,20 @@ function Set-SysmonConfigOption
         if ($Comment.Length -ne 0)
         {
             Write-Verbose -Message 'Updating comment for config file.'
-            if($ConfXML.'#comment' -ne $null)
+            if($Config.'#comment' -ne $null)
             {
-                $ConfXML.'#comment' = $Comment    
+                $Config.'#comment' = $Comment    
             }
             else
             {
-                $CommentXML = $ConfXML.CreateComment($Comment)
-                [void]$ConfXML.PrependChild($CommentXML)
+                $CommentXML = $Config.CreateComment($Comment)
+                [void]$Config.PrependChild($CommentXML)
             }
             Write-Verbose -Message 'Comment for config file has been updated.'
         }
 
         Write-Verbose -Message "Options have been set on $($FileLocation)"
-        $ConfXML.Save($FileLocation)
+        $Config.Save($FileLocation)
     }
     End{}
 }
@@ -822,7 +828,7 @@ function New-SysmonRuleFilter
             return
         }
 
-        $Rules = $ConfXML.SelectSingleNode('//Sysmon/Rules')
+        $Rules = $Config.SelectSingleNode('//Sysmon/Rules')
 
         # Select the proper condition string.
         switch ($Condition)
@@ -853,7 +859,7 @@ function New-SysmonRuleFilter
         {
             Write-Verbose -Message "No rule for $($EventType) was found."
             Write-Verbose -Message 'Creating rule for event type with default action if Exclude'
-            $TypeElement = $ConfXML.CreateElement($EventType)
+            $TypeElement = $Config.CreateElement($EventType)
             [void]$Rules.AppendChild($TypeElement)
             $RuleData = $Rules.SelectSingleNode("//Rules/$($EventType)")
             Write-Verbose -Message 'Rule created succesfully'
@@ -864,7 +870,7 @@ function New-SysmonRuleFilter
         foreach($val in $value)
         {
             Write-Verbose -Message "Creating filter for event filed $($EventField) with condition $($Condition) for value $($val)."
-            $FieldElement = $ConfXML.CreateElement($EventField)
+            $FieldElement = $Config.CreateElement($EventField)
             $Filter = $RuleData.AppendChild($FieldElement)
             $Filter.SetAttribute('condition',$Condition)
             $filter.InnerText = $val
@@ -953,7 +959,7 @@ function Remove-SysmonRule
             return
         }
 
-        $Rules = $ConfXML.SelectSingleNode('//Sysmon/Rules')
+        $Rules = $Config.SelectSingleNode('//Sysmon/Rules')
 
         foreach($Type in $EventType)
         {
@@ -968,7 +974,7 @@ function Remove-SysmonRule
                 Write-Warning -Message "Did not found a rule for $($Type)"
             }
         }
-        $ConfXML.Save($FileLocation)
+        $Config.Save($FileLocation)
     }
     End{}
 }
@@ -1086,7 +1092,7 @@ function Remove-SysmonRuleFilter
             return
         }
 
-        $Rules = $ConfXML.SelectSingleNode('//Sysmon/Rules')
+        $Rules = $Config.SelectSingleNode('//Sysmon/Rules')
 
         # Select the proper condition string.
         switch ($Condition)
@@ -1149,7 +1155,7 @@ function Remove-SysmonRuleFilter
             return
         }
 
-        $ConfXML.Save($FileLocation)
+        $Config.Save($FileLocation)
     }
     End{}
 }
