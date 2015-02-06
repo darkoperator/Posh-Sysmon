@@ -686,7 +686,7 @@ function Set-SysmonRule
             return
         }
 
-        $Rules = $ConfXML.SelectSingleNode('//Sysmon/Rules')
+        $Rules = $Config.SelectSingleNode('//Sysmon/Rules')
 
         foreach($Type in $EventType)
         {
@@ -701,7 +701,7 @@ function Set-SysmonRule
             {
                 Write-Verbose -Message "No rule for $($Type) was found."
                 Write-Verbose -Message "Creating rule for event type with action of $($Action)"
-                $TypeElement = $ConfXML.CreateElement($Type)
+                $TypeElement = $Config.CreateElement($Type)
                 [void]$Rules.AppendChild($TypeElement)
                 $RuleData = $Rules.SelectSingleNode("//Rules/$($Type)")
                 $RuleData.SetAttribute('default',($Action.ToLower()))
@@ -710,7 +710,7 @@ function Set-SysmonRule
 
             Get-RuleWithFilter($RuleData)
         }
-        $ConfXML.Save($FileLocation)
+        $Config.Save($FileLocation)
     }
     End{}
 }
@@ -877,7 +877,7 @@ function New-SysmonRuleFilter
         }
         Get-RuleWithFilter($RuleData)
 
-        $ConfXML.Save($FileLocation)
+        $Config.Save($FileLocation)
     }
     End{}
 }
