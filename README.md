@@ -85,42 +85,6 @@ Comment      : Sysmon config for deployment in the Marketing PC OU
 </pre>
 
 
-## Create a Rule Filter
-
-In this example we create a filter for several program for the Network Connection event type. Sysmon rules work by filtering out and not logging any action by default. The default action of a Rules is to exclude from filtering out all event that match. In the following example the applications in the list will not have their network connections logged.
-
-<pre>
-PS C:\> $images = 'C:\Windows\System32\svchost.exe',
->>> 'C:\Program Files (x86)\Internet Explorer\iexplore.exe',
->>> 'C:\Program Files\Internet Explorer\iexplore.exe',
->>> 'C:\Program Files (x86)\Google\Chrome\Application\chrome.exe',
->>> 'C:\Program Files (x86)\PuTTY\putty.exe',
->>> 'C:\Program Files (x86)\PuTTY\plink.exe',
->>> 'C:\Program Files (x86)\PuTTY\pscp.exe',
->>> 'C:\Program Files (x86)\PuTTY\psftp.exe'
->
-PS C:\> New-SysmonRuleFilter -Path .\pc_marketing.xml -EventType NetworkConnect -Condition Image -EventField Image -Value $images -Verbose
-VERBOSE: No rule for NetworkConnect was found.
-VERBOSE: Creating rule for event type with default action if Exclude
-VERBOSE: Rule created successfully
-VERBOSE: Creating filters for event type NetworkConnect.
-VERBOSE: Creating filter for event filed Image with condition Image for value C:\Windows\System32\svchost.exe.
-VERBOSE: Creating filter for event filed Image with condition Image for value C:\Program Files (x86)\Internet Explorer\iexplore.exe.
-VERBOSE: Creating filter for event filed Image with condition Image for value C:\Program Files\Internet Explorer\iexplore.exe.
-VERBOSE: Creating filter for event filed Image with condition Image for value C:\Program Files (x86)\Google\Chrome\Application\chrome.exe.
-VERBOSE: Creating filter for event filed Image with condition Image for value C:\Program Files (x86)\PuTTY\putty.exe.
-VERBOSE: Creating filter for event filed Image with condition Image for value C:\Program Files (x86)\PuTTY\plink.exe.
-VERBOSE: Creating filter for event filed Image with condition Image for value C:\Program Files (x86)\PuTTY\pscp.exe.
-VERBOSE: Creating filter for event filed Image with condition Image for value C:\Program Files (x86)\PuTTY\psftp.exe.
-
-EventType     : NetworkConnect
-Scope         : Filtered
-DefaultAction : Exclude
-Filters       : {@{EventField=Image; Condition=Image; Value=C:\Windows\System32\svchost.exe}, 
-                @{EventField=Image; Condition=Image; Value=C:\Program Files (x86)\Internet Explorer\iexplore.exe}, 
-                @{EventField=Image; Condition=Image; Value=C:\Program Files\Internet Explorer\iexplore.exe}, 
-                @{EventField=Image; Condition=Image; Value=C:\Program Files (x86)\Google\Chrome\Application\chrome.exe}...}
-</pre>
 
 ## Get configured Rules and Filters
 
