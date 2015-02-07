@@ -39,6 +39,10 @@ Import-Module -Name Posh-Sysmon
 Get-Command -Module Posh-Sysmon
 ```
 # Change Log
+## Version 0.3
+* Tons of fixes do to a bad re-facor.
+* Filter creation is now done by specific funtions per event type.
+* Filter creation functions are now in their own sub-module.
 ## Version 0.2
 * Validate that the file is an XML file and a valid Sysmon configuration file.
 * Change option ConfigFile to Path and LiteralPath so as to match other cmdlets that work with files.
