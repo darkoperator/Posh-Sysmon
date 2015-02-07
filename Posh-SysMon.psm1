@@ -2,6 +2,7 @@
 # * Add help for the new filter functions.
 # * Make EvenType param not case sensitive.
 # * Migrate help from comment based to XML based.
+# * Add help and param block to Get-RuleWithFilter
 
 <#
 .Synopsis
