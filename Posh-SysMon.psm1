@@ -72,11 +72,11 @@ function New-SysmonConfiguration
             $Hash = $HashingAlgorithm -join ','
         }
 
-        $ConfXML = ($ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($Path))
+        $Config = ($ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($Path))
        
         # get an XMLTextWriter to create the XML
         
-        $XmlWriter = New-Object System.XMl.XmlTextWriter($ConfXML,$Null)
+        $XmlWriter = New-Object System.XMl.XmlTextWriter($Config,$Null)
  
         # choose a pretty formatting:
         $xmlWriter.Formatting = 'Indented'
@@ -123,7 +123,7 @@ function New-SysmonConfiguration
         #$xmlWriter.WriteEndDocument()
         $xmlWriter.Flush()
         $xmlWriter.Close()
-        Write-Verbose -Message "Config file created as $($ConfXML)"
+        Write-Verbose -Message "Config file created as $($Config)"
     }
     End
     {
@@ -430,13 +430,13 @@ function Set-SysmonConfigOption
                 'Path'
                 {
                     [xml]$Config = Get-Content -Path $Path
-                    $FileLocation = (Resolve-Path -Path $ConfigFile).Path
+                    $FileLocation = (Resolve-Path -Path $Path).Path
                 }
 
                 'LiteralPath' 
                 {
                     [xml]$Config = Get-Content -LiteralPath $LiteralPath
-                    $FileLocation = (Resolve-Path -LiteralPath $ConfigFile).Path
+                    $FileLocation = (Resolve-Path -LiteralPath $LiteralPath).Path
                 }
             }
         }
@@ -468,15 +468,15 @@ function Set-SysmonConfigOption
             }
 
             # Check if Hashing Alorithm node exists.
-            if($ConfXML.SelectSingleNode('//Sysmon/Configuration/Hashing') -ne $null)
+            if($Config.SelectSingleNode('//Sysmon/Configuration/Hashing') -ne $null)
             {
-                $ConfXML.Sysmon.Configuration.Hashing = $Hash    
+                $Config.Sysmon.Configuration.Hashing = $Hash    
             }
             else
             {
-                $HashElement = $ConfXML.CreateElement('Hashing')
-                [void]$ConfXML.Sysmon.Configuration.AppendChild($HashElement)
-                $ConfXML.Sysmon.Configuration.Hashing = $Hash 
+                $HashElement = $Config.CreateElement('Hashing')
+                [void]$Config.Sysmon.Configuration.AppendChild($HashElement)
+                $Config.Sysmon.Configuration.Hashing = $Hash 
             }
             Write-Verbose -Message 'Hashing option has been updated.'
         }
@@ -484,7 +484,7 @@ function Set-SysmonConfigOption
         # Update Image Loading monitoring option if selected.
         if($ImageLoading.Length -ne 0)
         {
-            $Node = $ConfXML.SelectSingleNode('//Sysmon/Configuration/ImageLoading')
+            $Node = $Config.SelectSingleNode('//Sysmon/Configuration/ImageLoading')
 
             if ($ImageLoading -eq 'Enable')
             {
@@ -495,8 +495,8 @@ function Set-SysmonConfigOption
                 }
                 else
                 {
-                    $ImageLoadingElement = $ConfXML.CreateElement('ImageLoading')
-                    [void]$ConfXML.Sysmon.Configuration.AppendChild($ImageLoadingElement)
+                    $ImageLoadingElement = $Config.CreateElement('ImageLoading')
+                    [void]$Config.Sysmon.Configuration.AppendChild($ImageLoadingElement)
                     Write-Verbose -Message 'Image loading logging option has been enabled.'
                 }
             }
@@ -519,7 +519,7 @@ function Set-SysmonConfigOption
         # Update Network monitoring option if selected.
         if($Network.Length -ne 0)
         {
-            $NetworkNode = $ConfXML.SelectSingleNode('//Sysmon/Configuration/Network')
+            $NetworkNode = $Config.SelectSingleNode('//Sysmon/Configuration/Network')
             if ($Network -eq 'Enable')
             {
                 Write-Verbose -Message 'Enabling network logging option.'
@@ -529,8 +529,8 @@ function Set-SysmonConfigOption
                 }
                 else
                 {
-                    $NetworkElement = $ConfXML.CreateElement('Network')
-                    [void]$ConfXML.Sysmon.Configuration.AppendChild($NetworkElement)
+                    $NetworkElement = $Config.CreateElement('Network')
+                    [void]$Config.Sysmon.Configuration.AppendChild($NetworkElement)
                     Write-Verbose -Message 'Network logging option has been enabled.'
                 }
             }
@@ -554,20 +554,20 @@ function Set-SysmonConfigOption
         if ($Comment.Length -ne 0)
         {
             Write-Verbose -Message 'Updating comment for config file.'
-            if($ConfXML.'#comment' -ne $null)
+            if($Config.'#comment' -ne $null)
             {
-                $ConfXML.'#comment' = $Comment    
+                $Config.'#comment' = $Comment    
             }
             else
             {
-                $CommentXML = $ConfXML.CreateComment($Comment)
-                [void]$ConfXML.PrependChild($CommentXML)
+                $CommentXML = $Config.CreateComment($Comment)
+                [void]$Config.PrependChild($CommentXML)
             }
             Write-Verbose -Message 'Comment for config file has been updated.'
         }
 
         Write-Verbose -Message "Options have been set on $($FileLocation)"
-        $ConfXML.Save($FileLocation)
+        $Config.Save($FileLocation)
     }
     End{}
 }
@@ -657,13 +657,13 @@ function Set-SysmonRule
                 'Path'
                 {
                     [xml]$Config = Get-Content -Path $Path
-                    $FileLocation = (Resolve-Path -Path $ConfigFile).Path
+                    $FileLocation = (Resolve-Path -Path $Path).Path
                 }
 
                 'LiteralPath' 
                 {
                     [xml]$Config = Get-Content -LiteralPath $LiteralPath
-                    $FileLocation = (Resolve-Path -LiteralPath $ConfigFile).Path
+                    $FileLocation = (Resolve-Path -LiteralPath $LiteralPath).Path
                 }
             }
         }
@@ -680,7 +680,7 @@ function Set-SysmonRule
             return
         }
 
-        $Rules = $ConfXML.SelectSingleNode('//Sysmon/Rules')
+        $Rules = $config.SelectSingleNode('//Sysmon/Rules')
 
         foreach($Type in $EventType)
         {
@@ -695,7 +695,7 @@ function Set-SysmonRule
             {
                 Write-Verbose -Message "No rule for $($Type) was found."
                 Write-Verbose -Message "Creating rule for event type with action of $($Action)"
-                $TypeElement = $ConfXML.CreateElement($Type)
+                $TypeElement = $config.CreateElement($Type)
                 [void]$Rules.AppendChild($TypeElement)
                 $RuleData = $Rules.SelectSingleNode("//Rules/$($Type)")
                 $RuleData.SetAttribute('default',($Action.ToLower()))
@@ -704,7 +704,7 @@ function Set-SysmonRule
 
             Get-RuleWithFilter($RuleData)
         }
-        $ConfXML.Save($FileLocation)
+        $config.Save($FileLocation)
     }
     End{}
 }
@@ -712,11 +712,154 @@ function Set-SysmonRule
 
 <#
 .Synopsis
+   Removes on or more rules from a Sysmon XML configuration file.
+.DESCRIPTION
+   Removes on or more rules from a Sysmon XML configuration file.
+.EXAMPLE
+   PS C:\> Remove-SysmonRule -Path .\pc_marketing.xml -EventType ImageLoad,NetworkConnect -Verbose
+   VERBOSE: Removed rule for ImageLoad.
+   VERBOSE: Removed rule for NetworkConnect.
+#>
+function Remove-SysmonRule
+{
+    [CmdletBinding(DefaultParameterSetName = 'Path')]
+    Param
+    (
+        # Path to XML config file.
+        [Parameter(Mandatory=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   ParameterSetName='Path',
+                   Position=0)]
+        [ValidateScript({Test-Path -Path $_})]
+        $Path,
+
+        # Path to XML config file.
+        [Parameter(Mandatory=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   ParameterSetName='LiteralPath',
+                   Position=0)]
+        [ValidateScript({Test-Path -Path $_})]
+        [Alias('PSPath')]
+        $LiteralPath,
+
+        # Event type to remove. It is case sensitive.
+        [Parameter(Mandatory=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=1)]
+        [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
+                     'ProcessTerminate', 'ImageLoad', 'DriverLoad',  IgnoreCase = $false)]
+        [string[]]
+        $EventType
+    )
+
+    Begin{}
+    Process
+    {
+        # Check if the file is a valid XML file and if not raise and error. 
+        try
+        {
+            switch($psCmdlet.ParameterSetName)
+            {
+                'Path'
+                {
+                    [xml]$Config = Get-Content -Path $Path
+                    $FileLocation = (Resolve-Path -Path $Path).Path
+                }
+
+                'LiteralPath' 
+                {
+                    [xml]$Config = Get-Content -LiteralPath $LiteralPath
+                    $FileLocation = (Resolve-Path -LiteralPath $LiteralPath).Path
+                }
+            }
+        }
+        catch [System.Management.Automation.PSInvalidCastException]
+        {
+            Write-Error -Message 'Specified file does not appear to be a XML file.'
+            return
+        }
+        
+        # Validate the XML file is a valid Sysmon file.
+        if ($Config.SelectSingleNode('//Sysmon') -eq $null)
+        {
+            Write-Error -Message 'XML file is not a valid Sysmon config file.'
+            return
+        }
+
+        $Rules = $config.SelectSingleNode('//Sysmon/Rules')
+
+        foreach($Type in $EventType)
+        {
+            $Rule = $Rules.SelectSingleNode("//Rules/$($Type)")
+            if ($Rule -ne $null)
+            {
+                [void]$Rule.ParentNode.RemoveChild($Rule)
+                Write-Verbose -Message "Removed rule for $($Type)."
+            }
+            else
+            {
+                Write-Warning -Message "Did not found a rule for $($Type)"
+            }
+        }
+        $config.Save($FileLocation)
+    }
+    End{}
+}
+
+
+
+
+
+###### Non-Public Functions ######
+function Get-RuleWithFilter($Rules)
+{
+    $RuleObjOptions = @{}
+
+    $RuleObjOptions['EventType'] = $Rules.Name
+    if ($Rules.default -eq $null -or $Rules.default -eq 'exclude')
+    {
+           $RuleObjOptions['DefaultAction'] = 'Exclude'
+    }
+    else
+    {
+        $RuleObjOptions['DefaultAction'] = 'Include'
+    }
+
+    # Process individual filters
+    $Nodes = $Rules.selectnodes('*')
+    if ($Nodes.count -eq 0)
+    {
+        $RuleObjOptions['Scope'] = 'All Events'
+    }
+    else
+    {
+        $RuleObjOptions['Scope'] = 'Filtered'
+        $Filters = @()
+        foreach ($Node in $Nodes)
+        {
+            $FilterObjProps = @{}
+            $FilterObjProps['EventField'] = $Node.Name
+            $FilterObjProps['Condition'] = &{if($Node.condition -eq $null){'is'}else{$Node.condition}}
+            $FilterObjProps['Value'] =  $Node.'#text'
+            $FilterObj = [pscustomobject]$FilterObjProps
+            $FilterObj.pstypenames.insert(0,'Sysmon.Rule.Filter')
+            $Filters += $FilterObj
+        }
+        $RuleObjOptions['Filters'] = $Filters
+    }
+
+    $RuleObj = [pscustomobject]$RuleObjOptions
+    $RuleObj.pstypenames.insert(0,'Sysmon.Rule')
+    $RuleObj
+}
+
+<#
+.Synopsis
    Creates a filter for an event field for an event type in a Sysmon XML configuration file.
 .DESCRIPTION
    Creates a filter for an event field for an event type in a Sysmon XML configuration file.
 .EXAMPLE
-   New-SysmonRuleFilter -Path .\pc_cofig.xml -EventType NetworkConnect -EventField image -Condition Is -Value 'iexplorer.exe' -Verbose
+   New-nRuleFilter -Path .\pc_cofig.xml -EventType NetworkConnect -EventField image -Condition Is -Value 'iexplorer.exe' -Verbose
     
     VERBOSE: No rule for NetworkConnect was found.
     VERBOSE: Creating rule for event type with default action if Exclude
@@ -733,7 +876,7 @@ function Set-SysmonRule
 
     Create a filter to capture all network connections from iexplorer.exe.
 #>
-function New-SysmonRuleFilter
+function New-RuleFilter
 {
     [CmdletBinding(DefaultParameterSetName = 'Path')]
     Param
@@ -799,13 +942,13 @@ function New-SysmonRuleFilter
                 'Path'
                 {
                     [xml]$Config = Get-Content -Path $Path
-                    $FileLocation = (Resolve-Path -Path $ConfigFile).Path
+                    $FileLocation = (Resolve-Path -Path $Path).Path
                 }
 
                 'LiteralPath' 
                 {
                     [xml]$Config = Get-Content -LiteralPath $LiteralPath
-                    $FileLocation = (Resolve-Path -LiteralPath $ConfigFile).Path
+                    $FileLocation = (Resolve-Path -LiteralPath $LiteralPath).Path
                 }
             }
         }
@@ -822,7 +965,7 @@ function New-SysmonRuleFilter
             return
         }
 
-        $Rules = $ConfXML.SelectSingleNode('//Sysmon/Rules')
+        $Rules = $Config.SelectSingleNode('//Sysmon/Rules')
 
         # Select the proper condition string.
         switch ($Condition)
@@ -853,7 +996,7 @@ function New-SysmonRuleFilter
         {
             Write-Verbose -Message "No rule for $($EventType) was found."
             Write-Verbose -Message 'Creating rule for event type with default action if Exclude'
-            $TypeElement = $ConfXML.CreateElement($EventType)
+            $TypeElement = $Config.CreateElement($EventType)
             [void]$Rules.AppendChild($TypeElement)
             $RuleData = $Rules.SelectSingleNode("//Rules/$($EventType)")
             Write-Verbose -Message 'Rule created succesfully'
@@ -864,336 +1007,14 @@ function New-SysmonRuleFilter
         foreach($val in $value)
         {
             Write-Verbose -Message "Creating filter for event filed $($EventField) with condition $($Condition) for value $($val)."
-            $FieldElement = $ConfXML.CreateElement($EventField)
+            $FieldElement = $Config.CreateElement($EventField)
             $Filter = $RuleData.AppendChild($FieldElement)
             $Filter.SetAttribute('condition',$Condition)
             $filter.InnerText = $val
         }
         Get-RuleWithFilter($RuleData)
 
-        $ConfXML.Save($FileLocation)
+        $Config.Save($FileLocation)
     }
     End{}
-}
-
-
-<#
-.Synopsis
-   Removes on or more rules from a Sysmon XML configuration file.
-.DESCRIPTION
-   Removes on or more rules from a Sysmon XML configuration file.
-.EXAMPLE
-   PS C:\> Remove-SysmonRule -Path .\pc_marketing.xml -EventType ImageLoad,NetworkConnect -Verbose
-   VERBOSE: Removed rule for ImageLoad.
-   VERBOSE: Removed rule for NetworkConnect.
-#>
-function Remove-SysmonRule
-{
-    [CmdletBinding(DefaultParameterSetName = 'Path')]
-    Param
-    (
-        # Path to XML config file.
-        [Parameter(Mandatory=$true,
-                   ValueFromPipelineByPropertyName=$true,
-                   ParameterSetName='Path',
-                   Position=0)]
-        [ValidateScript({Test-Path -Path $_})]
-        $Path,
-
-        # Path to XML config file.
-        [Parameter(Mandatory=$true,
-                   ValueFromPipelineByPropertyName=$true,
-                   ParameterSetName='LiteralPath',
-                   Position=0)]
-        [ValidateScript({Test-Path -Path $_})]
-        [Alias('PSPath')]
-        $LiteralPath,
-
-        # Event type to remove. It is case sensitive.
-        [Parameter(Mandatory=$true,
-                   ValueFromPipelineByPropertyName=$true,
-                   Position=1)]
-        [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
-                     'ProcessTerminate', 'ImageLoad', 'DriverLoad',  IgnoreCase = $false)]
-        [string[]]
-        $EventType
-    )
-
-    Begin{}
-    Process
-    {
-        # Check if the file is a valid XML file and if not raise and error. 
-        try
-        {
-            switch($psCmdlet.ParameterSetName)
-            {
-                'Path'
-                {
-                    [xml]$Config = Get-Content -Path $Path
-                    $FileLocation = (Resolve-Path -Path $ConfigFile).Path
-                }
-
-                'LiteralPath' 
-                {
-                    [xml]$Config = Get-Content -LiteralPath $LiteralPath
-                    $FileLocation = (Resolve-Path -LiteralPath $ConfigFile).Path
-                }
-            }
-        }
-        catch [System.Management.Automation.PSInvalidCastException]
-        {
-            Write-Error -Message 'Specified file does not appear to be a XML file.'
-            return
-        }
-        
-        # Validate the XML file is a valid Sysmon file.
-        if ($Config.SelectSingleNode('//Sysmon') -eq $null)
-        {
-            Write-Error -Message 'XML file is not a valid Sysmon config file.'
-            return
-        }
-
-        $Rules = $ConfXML.SelectSingleNode('//Sysmon/Rules')
-
-        foreach($Type in $EventType)
-        {
-            $Rule = $Rules.SelectSingleNode("//Rules/$($Type)")
-            if ($Rule -ne $null)
-            {
-                [void]$Rule.ParentNode.RemoveChild($Rule)
-                Write-Verbose -Message "Removed rule for $($Type)."
-            }
-            else
-            {
-                Write-Warning -Message "Did not found a rule for $($Type)"
-            }
-        }
-        $ConfXML.Save($FileLocation)
-    }
-    End{}
-}
-
-
-<#
-.Synopsis
-   Remove on or more filter from a rule in a Sysmon XML configuration file.
-.DESCRIPTION
-   Remove on or more filter from a rule in a Sysmon XML configuration file.
-.EXAMPLE
-   Remove-SysmonRuleFilter -Path .\pc_marketing.xml -EventType NetworkConnect -Condition Image -EventField Image -Value $images -Verbose
-   VERBOSE: Filter for field Image with condition Image and value of C:\Windows\System32\svchost.exe removed.
-   VERBOSE: Filter for field Image with condition Image and value of C:\Program Files (x86)\Internet Explorer\iexplore.exe removed.
-   VERBOSE: Filter for field Image with condition Image and value of C:\Program Files\Internet Explorer\iexplore.exe removed.
-   VERBOSE: Filter for field Image with condition Image and value of C:\Program Files (x86)\Google\Chrome\Application\chrome.exe removed.
-   VERBOSE: Filter for field Image with condition Image and value of C:\Program Files (x86)\PuTTY\putty.exe removed.
-   VERBOSE: Filter for field Image with condition Image and value of C:\Program Files (x86)\PuTTY\plink.exe removed.
-   VERBOSE: Filter for field Image with condition Image and value of C:\Program Files (x86)\PuTTY\pscp.exe removed.
-   VERBOSE: Filter for field Image with condition Image and value of C:\Program Files (x86)\PuTTY\psftp.exe removed.
-
-   EventType     : NetworkConnect
-   Scope         : All Events
-   DefaultAction : Exclude
-   Filters       :
-
-   Remove a series of filter where a list f values are saved in a array.
-#>
-function Remove-SysmonRuleFilter
-{
-    [CmdletBinding(DefaultParameterSetName = 'Path')]
-    Param
-    (
-        # Path to XML config file.
-        [Parameter(Mandatory=$true,
-                   ValueFromPipelineByPropertyName=$true,
-                   ParameterSetName='Path',
-                   Position=0)]
-        [ValidateScript({Test-Path -Path $_})]
-        $Path,
-
-        # Path to XML config file.
-        [Parameter(Mandatory=$true,
-                   ValueFromPipelineByPropertyName=$true,
-                   ParameterSetName='LiteralPath',
-                   Position=0)]
-        [ValidateScript({Test-Path -Path $_})]
-        [Alias('PSPath')]
-        $LiteralPath,
-
-        # Event type to update.
-        [Parameter(Mandatory=$true,
-                   ValueFromPipelineByPropertyName=$true,
-                   Position=1)]
-        [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
-                     'ProcessTerminate', 'ImageLoad', 'DriverLoad', IgnoreCase = $false)]
-        [string[]]
-        $EventType,
-
-        # Condition for filtering against and event field.
-        [Parameter(Mandatory=$true,
-                   ValueFromPipelineByPropertyName=$true,
-                   Position=2)]
-        [ValidateSet('Is', 'IsNot', 'Contains', 'Excludes', 'Image',
-                     'BeginWith', 'EndWith', 'LessThan', 'MoreThan')]
-        [string]
-        $Condition,
-
-        # Event field to filter on.
-        [Parameter(Mandatory=$true,
-                   ValueFromPipelineByPropertyName=$true,
-                   Position=3)]
-        [string]
-        $EventField,
-
-        # Value of Event Field to filter on.
-        [Parameter(Mandatory=$true,
-                   ValueFromPipelineByPropertyName=$true,
-                   Position=4)]
-        [string[]]
-        $Value
-    )
-
-    Begin{}
-    Process
-    {
-        # Check if the file is a valid XML file and if not raise and error. 
-        try
-        {
-            switch($psCmdlet.ParameterSetName)
-            {
-                'Path'
-                {
-                    [xml]$Config = Get-Content -Path $Path
-                    $FileLocation = (Resolve-Path -Path $ConfigFile).Path
-                }
-
-                'LiteralPath' 
-                {
-                    [xml]$Config = Get-Content -LiteralPath $LiteralPath
-                    $FileLocation = (Resolve-Path -LiteralPath $ConfigFile).Path
-                }
-            }
-        }
-        catch [System.Management.Automation.PSInvalidCastException]
-        {
-            Write-Error -Message 'Specified file does not appear to be a XML file.'
-            return
-        }
-        
-        # Validate the XML file is a valid Sysmon file.
-        if ($Config.SelectSingleNode('//Sysmon') -eq $null)
-        {
-            Write-Error -Message 'XML file is not a valid Sysmon config file.'
-            return
-        }
-
-        $Rules = $ConfXML.SelectSingleNode('//Sysmon/Rules')
-
-        # Select the proper condition string.
-        switch ($Condition)
-        {
-            'Is' {$ConditionString = 'is'}
-            'IsNot' {$ConditionString = 'is not'}
-            'Contains' {$ConditionString = 'contains'}
-            'Excludes' {$ConditionString = 'excludes'}
-            'Image' {$ConditionString = 'image'}
-            'BeginWith' {$ConditionString = 'begin with'}
-            'EndWith' {$ConditionString = 'end with'}
-            'LessThan' {$ConditionString = 'less than'}
-            'MoreThan' {$ConditionString = 'more than'}
-            Default {$ConditionString = 'is'}
-        }
-
-        # Check if the event type exists if not create it.
-        if ($Rules -eq '')
-        {
-            Write-Error -Message 'Rule element does not exist. This appears to not be a valid config file'
-            return
-        }
-        else
-        {
-            $EventRule = $Rules.SelectSingleNode("//Rules/$($EventType)")
-        }
-
-        if($EventRule -eq $null)
-        {
-            Write-Warning -Message "No rule for $($EventType) was found."
-            return
-        }
-        $Filters = $EventRule.SelectNodes('*')
-        if ($Filters.count -gt 0)
-        {
-            foreach($val in $Value)
-            {
-                foreach($Filter in $Filters)
-                {
-                    if ($Filter.Name -eq $EventField)
-                    {
-                        if (($Filter.condition -eq $null) -and ($Condition -eq 'is') -and ($Filter.'#text' -eq $val))
-                        {
-                            [void]$Filter.ParentNode.RemoveChild($Filter)
-                            Write-Verbose -Message "Filter for field $($EventField) with condition $($Condition) and value of $($val) removed."
-                        }
-                        elseif (($Filter.condition -eq $Condition) -and ($Filter.'#text' -eq $val))
-                        {
-                            [void]$Filter.ParentNode.RemoveChild($Filter)
-                            Write-Verbose -Message "Filter for field $($EventField) with condition $($Condition) and value of $($val) removed."
-                        }
-                    }
-                }
-            }
-            Get-RuleWithFilter($EventRule)
-        }
-        else
-        {
-            Write-Warning -Message "This event type has no filters configured."
-            return
-        }
-
-        $ConfXML.Save($FileLocation)
-    }
-    End{}
-}
-
-
-###### Non-Public Functions ######
-function Get-RuleWithFilter($Rules)
-{
-    $RuleObjOptions = @{}
-
-    $RuleObjOptions['EventType'] = $Rules.Name
-    if ($Rules.default -eq $null -or $Rules.default -eq 'exclude')
-    {
-           $RuleObjOptions['DefaultAction'] = 'Exclude'
-    }
-    else
-    {
-        $RuleObjOptions['DefaultAction'] = 'Include'
-    }
-
-    # Process individual filters
-    $Nodes = $Rules.selectnodes('*')
-    if ($Nodes.count -eq 0)
-    {
-        $RuleObjOptions['Scope'] = 'All Events'
-    }
-    else
-    {
-        $RuleObjOptions['Scope'] = 'Filtered'
-        $Filters = @()
-        foreach ($Node in $Nodes)
-        {
-            $FilterObjProps = @{}
-            $FilterObjProps['EventField'] = $Node.Name
-            $FilterObjProps['Condition'] = &{if($Node.condition -eq $null){'is'}else{$Node.condition}}
-            $FilterObjProps['Value'] =  $Node.'#text'
-            $FilterObj = [pscustomobject]$FilterObjProps
-            $FilterObj.pstypenames.insert(0,'Sysmon.Rule.Filter')
-            $Filters += $FilterObj
-        }
-        $RuleObjOptions['Filters'] = $Filters
-    }
-
-    $RuleObj = [pscustomobject]$RuleObjOptions
-    $RuleObj.pstypenames.insert(0,'Sysmon.Rule')
-    $RuleObj
 }
