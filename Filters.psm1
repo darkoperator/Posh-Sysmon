@@ -1,10 +1,4 @@
-﻿<#
-.Synopsis
-   Adds a new Sysmon Image Load Filter.
-.DESCRIPTION
-   Adds a new Sysmon Image Load Filter to a an
-   exiting Sysmon config file.
-#>
+﻿#  .ExternalHelp Filter.psm1-Help.xml
 function New-SysmonImageLoadFilter
 {
     [CmdletBinding(DefaultParameterSetName = 'Path')]
@@ -81,13 +75,7 @@ function New-SysmonImageLoadFilter
 }
 
 
-<#
-.Synopsis
-   Adds a new Sysmon Driver Load Filter.
-.DESCRIPTION
-   Adds a new Sysmon Driver Load Filter to a an
-   exiting Sysmon config file.
-#>
+#  .ExternalHelp Filter.psm1-Help.xml
 function New-SysmonDriverLoadFilter
 {
     [CmdletBinding(DefaultParameterSetName = 'Path')]
@@ -163,13 +151,7 @@ function New-SysmonDriverLoadFilter
 }
 
 
-<#
-.Synopsis
-   Adds a new Sysmon Network Connect Filter.
-.DESCRIPTION
-   Adds a new Sysmon Network Connect Filter to a an
-   exiting Sysmon config file.
-#>
+#  .ExternalHelp Filter.psm1-Help.xml
 function New-SysmonNetworkConnectFilter
 {
     [CmdletBinding(DefaultParameterSetName = 'Path')]
@@ -249,13 +231,7 @@ function New-SysmonNetworkConnectFilter
 }
 
 
-<#
-.Synopsis
-   Adds a new Sysmon File Create Filter.
-.DESCRIPTION
-   Adds a new Sysmon File Create Filter to a an
-   exiting Sysmon config file.
-#>
+#  .ExternalHelp Filter.psm1-Help.xml
 function New-SysmonFileCreateFilter
 {
     [CmdletBinding(DefaultParameterSetName = 'Path')]
@@ -332,13 +308,7 @@ function New-SysmonFileCreateFilter
 }
 
 
-<#
-.Synopsis
-   Adds a new Sysmon Process Create Filter.
-.DESCRIPTION
-   Adds a new Sysmon Process Create Filter to a an
-   exiting Sysmon config file.
-#>
+#  .ExternalHelp Filter.psm1-Help.xml
 function New-SysmonProcessCreateFilter
 {
     [CmdletBinding(DefaultParameterSetName = 'Path')]
@@ -417,13 +387,7 @@ function New-SysmonProcessCreateFilter
 }
 
 
-<#
-.Synopsis
-   Adds a new Sysmon Process Termination Filter.
-.DESCRIPTION
-   Adds a new Sysmon Process Termination Filter to a an
-   exiting Sysmon config file.
-#>
+#  .ExternalHelp Filter.psm1-Help.xml
 function New-SysmonProcessTerminateFilter
 {
     [CmdletBinding(DefaultParameterSetName = 'Path')]
@@ -497,29 +461,7 @@ function New-SysmonProcessTerminateFilter
     }
 }
 
-<#
-.Synopsis
-   Remove on or more filter from a rule in a Sysmon XML configuration file.
-.DESCRIPTION
-   Remove on or more filter from a rule in a Sysmon XML configuration file.
-.EXAMPLE
-   Remove-SysmonRuleFilter -Path .\pc_marketing.xml -EventType NetworkConnect -Condition Image -EventField Image -Value $images -Verbose
-   VERBOSE: Filter for field Image with condition Image and value of C:\Windows\System32\svchost.exe removed.
-   VERBOSE: Filter for field Image with condition Image and value of C:\Program Files (x86)\Internet Explorer\iexplore.exe removed.
-   VERBOSE: Filter for field Image with condition Image and value of C:\Program Files\Internet Explorer\iexplore.exe removed.
-   VERBOSE: Filter for field Image with condition Image and value of C:\Program Files (x86)\Google\Chrome\Application\chrome.exe removed.
-   VERBOSE: Filter for field Image with condition Image and value of C:\Program Files (x86)\PuTTY\putty.exe removed.
-   VERBOSE: Filter for field Image with condition Image and value of C:\Program Files (x86)\PuTTY\plink.exe removed.
-   VERBOSE: Filter for field Image with condition Image and value of C:\Program Files (x86)\PuTTY\pscp.exe removed.
-   VERBOSE: Filter for field Image with condition Image and value of C:\Program Files (x86)\PuTTY\psftp.exe removed.
-
-   EventType     : NetworkConnect
-   Scope         : All Events
-   DefaultAction : Exclude
-   Filters       :
-
-   Remove a series of filter where a list f values are saved in a array.
-#>
+#  .ExternalHelp Filter.psm1-Help.xml
 function Remove-SysmonRuleFilter
 {
     [CmdletBinding(DefaultParameterSetName = 'Path')]
@@ -679,7 +621,7 @@ function Remove-SysmonRuleFilter
     End{}
 }
 
-
+###### Helper Functions ######
 function Get-RuleWithFilter
 {
     Param

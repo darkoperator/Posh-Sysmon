@@ -1,21 +1,5 @@
 ﻿
-
-<#
-.Synopsis
-   Creates a new Sysmon XML configuration file.
-.DESCRIPTION
-   Creates a new Sysmon XML configuration file. Configuration options
-   and a descriptive comment can be given when generating the
-   XML config file.
-.EXAMPLE
-    New-SysmonConfiguration -ConfigFile .\pc_cofig.xml -HashingAlgorithm SHA1,IMPHASH -Network -ImageLoading -Comment "Config for helpdesk PCs." -Verbose 
-   VERBOSE: Enabling hashing algorithms : SHA1,IMPHASH
-   VERBOSE: Enabling network connection logging.
-   VERBOSE: Enabling image loading logging.
-   VERBOSE: Config file created as C:\\pc_cofig.xml
-
-   Create a configuration file that will log all network connction, image loading and sets a descriptive comment.
-#>
+#  .ExternalHelp Config.psm1-Help.xml
 function New-SysmonConfiguration
 {
     [CmdletBinding()]
@@ -130,20 +114,7 @@ function New-SysmonConfiguration
     }
 }
 
-
-<#
-.Synopsis
-   Gets the config options set on a Sysmon XML configuration file.
-.DESCRIPTION
-   Gets the config options set on a Sysmon XML configuration file
-   and their default values.
-.EXAMPLE
-   Get-SysmonConfigOptions -Path .\pc_cofig.xml -Verbose
-    Hashing      : SHA1,IMPHASH
-    Network      : Enabled
-    ImageLoading : Enabled
-    Comment      : Config for helpdesk PCs.
-#>
+#  .ExternalHelp Config.psm1-Help.xml
 function Get-SysmonConfigOption
 {
     [CmdletBinding(DefaultParameterSetName = 'Path')]
@@ -233,21 +204,7 @@ function Get-SysmonConfigOption
 }
 
 
-<#
-.Synopsis
-   Gets configured rules and their filters on a Sysmon XML configuration file.
-   config file.
-.DESCRIPTION
-   Gets configured rules and their filters on a Sysmon XML configuration file.
-   config file for each event type.
-.EXAMPLE
-    Get-SysmonConfigOptions -Path .\pc_cofig.xml -Verbose
-
-    Hashing      : SHA1,IMPHASH
-    Network      : Enabled
-    ImageLoading : Enabled
-    Comment      : Config for helpdesk PCs.
-#>
+#  .ExternalHelp Config.psm1-Help.xml
 function Get-SysmonRule
 {
     [CmdletBinding(DefaultParameterSetName = 'Path')]
@@ -335,37 +292,7 @@ function Get-SysmonRule
 }
 
 
-<#
-.Synopsis
-   Adds or modifyies existing config options in a Sysmon XML configuration file.
-   config file.
-.DESCRIPTION
-   Adds or modifyies existing config options in a Sysmon XML configuration file.
-   config file.
-.EXAMPLE
-    Get-SysmonConfigOption -Path .\pc_cofig.xml 
-
-    Hashing      : SHA1,IMPHASH
-    Network      : Enabled
-    ImageLoading : Enabled
-    Comment      : 
-
-
-    PS C:\> Set-SysmonConfigOption -Path .\pc_cofig.xml -ImageLoading Disable -Verbose
-    VERBOSE: Disabling Image Loading logging.
-    VERBOSE: Logging Image Loading has been disabled.
-    VERBOSE: Options have been set on C:\Users\Carlos Perez\Documents\Posh-Sysmon\pc_cofig.xml
-
-    PS C:\> Get-SysmonConfigOption -Path .\pc_cofig.xml 
-
-    Hashing      : SHA1,IMPHASH
-    Network      : Enabled
-    ImageLoading : Disabled
-    Comment      : 
-
-    Disable image loading logging on the config file.
-
-#>
+#  .ExternalHelp Config.psm1-Help.xml
 function Set-SysmonConfigOption
 {
     [CmdletBinding(DefaultParameterSetName = 'Path')]
@@ -574,39 +501,7 @@ function Set-SysmonConfigOption
 }
 
 
-<#
-.Synopsis
-   Creates a Rule and sets its default action in a Sysmon configuration XML file.
-.DESCRIPTION
-   Creates a rules for a specified Event Type and sets the default action 
-   for the rule and filters under it. Ir a rule alreade exists it udates 
-   the default action taken by a event type rule if one aready 
-   present. The default is exclude. This default is set for event type 
-   and affects all filters under it.
-.EXAMPLE
-    Get-GetSysmonRule -Path .\pc_cofig.xml -EventType NetworkConnect
-    
-    
-     EventType     : NetworkConnect
-     Scope         : Filtered
-     DefaultAction : Exclude
-     Filters       : {@{EventField=image; Condition=Is; Value=iexplorer.exe}}
-
-    PS C:\> Set-SysmonRulen -Path .\pc_cofig.xml -EventType NetworkConnect -Action Include -Verbose
-    VERBOSE: Setting as default action for NetworkConnect the action of Include.
-    VERBOSE: Action has been set.
-
-    PS C:\> Get-GetSysmonRule -Path .\pc_cofig.xml -EventType NetworkConnect
-
-
-    EventType     : NetworkConnect
-    Scope         : Filtered
-    DefaultAction : Include
-    Filters       : {@{EventField=image; Condition=Is; Value=iexplorer.exe}}
-
-   
-   Change default rule action causing the filter to ignore all traffic from iexplorer.exe.
-#>
+#  .ExternalHelp Config.psm1-Help.xml
 function Set-SysmonRule
 {
     [CmdletBinding(DefaultParameterSetName = 'Path')]
@@ -712,16 +607,7 @@ function Set-SysmonRule
 }
 
 
-<#
-.Synopsis
-   Removes on or more rules from a Sysmon XML configuration file.
-.DESCRIPTION
-   Removes on or more rules from a Sysmon XML configuration file.
-.EXAMPLE
-   PS C:\> Remove-SysmonRule -Path .\pc_marketing.xml -EventType ImageLoad,NetworkConnect -Verbose
-   VERBOSE: Removed rule for ImageLoad.
-   VERBOSE: Removed rule for NetworkConnect.
-#>
+#  .ExternalHelp Config.psm1-Help.xml
 function Remove-SysmonRule
 {
     [CmdletBinding(DefaultParameterSetName = 'Path')]
@@ -807,3 +693,96 @@ function Remove-SysmonRule
     }
     End{}
 }
+
+
+###### Helper Functions ######
+function Get-RuleWithFilter
+{
+    Param
+    (
+        [Parameter(Mandatory=$true)]
+        $Rules
+    )
+    $RuleObjOptions = @{}
+
+    $RuleObjOptions['EventType'] = $Rules.Name
+    if ($Rules.default -eq $null -or $Rules.default -eq 'exclude')
+    {
+           $RuleObjOptions['DefaultAction'] = 'Exclude'
+    }
+    else
+    {
+        $RuleObjOptions['DefaultAction'] = 'Include'
+    }
+
+    # Process individual filters
+    $Nodes = $Rules.selectnodes('*')
+    if ($Nodes.count -eq 0)
+    {
+        $RuleObjOptions['Scope'] = 'All Events'
+    }
+    else
+    {
+        $RuleObjOptions['Scope'] = 'Filtered'
+        $Filters = @()
+        foreach ($Node in $Nodes)
+        {
+            $FilterObjProps = @{}
+            $FilterObjProps['EventField'] = $Node.Name
+            $FilterObjProps['Condition'] = &{if($Node.condition -eq $null){'is'}else{$Node.condition}}
+            $FilterObjProps['Value'] =  $Node.'#text'
+            $FilterObj = [pscustomobject]$FilterObjProps
+            $FilterObj.pstypenames.insert(0,'Sysmon.Rule.Filter')
+            $Filters += $FilterObj
+        }
+        $RuleObjOptions['Filters'] = $Filters
+    }
+
+    $RuleObj = [pscustomobject]$RuleObjOptions
+    $RuleObj.pstypenames.insert(0,'Sysmon.Rule')
+    $RuleObj
+}
+
+
+<#
+.Synopsis
+   Returns a properly cased EventType Name string for Sysmon.
+.DESCRIPTION
+   Returns a properly cased EventType Name string for Sysmon.
+.EXAMPLE
+   Get-EvenTypeCasedString -EventType driverload
+   DriverLoad
+
+#>
+function Get-EvenTypeCasedString
+{
+    [CmdletBinding()]
+    [OutputType([string])]
+    Param
+    (
+        # EventType name that we will look the proper case for.
+        [Parameter(Mandatory=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=0)]
+        [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
+                     'ProcessTerminate', 'ImageLoad', 'DriverLoad')]
+        $EventType
+    )
+
+    Begin{}
+    Process
+    {
+        switch ($EventType)
+        {
+            'NetworkConnect' {'NetworkConnect'}
+            'ProcessCreate' {'ProcessCreate'}
+            'FileCreateTime' {'FileCreateTime'}
+            'ProcessTerminate' {'ProcessTerminate'}
+            'ImageLoad' {'ImageLoad'}
+            'DriverLoad' {'DriverLoad'}
+        }
+    }
+    End{}
+}
+
+Export-ModuleMember -Function '*-sysmon*'
