@@ -1,12 +1,9 @@
 ﻿<#
 .Synopsis
-   Short description
+   Adds a new Sysmon Image Load Filter.
 .DESCRIPTION
-   Long description
-.EXAMPLE
-   Example of how to use this cmdlet
-.EXAMPLE
-   Another example of how to use this cmdlet
+   Adds a new Sysmon Image Load Filter to a an
+   exiting Sysmon config file.
 #>
 function New-SysmonImageLoadFilter
 {
@@ -62,19 +59,7 @@ function New-SysmonImageLoadFilter
     }
     Process
     {
-        # Select the proper cased sting for the event field.
-        switch ($EventField)
-        {
-            'UtcTime' {$FieldString = 'UtcTime'}
-            'ProcessGuid'{$FieldString = 'ProcessGuid'} 
-            'ProcessId' {$FieldString = 'ProcessId'}
-            'Image' {$FieldString = 'Image'} 
-            'ImageLoaded' {$FieldString = 'ImageLoaded'} 
-            'HashType' {$FieldString = 'HashType'}
-            'Hash' {$FieldString = 'Hash'}
-            'Signed' {$FieldString = 'Signed'} 
-            'Signature' {$FieldString = 'Signature'}
-        }
+        $FieldString = Get-EvenFieldCasedString -EventField $EventField
 
         switch($psCmdlet.ParameterSetName)
         {
@@ -98,13 +83,10 @@ function New-SysmonImageLoadFilter
 
 <#
 .Synopsis
-   Short description
+   Adds a new Sysmon Driver Load Filter.
 .DESCRIPTION
-   Long description
-.EXAMPLE
-   Example of how to use this cmdlet
-.EXAMPLE
-   Another example of how to use this cmdlet
+   Adds a new Sysmon Driver Load Filter to a an
+   exiting Sysmon config file.
 #>
 function New-SysmonDriverLoadFilter
 {
@@ -159,16 +141,7 @@ function New-SysmonDriverLoadFilter
     }
     Process
     {
-        # Select the proper cased sting for the event field.
-        switch ($EventField)
-        {
-            'UtcTime' {$FieldString = 'UtcTime'}
-            'ImageLoaded'{$FieldString = 'ImageLoaded'} 
-            'HashType' {$FieldString = 'HashType'}
-            'Hash' {$FieldString = 'Hash'} 
-            'Signed' {$FieldString = 'Signed'} 
-            'Signature' {$FieldString = 'Signature'}
-        }
+        $FieldString = Get-EvenFieldCasedString -EventField $EventField
 
         switch($psCmdlet.ParameterSetName)
         {
@@ -192,13 +165,10 @@ function New-SysmonDriverLoadFilter
 
 <#
 .Synopsis
-   Short description
+   Adds a new Sysmon Network Connect Filter.
 .DESCRIPTION
-   Long description
-.EXAMPLE
-   Example of how to use this cmdlet
-.EXAMPLE
-   Another example of how to use this cmdlet
+   Adds a new Sysmon Network Connect Filter to a an
+   exiting Sysmon config file.
 #>
 function New-SysmonNetworkConnectFilter
 {
@@ -257,27 +227,7 @@ function New-SysmonNetworkConnectFilter
     }
     Process
     {
-        # Select the proper cased sting for the event field.
-        switch ($EventField)
-        {
-            'UtcTime' {$FieldString = 'UtcTime'}
-            'ProcessGuid'{$FieldString = 'ProcessGuid'} 
-            'ProcessId' {$FieldString = 'ProcessId'}
-            'Image' {$FieldString = 'Image'} 
-            'User' {$FieldString = 'User'} 
-            'Protocol' {$FieldString = 'Protocol'}
-            'Initiated' {$FieldString = 'Initiated'}
-            'SourceIsIpv6'{$FieldString = 'SourceIsIpv6'} 
-            'SourceIp' {$FieldString = 'SourceIp'}
-            'SourceHostname' {$FieldString = 'SourceHostname'} 
-            'SourcePort' {$FieldString = 'SourcePort'} 
-            'SourcePortName' {$FieldString = 'SourcePortName'}
-            'DestinationIsIpv6' {$FieldString = 'DestinationIsIpv6'}
-            'DestinationIp'{$FieldString = 'DestinationIp'} 
-            'DestinationHostname' {$FieldString = 'DestinationHostname'}
-            'DestinationPort' {$FieldString = 'DestinationPortName'} 
-            'DestinationPortName' {$FieldString = 'Signed'} 
-        }
+        $FieldString = Get-EvenFieldCasedString -EventField $EventField
 
         switch($psCmdlet.ParameterSetName)
         {
@@ -301,13 +251,10 @@ function New-SysmonNetworkConnectFilter
 
 <#
 .Synopsis
-   Short description
+   Adds a new Sysmon File Create Filter.
 .DESCRIPTION
-   Long description
-.EXAMPLE
-   Example of how to use this cmdlet
-.EXAMPLE
-   Another example of how to use this cmdlet
+   Adds a new Sysmon File Create Filter to a an
+   exiting Sysmon config file.
 #>
 function New-SysmonFileCreateFilter
 {
@@ -363,16 +310,7 @@ function New-SysmonFileCreateFilter
     }
     Process
     {
-        # Select the proper cased sting for the event field.
-        switch ($EventField)
-        {
-            'UtcTime' {$FieldString = 'UtcTime'}
-            'ProcessGuid'{$FieldString = 'ProcessGuid'} 
-            'ProcessId' {$FieldString = 'ProcessId'}
-            'TargetFilename' {$FieldString = 'TargetFilename'} 
-            'CreationUtcTime' {$FieldString = 'CreationUtcTime'} 
-            'PreviousCreationUtcTime' {$FieldString = 'PreviousCreationUtcTime'}
-        }
+        $FieldString = Get-EvenFieldCasedString -EventField $EventField
 
         switch($psCmdlet.ParameterSetName)
         {
@@ -396,13 +334,10 @@ function New-SysmonFileCreateFilter
 
 <#
 .Synopsis
-   Short description
+   Adds a new Sysmon Process Create Filter.
 .DESCRIPTION
-   Long description
-.EXAMPLE
-   Example of how to use this cmdlet
-.EXAMPLE
-   Another example of how to use this cmdlet
+   Adds a new Sysmon Process Create Filter to a an
+   exiting Sysmon config file.
 #>
 function New-SysmonProcessCreateFilter
 {
@@ -460,25 +395,7 @@ function New-SysmonProcessCreateFilter
     }
     Process
     {
-        # Select the proper cased sting for the event field.
-        switch ($EventField)
-        {
-            'UtcTime' {$FieldString = 'UtcTime'}
-            'ProcessGuid'{$FieldString = 'ProcessGuid'} 
-            'ProcessId' {$FieldString = 'ProcessId'}
-            'Image' {$FieldString = 'Image'} 
-            'CommandLine' {$FieldString = 'CommandLine'} 
-            'LogonGuid' {$FieldString = 'LogonGuid'}
-            'LogonId' {$FieldString = 'LogonId'}
-            'TerminalSessionId'{$FieldString = 'TerminalSessionId'} 
-            'IntegrityLevel' {$FieldString = 'IntegrityLevel'}
-            'HashType' {$FieldString = 'HashType'} 
-            'Hash' {$FieldString = 'Hash'} 
-            'ParentProcessGuid' {$FieldString = 'ParentProcessGuid'}
-            'ParentProcessId' {$FieldString = 'ParentProcessId'} 
-            'ParentImage' {$FieldString = 'ParentImage'} 
-            'ParentCommandLine' {$FieldString = 'ParentCommandLine'}
-        }
+        $FieldString = Get-EvenFieldCasedString -EventField $EventField
 
         switch($psCmdlet.ParameterSetName)
         {
@@ -502,13 +419,10 @@ function New-SysmonProcessCreateFilter
 
 <#
 .Synopsis
-   Short description
+   Adds a new Sysmon Process Termination Filter.
 .DESCRIPTION
-   Long description
-.EXAMPLE
-   Example of how to use this cmdlet
-.EXAMPLE
-   Another example of how to use this cmdlet
+   Adds a new Sysmon Process Termination Filter to a an
+   exiting Sysmon config file.
 #>
 function New-SysmonProcessTerminateFilter
 {
@@ -562,13 +476,7 @@ function New-SysmonProcessTerminateFilter
     }
     Process
     {
-        # Select the proper cased sting for the event field.
-        switch ($EventField)
-        {
-            'UtcTime' {$FieldString = 'UtcTime'}
-            'ProcessGuid'{$FieldString = 'ProcessGuid'} 
-            'ProcessId' {$FieldString = 'ProcessId'}
-        }
+       $FieldString = Get-EvenFieldCasedString -EventField $EventField
 
         switch($psCmdlet.ParameterSetName)
         {
@@ -639,7 +547,7 @@ function Remove-SysmonRuleFilter
                    ValueFromPipelineByPropertyName=$true,
                    Position=1)]
         [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
-                     'ProcessTerminate', 'ImageLoad', 'DriverLoad', IgnoreCase = $false)]
+                     'ProcessTerminate', 'ImageLoad', 'DriverLoad')]
         [string[]]
         $EventType,
 
@@ -726,12 +634,14 @@ function Remove-SysmonRuleFilter
         }
         else
         {
-            $EventRule = $Rules.SelectSingleNode("//Rules/$($EventType)")
+            $EvtType = Get-EvenTypeCasedString -EventType $EventType
+
+            $EventRule = $Rules.SelectSingleNode("//Rules/$($EvtType)")
         }
 
         if($EventRule -eq $null)
         {
-            Write-Warning -Message "No rule for $($EventType) was found."
+            Write-Warning -Message "No rule for $($EvtType) was found."
             return
         }
         $Filters = $EventRule.SelectNodes('*')

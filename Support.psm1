@@ -1,7 +1,7 @@
 ﻿
 function Get-RuleWithFilter
 {
-    Parama
+    Param
     (
         [Parameter(Mandatory=$true)]
         $Rules
