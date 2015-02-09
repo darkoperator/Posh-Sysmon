@@ -1,257 +1,79 @@
 ﻿# TODO:
-# * Add help for the new filter functions.
 # * Migrate help from comment based to XML based.
 # * Add help and param block to Get-RuleWithFilter
 
-<#
-.Synopsis
-   Creates a new Sysmon XML configuration file.
-.DESCRIPTION
-   Creates a new Sysmon XML configuration file. Configuration options
-   and a descriptive comment can be given when generating the
-   XML config file.
-.EXAMPLE
-    New-SysmonConfiguration -ConfigFile .\pc_cofig.xml -HashingAlgorithm SHA1,IMPHASH -Network -ImageLoading -Comment "Config for helpdesk PCs." -Verbose 
-   VERBOSE: Enabling hashing algorithms : SHA1,IMPHASH
-   VERBOSE: Enabling network connection logging.
-   VERBOSE: Enabling image loading logging.
-   VERBOSE: Config file created as C:\\pc_cofig.xml
 
-   Create a configuration file that will log all network connction, image loading and sets a descriptive comment.
-#>
-function New-SysmonConfiguration
+function Get-RuleWithFilter
 {
-    [CmdletBinding()]
     Param
     (
-        # Path to write XML config file.
-        [Parameter(Mandatory=$true,
-                   ValueFromPipelineByPropertyName=$true,
-                   Position=0)]
-        [String]
-        $Path,
-
-        # Specify one or more hash algorithms used for image identification 
-        [Parameter(Mandatory=$true,
-                   ValueFromPipelineByPropertyName=$true,
-                   Position=1)]
-        [ValidateSet('ALL', 'MD5', 'SHA1', 'SHA256', 'IMPHASH')]
-        [string[]]
-        $HashingAlgorithm,
-
-        
-
-        # Log Network Connections
-        [Parameter(Mandatory=$False,
-                   ValueFromPipelineByPropertyName=$true,
-                   Position=2)]
-        [Switch]
-        $Network,
-
-        # Log process loading of modules.
-        [Parameter(Mandatory=$False,
-                   ValueFromPipelineByPropertyName=$true,
-                   Position=3)]
-        [Switch]
-        $ImageLoading,
-
-        # Comment for purpose of the configuration file.
-        [Parameter(Mandatory=$False,
-                   ValueFromPipelineByPropertyName=$true,
-                   Position=4)]
-        [String]
-        $Comment
+        [Parameter(Mandatory=$true)]
+        $Rules
     )
+    $RuleObjOptions = @{}
 
-    Begin{}
-    Process
+    $RuleObjOptions['EventType'] = $Rules.Name
+    if ($Rules.default -eq $null -or $Rules.default -eq 'exclude')
     {
-        if ($HashingAlgorithm -contains 'ALL')
-        {
-            $Hash = '*'
-        }
-        else
-        {
-            $Hash = $HashingAlgorithm -join ','
-        }
-
-        $Config = ($ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($Path))
-       
-        # get an XMLTextWriter to create the XML
-        
-        $XmlWriter = New-Object System.XMl.XmlTextWriter($Config,$Null)
- 
-        # choose a pretty formatting:
-        $xmlWriter.Formatting = 'Indented'
-        $xmlWriter.Indentation = 1
- 
-        # write the header
-        if ($Comment)
-        {
-            $xmlWriter.WriteComment($Comment)
-        }
-        $xmlWriter.WriteStartElement('Sysmon')
-        
-        $XmlWriter.WriteAttributeString('schemaversion', '1.0')
-        $xmlWriter.WriteStartElement('Configuration')
-
-        Write-Verbose -Message "Enabling hashing algorithms : $($Hash)"
-        $xmlWriter.WriteElementString('Hashing',$Hash)
-        
-        if ($Network)
-        {
-            Write-Verbose -Message 'Enabling network connection logging.'
-            $xmlWriter.WriteStartElement('Network')
-            $xmlWriter.WriteFullEndElement()
-        }
-
-        if ($ImageLoading)
-        {
-            Write-Verbose -Message 'Enabling image loading loggong.'
-            $xmlWriter.WriteStartElement('ImageLoading ')
-            $xmlWriter.WriteFullEndElement()
-        }
-        
-        # Configuration
-        $xmlWriter.WriteEndElement()
-
-        # Create empty rule section.
-        $xmlWriter.WriteStartElement('Rules')
-        $xmlWriter.WriteFullEndElement()
-
-        # Sysmon
-        $xmlWriter.WriteEndElement()
-
-        # finalize the document:
-        #$xmlWriter.WriteEndDocument()
-        $xmlWriter.Flush()
-        $xmlWriter.Close()
-        Write-Verbose -Message "Config file created as $($Config)"
+           $RuleObjOptions['DefaultAction'] = 'Exclude'
     }
-    End
+    else
     {
+        $RuleObjOptions['DefaultAction'] = 'Include'
     }
+
+    # Process individual filters
+    $Nodes = $Rules.selectnodes('*')
+    if ($Nodes.count -eq 0)
+    {
+        $RuleObjOptions['Scope'] = 'All Events'
+    }
+    else
+    {
+        $RuleObjOptions['Scope'] = 'Filtered'
+        $Filters = @()
+        foreach ($Node in $Nodes)
+        {
+            $FilterObjProps = @{}
+            $FilterObjProps['EventField'] = $Node.Name
+            $FilterObjProps['Condition'] = &{if($Node.condition -eq $null){'is'}else{$Node.condition}}
+            $FilterObjProps['Value'] =  $Node.'#text'
+            $FilterObj = [pscustomobject]$FilterObjProps
+            $FilterObj.pstypenames.insert(0,'Sysmon.Rule.Filter')
+            $Filters += $FilterObj
+        }
+        $RuleObjOptions['Filters'] = $Filters
+    }
+
+    $RuleObj = [pscustomobject]$RuleObjOptions
+    $RuleObj.pstypenames.insert(0,'Sysmon.Rule')
+    $RuleObj
 }
-
 
 <#
 .Synopsis
-   Gets the config options set on a Sysmon XML configuration file.
+   Creates a filter for an event field for an event type in a Sysmon XML configuration file.
 .DESCRIPTION
-   Gets the config options set on a Sysmon XML configuration file
-   and their default values.
+   Creates a filter for an event field for an event type in a Sysmon XML configuration file.
 .EXAMPLE
-   Get-SysmonConfigOptions -Path .\pc_cofig.xml -Verbose
-    Hashing      : SHA1,IMPHASH
-    Network      : Enabled
-    ImageLoading : Enabled
-    Comment      : Config for helpdesk PCs.
+   New-nRuleFilter -Path .\pc_cofig.xml -EventType NetworkConnect -EventField image -Condition Is -Value 'iexplorer.exe' -Verbose
+    
+    VERBOSE: No rule for NetworkConnect was found.
+    VERBOSE: Creating rule for event type with default action if Exclude
+    VERBOSE: Rule created succesfully
+
+    C:\PS>Get-GetSysmonRules -Path .\pc_cofig.xml -EventType NetworkConnect
+
+
+    EventType     : NetworkConnect
+    Scope         : Filtered
+    DefaultAction : Exclude
+    Filters       : {@{EventField=image; Condition=Is; Value=iexplorer.exe}}
+
+
+    Create a filter to capture all network connections from iexplorer.exe.
 #>
-function Get-SysmonConfigOption
-{
-    [CmdletBinding(DefaultParameterSetName = 'Path')]
-    Param
-    (
-        # Path to XML config file.
-        [Parameter(Mandatory=$true,
-                   ValueFromPipelineByPropertyName=$true,
-                   ParameterSetName='Path',
-                   Position=0)]
-        [ValidateScript({Test-Path -Path $_})]
-        $Path,
-
-        # Path to XML config file.
-        [Parameter(Mandatory=$true,
-                   ValueFromPipelineByPropertyName=$true,
-                   ParameterSetName='LiteralPath',
-                   Position=0)]
-        [ValidateScript({Test-Path -Path $_})]
-        [Alias('PSPath')]
-        $LiteralPath
-    )
-
-    Begin{}
-    Process
-    {
-        # Check if the file is a valid XML file and if not raise and error. 
-        try
-        {
-            switch($psCmdlet.ParameterSetName)
-            {
-                'Path'        {[xml]$Config = Get-Content -Path $Path}
-                'LiteralPath' {[xml]$Config = Get-Content -LiteralPath $LiteralPath}
-            }
-        }
-        catch [System.Management.Automation.PSInvalidCastException]
-        {
-            Write-Error -Message 'Specified file does not appear to be a XML file.'
-            return
-        }
-        
-        # Validate the XML file is a valid Sysmon file.
-        if ($Config.SelectSingleNode('//Sysmon') -eq $null)
-        {
-            Write-Error -Message 'XML file is not a valid Sysmon config file.'
-            return
-        }
-
-        $ObjOptions = @{}
-
-        if ($Config.Sysmon.Configuration.SelectSingleNode('//Configuration/Hashing'))
-        {
-            $ObjOptions['Hashing'] = $config.Sysmon.Configuration.Hashing
-        }
-        else
-        {
-            $ObjOptions['Hashing'] = ''   
-        }
-
-        # Check if network traffic is being logged.
-        if ($Config.Sysmon.Configuration.SelectSingleNode('//Configuration/Network'))
-        {
-            $ObjOptions['Network'] = 'Enabled'
-        }
-        else
-        {
-            $ObjOptions['Network'] = 'Disabled'   
-        }
-
-        # Check if image loading is being logged.
-        if ($Config.Sysmon.Configuration.SelectSingleNode('//Configuration/ImageLoading'))
-        {
-            $ObjOptions['ImageLoading'] = 'Enabled'
-        }
-        else
-        {
-            $ObjOptions['ImageLoading'] = 'Disabled'   
-        }
-
-        $ObjOptions['Comment'] = $Config.'#comment'   
-        $ConfigObj = [pscustomobject]$ObjOptions
-        $ConfigObj.pstypenames.insert(0,'Sysmon.ConfigOption')
-        $ConfigObj
-
-    }
-    End{}
-}
-
-
-<#
-.Synopsis
-   Gets configured rules and their filters on a Sysmon XML configuration file.
-   config file.
-.DESCRIPTION
-   Gets configured rules and their filters on a Sysmon XML configuration file.
-   config file for each event type.
-.EXAMPLE
-    Get-SysmonConfigOptions -Path .\pc_cofig.xml -Verbose
-
-    Hashing      : SHA1,IMPHASH
-    Network      : Enabled
-    ImageLoading : Enabled
-    Comment      : Config for helpdesk PCs.
-#>
-function Get-SysmonRule
+function New-RuleFilter
 {
     [CmdletBinding(DefaultParameterSetName = 'Path')]
     Param
@@ -273,154 +95,37 @@ function Get-SysmonRule
         [Alias('PSPath')]
         $LiteralPath,
 
-        # Event type to parse rules for.
-        [Parameter(Mandatory=$false,
-                   ValueFromPipelineByPropertyName=$true,
-                   Position=1)]
-        [ValidateSet('ALL', 'NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
-                     'ProcessTerminate', 'ImageLoad', 'DriverLoad')]
-        [string[]]
-        $EventType = @('ALL')
-    )
-
-    Begin{}
-    Process
-    {
-        # Check if the file is a valid XML file and if not raise and error. 
-        try
-        {
-            switch($psCmdlet.ParameterSetName)
-            {
-                'Path'        {[xml]$Config = Get-Content -Path $Path}
-                'LiteralPath' {[xml]$Config = Get-Content -LiteralPath $LiteralPath}
-            }
-        }
-        catch [System.Management.Automation.PSInvalidCastException]
-        {
-            Write-Error -Message 'Specified file does not appear to be a XML file.'
-            return
-        }
-        
-        # Validate the XML file is a valid Sysmon file.
-        if ($Config.SelectSingleNode('//Sysmon') -eq $null)
-        {
-            Write-Error -Message 'XML file is not a valid Sysmon config file.'
-            return
-        }
-
-
-        # Collect all individual rules if they exist.
-        $Rules = $Config.Sysmon.Rules
-
-        if ($EventType -contains 'ALL')
-        {
-            $TypesToParse = @('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
-                              'ProcessTerminate', 'ImageLoad', 'DriverLoad')
-        }
-        else
-        {
-            $TypesToParse = $EventType
-        }
-
-        foreach($Type in $TypesToParse)
-        {
-            $EvtType = Get-EvenTypeCasedString -EventType $Type
-            $RuleData = $Rules.SelectNodes("//Rules/$($EvtType)")
-            if($RuleData -ne $null)
-            {
-                Write-Verbose -Message "$($EvtType) Rule Found."
-                Get-RuleWithFilter($RuleData)
-            }
-
-        }
-    }
-    End{}
-}
-
-
-<#
-.Synopsis
-   Adds or modifyies existing config options in a Sysmon XML configuration file.
-   config file.
-.DESCRIPTION
-   Adds or modifyies existing config options in a Sysmon XML configuration file.
-   config file.
-.EXAMPLE
-    Get-SysmonConfigOption -Path .\pc_cofig.xml 
-
-    Hashing      : SHA1,IMPHASH
-    Network      : Enabled
-    ImageLoading : Enabled
-    Comment      : 
-
-
-    PS C:\> Set-SysmonConfigOption -Path .\pc_cofig.xml -ImageLoading Disable -Verbose
-    VERBOSE: Disabling Image Loading logging.
-    VERBOSE: Logging Image Loading has been disabled.
-    VERBOSE: Options have been set on C:\Users\Carlos Perez\Documents\Posh-Sysmon\pc_cofig.xml
-
-    PS C:\> Get-SysmonConfigOption -Path .\pc_cofig.xml 
-
-    Hashing      : SHA1,IMPHASH
-    Network      : Enabled
-    ImageLoading : Disabled
-    Comment      : 
-
-    Disable image loading logging on the config file.
-
-#>
-function Set-SysmonConfigOption
-{
-    [CmdletBinding(DefaultParameterSetName = 'Path')]
-    Param
-    (
-        # Path to XML config file.
+        # Event type to create filter for.
         [Parameter(Mandatory=$true,
                    ValueFromPipelineByPropertyName=$true,
-                   ParameterSetName='Path',
-                   Position=0)]
-        [ValidateScript({Test-Path -Path $_})]
-        $Path,
-
-        # Path to XML config file.
-        [Parameter(Mandatory=$true,
-                   ValueFromPipelineByPropertyName=$true,
-                   ParameterSetName='LiteralPath',
-                   Position=0)]
-        [ValidateScript({Test-Path -Path $_})]
-        [Alias('PSPath')]
-        $LiteralPath,
-
-        # Specify one or more hash algorithms used for image identification 
-        [Parameter(Mandatory=$false,
-                   ValueFromPipelineByPropertyName=$true,
                    Position=1)]
-        [ValidateSet('ALL', 'MD5', 'SHA1', 'SHA256', 'IMPHASH')]
-        [string[]]
-        $HashingAlgorithm,
+        [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
+                     'ProcessTerminate', 'ImageLoad', 'DriverLoad', IgnoreCase = $false)]
+        [string]
+        $EventType,
 
-        # Log Network Connections
-        [Parameter(Mandatory=$False,
+        # Condition for filtering against and event field.
+        [Parameter(Mandatory=$true,
                    ValueFromPipelineByPropertyName=$true,
                    Position=2)]
-        [ValidateSet('Enable', 'Disable')]
+        [ValidateSet('Is', 'IsNot', 'Contains', 'Excludes', 'Image',
+                     'BeginWith', 'EndWith', 'LessThan', 'MoreThan')]
         [string]
-        $Network,
+        $Condition,
 
-        # Log process loading of modules.
-        [Parameter(Mandatory=$False,
+        # Event field to filter on.
+        [Parameter(Mandatory=$true,
                    ValueFromPipelineByPropertyName=$true,
                    Position=3)]
-        [ValidateSet('Enable', 'Disable')]
         [string]
-        $ImageLoading,
+        $EventField,
 
-        # Comment for purpose of the configuration file.
-        [Parameter(Mandatory=$False,
+        # Value of Event Field to filter on.
+        [Parameter(Mandatory=$true,
                    ValueFromPipelineByPropertyName=$true,
                    Position=4)]
-        [String]
-        $Comment = $null
+        [string[]]
+        $Value
     )
 
     Begin{}
@@ -456,357 +161,181 @@ function Set-SysmonConfigOption
             Write-Error -Message 'XML file is not a valid Sysmon config file.'
             return
         }
-        
 
-        # Update hashing algorithm option if selected.
-        if ($HashingAlgorithm -ne $null)
+        $Rules = $Config.SelectSingleNode('//Sysmon/Rules')
+
+        # Select the proper condition string.
+        switch ($Condition)
         {
-            Write-Verbose -Message 'Updating Hashing option.'
-            if ($HashingAlgorithm -contains 'ALL')
-            {
-                $Hash = '*'
-            }
-            else
-            {
-                $Hash = $HashingAlgorithm -join ','
-            }
-
-            # Check if Hashing Alorithm node exists.
-            if($Config.SelectSingleNode('//Sysmon/Configuration/Hashing') -ne $null)
-            {
-                $Config.Sysmon.Configuration.Hashing = $Hash    
-            }
-            else
-            {
-                $HashElement = $Config.CreateElement('Hashing')
-                [void]$Config.Sysmon.Configuration.AppendChild($HashElement)
-                $Config.Sysmon.Configuration.Hashing = $Hash 
-            }
-            Write-Verbose -Message 'Hashing option has been updated.'
+            'Is' {$ConditionString = 'is'}
+            'IsNot' {$ConditionString = 'is not'}
+            'Contains' {$ConditionString = 'contains'}
+            'Excludes' {$ConditionString = 'excludes'}
+            'Image' {$ConditionString = 'image'}
+            'BeginWith' {$ConditionString = 'begin with'}
+            'EndWith' {$ConditionString = 'end with'}
+            'LessThan' {$ConditionString = 'less than'}
+            'MoreThan' {$ConditionString = 'more than'}
+            Default {$ConditionString = 'is'}
         }
 
-        # Update Image Loading monitoring option if selected.
-        if($ImageLoading.Length -ne 0)
+        # Check if the event type exists if not create it.
+        if ($Rules -eq '')
         {
-            $Node = $Config.SelectSingleNode('//Sysmon/Configuration/ImageLoading')
-
-            if ($ImageLoading -eq 'Enable')
-            {
-                Write-Verbose -Message 'Enabling image loading logging option.'
-                if ($Node -ne $null)
-                {
-                    Write-Verbose -Message 'ImageLoading login already enabled.'
-                }
-                else
-                {
-                    $ImageLoadingElement = $Config.CreateElement('ImageLoading')
-                    [void]$Config.Sysmon.Configuration.AppendChild($ImageLoadingElement)
-                    Write-Verbose -Message 'Image loading logging option has been enabled.'
-                }
-            }
-            else
-            {
-                if ($Node -ne $null)
-                {
-                    Write-Verbose -Message 'Disabling Image Loading logging.'
-                    [void]$Node.ParentNode.RemoveChild($Node)
-                    Write-Verbose -Message 'Logging Image Loading has been disabled.'
-                }
-                else
-                {
-                    Write-Verbose -Message 'No action taken since image loading option was not enabled.'
-                }
-            
-            }
+            $RuleData -eq $null
+        }
+        else
+        {
+            $RuleData = $Rules.SelectSingleNode("//Rules/$($EventType)")
         }
 
-        # Update Network monitoring option if selected.
-        if($Network.Length -ne 0)
+        if($RuleData -eq $null)
         {
-            $NetworkNode = $Config.SelectSingleNode('//Sysmon/Configuration/Network')
-            if ($Network -eq 'Enable')
-            {
-                Write-Verbose -Message 'Enabling network logging option.'
-                if( $NetworkNode -ne $null)
-                {
-                    Write-Verbose -Message 'Network loggin already enabled.'
-                }
-                else
-                {
-                    $NetworkElement = $Config.CreateElement('Network')
-                    [void]$Config.Sysmon.Configuration.AppendChild($NetworkElement)
-                    Write-Verbose -Message 'Network logging option has been enabled.'
-                }
-            }
-            else
-            {
-                if ($NetworkNode -ne $null)
-                {
-                    Write-Verbose -Message 'Disabling network connection logging.'
-                    [void]$NetworkNode.ParentNode.RemoveChild($NetworkNode)
-                    Write-Verbose -Message 'Logging network connections has been disabled.'
-                }
-                else
-                {
-                    Write-Verbose -Message 'No action taken since Network option was not enabled.'
-                }
-            
-            }
+            Write-Verbose -Message "No rule for $($EventType) was found."
+            Write-Verbose -Message 'Creating rule for event type with default action if Exclude'
+            $TypeElement = $Config.CreateElement($EventType)
+            [void]$Rules.AppendChild($TypeElement)
+            $RuleData = $Rules.SelectSingleNode("//Rules/$($EventType)")
+            Write-Verbose -Message 'Rule created succesfully'
         }
 
-        # Update comment or create a new one if present.
-        if ($Comment.Length -ne 0)
+        Write-Verbose -Message "Creating filters for event type $($EventType)."
+        # For each value for the event type create a filter.
+        foreach($val in $value)
         {
-            Write-Verbose -Message 'Updating comment for config file.'
-            if($Config.'#comment' -ne $null)
-            {
-                $Config.'#comment' = $Comment    
-            }
-            else
-            {
-                $CommentXML = $Config.CreateComment($Comment)
-                [void]$Config.PrependChild($CommentXML)
-            }
-            Write-Verbose -Message 'Comment for config file has been updated.'
+            Write-Verbose -Message "Creating filter for event filed $($EventField) with condition $($Condition) for value $($val)."
+            $FieldElement = $Config.CreateElement($EventField)
+            $Filter = $RuleData.AppendChild($FieldElement)
+            $Filter.SetAttribute('condition',$Condition)
+            $filter.InnerText = $val
         }
+        Get-RuleWithFilter($RuleData)
 
-        Write-Verbose -Message "Options have been set on $($FileLocation)"
         $Config.Save($FileLocation)
     }
     End{}
 }
 
-
 <#
 .Synopsis
-   Creates a Rule and sets its default action in a Sysmon configuration XML file.
+   Returns a properly cased EventType Name string for Sysmon.
 .DESCRIPTION
-   Creates a rules for a specified Event Type and sets the default action 
-   for the rule and filters under it. Ir a rule alreade exists it udates 
-   the default action taken by a event type rule if one aready 
-   present. The default is exclude. This default is set for event type 
-   and affects all filters under it.
+   Returns a properly cased EventType Name string for Sysmon.
 .EXAMPLE
-    Get-GetSysmonRule -Path .\pc_cofig.xml -EventType NetworkConnect
-    
-    
-     EventType     : NetworkConnect
-     Scope         : Filtered
-     DefaultAction : Exclude
-     Filters       : {@{EventField=image; Condition=Is; Value=iexplorer.exe}}
+   Get-EvenTypeCasedString -EventType driverload
+   DriverLoad
 
-    PS C:\> Set-SysmonRulen -Path .\pc_cofig.xml -EventType NetworkConnect -Action Include -Verbose
-    VERBOSE: Setting as default action for NetworkConnect the action of Include.
-    VERBOSE: Action has been set.
-
-    PS C:\> Get-GetSysmonRule -Path .\pc_cofig.xml -EventType NetworkConnect
-
-
-    EventType     : NetworkConnect
-    Scope         : Filtered
-    DefaultAction : Include
-    Filters       : {@{EventField=image; Condition=Is; Value=iexplorer.exe}}
-
-   
-   Change default rule action causing the filter to ignore all traffic from iexplorer.exe.
 #>
-function Set-SysmonRule
+function Get-EvenTypeCasedString
 {
-    [CmdletBinding(DefaultParameterSetName = 'Path')]
+    [CmdletBinding()]
+    [OutputType([string])]
     Param
     (
-        # Path to XML config file.
+        # EventType name that we will look the proper case for.
         [Parameter(Mandatory=$true,
                    ValueFromPipelineByPropertyName=$true,
-                   ParameterSetName='Path',
                    Position=0)]
-        [ValidateScript({Test-Path -Path $_})]
-        $Path,
-
-        # Path to XML config file.
-        [Parameter(Mandatory=$true,
-                   ValueFromPipelineByPropertyName=$true,
-                   ParameterSetName='LiteralPath',
-                   Position=0)]
-        [ValidateScript({Test-Path -Path $_})]
-        [Alias('PSPath')]
-        $LiteralPath,
-
-        # Event type to update.
-        [Parameter(Mandatory=$true,
-                   ValueFromPipelineByPropertyName=$true,
-                   Position=1)]
         [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
                      'ProcessTerminate', 'ImageLoad', 'DriverLoad')]
-        [string[]]
-        $EventType,
-
-        # Action for event type rule and filters.
-        [Parameter(Mandatory=$false,
-                   ValueFromPipelineByPropertyName=$true,
-                   Position=2)]
-        [ValidateSet('Include', 'Exclude')]
-        [String]
-        $Action = 'Exclude'
-    )
-
-    Begin{}
-    Process
-    {
-        # Check if the file is a valid XML file and if not raise and error. 
-        try
-        {
-            switch($psCmdlet.ParameterSetName)
-            {
-                'Path'
-                {
-                    [xml]$Config = Get-Content -Path $Path
-                    $FileLocation = (Resolve-Path -Path $Path).Path
-                }
-
-                'LiteralPath' 
-                {
-                    [xml]$Config = Get-Content -LiteralPath $LiteralPath
-                    $FileLocation = (Resolve-Path -LiteralPath $LiteralPath).Path
-                }
-            }
-        }
-        catch [System.Management.Automation.PSInvalidCastException]
-        {
-            Write-Error -Message 'Specified file does not appear to be a XML file.'
-            return
-        }
-        
-        # Validate the XML file is a valid Sysmon file.
-        if ($Config.SelectSingleNode('//Sysmon') -eq $null)
-        {
-            Write-Error -Message 'XML file is not a valid Sysmon config file.'
-            return
-        }
-
-        $Rules = $config.SelectSingleNode('//Sysmon/Rules')
-
-        foreach($Type in $EventType)
-        {
-            $EvtType = Get-EvenTypeCasedString -EventType $Type
-            $RuleData = $Rules.SelectSingleNode("//Rules/$($EvtType)")
-            if($RuleData -ne $null)
-            {
-                Write-Verbose -Message "Setting as default action for $($EvtType) the action of $($Action)."
-                $RuleData.SetAttribute('default',($Action.ToLower()))
-                Write-Verbose -Message 'Action has been set.'
-            }
-            else
-            {
-                Write-Verbose -Message "No rule for $($EvtType) was found."
-                Write-Verbose -Message "Creating rule for event type with action of $($Action)"
-                $TypeElement = $config.CreateElement($EvtType)
-                [void]$Rules.AppendChild($TypeElement)
-                $RuleData = $Rules.SelectSingleNode("//Rules/$($EvtType)")
-                $RuleData.SetAttribute('default',($Action.ToLower()))
-                Write-Verbose -Message 'Action has been set.'
-            }
-
-            Get-RuleWithFilter($RuleData)
-        }
-        $config.Save($FileLocation)
-    }
-    End{}
-}
-
-
-<#
-.Synopsis
-   Removes on or more rules from a Sysmon XML configuration file.
-.DESCRIPTION
-   Removes on or more rules from a Sysmon XML configuration file.
-.EXAMPLE
-   PS C:\> Remove-SysmonRule -Path .\pc_marketing.xml -EventType ImageLoad,NetworkConnect -Verbose
-   VERBOSE: Removed rule for ImageLoad.
-   VERBOSE: Removed rule for NetworkConnect.
-#>
-function Remove-SysmonRule
-{
-    [CmdletBinding(DefaultParameterSetName = 'Path')]
-    Param
-    (
-        # Path to XML config file.
-        [Parameter(Mandatory=$true,
-                   ValueFromPipelineByPropertyName=$true,
-                   ParameterSetName='Path',
-                   Position=0)]
-        [ValidateScript({Test-Path -Path $_})]
-        $Path,
-
-        # Path to XML config file.
-        [Parameter(Mandatory=$true,
-                   ValueFromPipelineByPropertyName=$true,
-                   ParameterSetName='LiteralPath',
-                   Position=0)]
-        [ValidateScript({Test-Path -Path $_})]
-        [Alias('PSPath')]
-        $LiteralPath,
-
-        # Event type to remove. It is case sensitive.
-        [Parameter(Mandatory=$true,
-                   ValueFromPipelineByPropertyName=$true,
-                   Position=1)]
-        [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
-                     'ProcessTerminate', 'ImageLoad', 'DriverLoad',  IgnoreCase = $false)]
-        [string[]]
         $EventType
     )
 
     Begin{}
     Process
     {
-        # Check if the file is a valid XML file and if not raise and error. 
-        try
+        switch ($EventType)
         {
-            switch($psCmdlet.ParameterSetName)
-            {
-                'Path'
-                {
-                    [xml]$Config = Get-Content -Path $Path
-                    $FileLocation = (Resolve-Path -Path $Path).Path
-                }
+            'NetworkConnect' {'NetworkConnect'}
+            'ProcessCreate' {'ProcessCreate'}
+            'FileCreateTime' {'FileCreateTime'}
+            'ProcessTerminate' {'ProcessTerminate'}
+            'ImageLoad' {'ImageLoad'}
+            'DriverLoad' {'DriverLoad'}
+        }
+    }
+    End{}
+}
 
-                'LiteralPath' 
-                {
-                    [xml]$Config = Get-Content -LiteralPath $LiteralPath
-                    $FileLocation = (Resolve-Path -LiteralPath $LiteralPath).Path
-                }
-            }
-        }
-        catch [System.Management.Automation.PSInvalidCastException]
-        {
-            Write-Error -Message 'Specified file does not appear to be a XML file.'
-            return
-        }
-        
-        # Validate the XML file is a valid Sysmon file.
-        if ($Config.SelectSingleNode('//Sysmon') -eq $null)
-        {
-            Write-Error -Message 'XML file is not a valid Sysmon config file.'
-            return
-        }
 
-        $Rules = $config.SelectSingleNode('//Sysmon/Rules')
+<#
+.Synopsis
+   Returns a properly cased Event Field Name string for Sysmon.
+.DESCRIPTION
+   Returns a properly cased Event Fielde Name string for Sysmon.
+.EXAMPLE
+    Get-EvenFieldCasedString -EventField commandline
+CommandLine
 
-        foreach($Type in $EventType)
+#>
+function Get-EvenFieldCasedString
+{
+    [CmdletBinding()]
+    [OutputType([string])]
+    Param
+    (
+        # EventType name that we will look the proper case for.
+        [Parameter(Mandatory=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=0)]
+        [ValidateSet('UtcTime', 'ProcessGuid', 'ProcessId', 'Image', 
+                     'ImageLoaded', 'HashType', 'Hash', 'Signed', 
+                     'Signature', 'User', 'Protocol', 'Initiated', 'SourceIsIpv6', 
+                     'SourceIp', 'SourceHostname', 'SourcePort', 
+                     'SourcePortName', 'DestinationIsIpv6', 
+                     'DestinationIp', 'DestinationHostname', 
+                     'DestinationPort', 'DestinationPortName',
+                     'TargetFilename', 'CreationUtcTime', 
+                     'PreviousCreationUtcTime', 'CommandLine', 
+                     'LogonGuid', 'LogonId','TerminalSessionId', 
+                     'IntegrityLevel', 'HashType', 'Hash', 
+                     'ParentProcessGuid', 'ParentProcessId',
+                     'ParentImage', 'ParentCommandLine')]
+        $EventField
+    )
+
+    Begin{}
+    Process
+    {
+        switch ($EventField)
         {
-            $Rule = $Rules.SelectSingleNode("//Rules/$($Type)")
-            if ($Rule -ne $null)
-            {
-                [void]$Rule.ParentNode.RemoveChild($Rule)
-                Write-Verbose -Message "Removed rule for $($Type)."
-            }
-            else
-            {
-                Write-Warning -Message "Did not found a rule for $($Type)"
-            }
+            'UtcTime' {'UtcTime'}
+            'ProcessGuid' {'ProcessGuid'}
+            'ProcessId' {'ProcessId'}
+            'Image' {'Image'}
+            'ImageLoaded' {'ImageLoaded'}
+            'HashType' {'HashType'}
+            'Hash' {'Hash'}
+            'Signed' {'Signed'} 
+            'Signature' {'Signature'}
+            'User' {'User'}
+            'Protocol' {'Protocol'}
+            'Initiated' {'Initiated'} 
+            'SourceIsIpv6'{'SourceIsIpv6'}
+            'SourceIp' {'SourceIp'}
+            'SourceHostname' {'SourceHostname'}
+            'SourcePort' {'SourcePort'} 
+            'SourcePortName' {'SourcePortName'}
+            'DestinationIsIpv6' {'DestinationIsIpv6'}
+            'DestinationIp' {'DestinationIp'}
+            'DestinationHostname' {'DestinationHostname'}
+            'DestinationPort' {'DestinationPort'} 
+            'DestinationPortName' {'DestinationPortName'}
+            'TargetFilename' {'TargetFilename'}
+            'CreationUtcTime' {'CreationUtcTime'}
+            'PreviousCreationUtcTime' {'PreviousCreationUtcTime'} 
+            'CommandLine' {'CommandLine'}
+            'LogonGuid' {'LogonGuid'}
+            'LogonId' {'LogonId'}
+            'TerminalSessionId' {'TerminalSessionId'} 
+            'IntegrityLevel' {'IntegrityLevel'}
+            'HashType' {'HashType'}
+            'Hash' {'Hash'}
+            'ParentProcessGuid' {'ParentProcessGuid'}
+            'ParentProcessId' {'ParentProcessId'}
+            'ParentImage' {'ParentImage'} 
+            'ParentCommandLine' {'ParentCommandLine'}
         }
-        $config.Save($FileLocation)
     }
     End{}
 }
