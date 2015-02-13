@@ -23,3 +23,5 @@
 
 # Custom for PowerShell*.psm1 text
 *.psd1 text
+*.psm1 text
+*.ps1xml text
