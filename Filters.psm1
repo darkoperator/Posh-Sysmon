@@ -53,7 +53,7 @@ function New-SysmonImageLoadFilter
     }
     Process
     {
-        $FieldString = Get-EvenFieldCasedString -EventField $EventField
+        $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
 
         switch($psCmdlet.ParameterSetName)
         {
@@ -129,7 +129,7 @@ function New-SysmonDriverLoadFilter
     }
     Process
     {
-        $FieldString = Get-EvenFieldCasedString -EventField $EventField
+        $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
 
         switch($psCmdlet.ParameterSetName)
         {
@@ -209,7 +209,7 @@ function New-SysmonNetworkConnectFilter
     }
     Process
     {
-        $FieldString = Get-EvenFieldCasedString -EventField $EventField
+        $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
 
         switch($psCmdlet.ParameterSetName)
         {
@@ -286,7 +286,7 @@ function New-SysmonFileCreateFilter
     }
     Process
     {
-        $FieldString = Get-EvenFieldCasedString -EventField $EventField
+        $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
 
         switch($psCmdlet.ParameterSetName)
         {
@@ -365,7 +365,7 @@ function New-SysmonProcessCreateFilter
     }
     Process
     {
-        $FieldString = Get-EvenFieldCasedString -EventField $EventField
+        $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
 
         switch($psCmdlet.ParameterSetName)
         {
@@ -440,7 +440,7 @@ function New-SysmonProcessTerminateFilter
     }
     Process
     {
-       $FieldString = Get-EvenFieldCasedString -EventField $EventField
+       $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
 
         switch($psCmdlet.ParameterSetName)
         {
@@ -520,6 +520,7 @@ function Remove-SysmonRuleFilter
     Begin{}
     Process
     {
+        $EvtType = $null
         # Check if the file is a valid XML file and if not raise and error. 
         try
         {
@@ -576,7 +577,7 @@ function Remove-SysmonRuleFilter
         }
         else
         {
-            $EvtType = Get-EvenTypeCasedString -EventType $EventType
+            $EvtType = $MyInvocation.MyCommand.Module.PrivateData[$Type]
 
             $EventRule = $Rules.SelectSingleNode("//Rules/$($EvtType)")
         }
@@ -835,128 +836,3 @@ function New-RuleFilter
     End{}
 }
 
-<#
-.Synopsis
-   Returns a properly cased EventType Name string for Sysmon.
-.DESCRIPTION
-   Returns a properly cased EventType Name string for Sysmon.
-.EXAMPLE
-   Get-EvenTypeCasedString -EventType driverload
-   DriverLoad
-
-#>
-function Get-EvenTypeCasedString
-{
-    [CmdletBinding()]
-    [OutputType([string])]
-    Param
-    (
-        # EventType name that we will look the proper case for.
-        [Parameter(Mandatory=$true,
-                   ValueFromPipelineByPropertyName=$true,
-                   Position=0)]
-        [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
-                     'ProcessTerminate', 'ImageLoad', 'DriverLoad')]
-        $EventType
-    )
-
-    Begin{}
-    Process
-    {
-        switch ($EventType)
-        {
-            'NetworkConnect' {'NetworkConnect'}
-            'ProcessCreate' {'ProcessCreate'}
-            'FileCreateTime' {'FileCreateTime'}
-            'ProcessTerminate' {'ProcessTerminate'}
-            'ImageLoad' {'ImageLoad'}
-            'DriverLoad' {'DriverLoad'}
-        }
-    }
-    End{}
-}
-
-
-<#
-.Synopsis
-   Returns a properly cased Event Field Name string for Sysmon.
-.DESCRIPTION
-   Returns a properly cased Event Fielde Name string for Sysmon.
-.EXAMPLE
-    Get-EvenFieldCasedString -EventField commandline
-CommandLine
-
-#>
-function Get-EvenFieldCasedString
-{
-    [CmdletBinding()]
-    [OutputType([string])]
-    Param
-    (
-        # EventType name that we will look the proper case for.
-        [Parameter(Mandatory=$true,
-                   ValueFromPipelineByPropertyName=$true,
-                   Position=0)]
-        [ValidateSet('UtcTime', 'ProcessGuid', 'ProcessId', 'Image', 
-                     'ImageLoaded', 'HashType', 'Hash', 'Signed', 
-                     'Signature', 'User', 'Protocol', 'Initiated', 'SourceIsIpv6', 
-                     'SourceIp', 'SourceHostname', 'SourcePort', 
-                     'SourcePortName', 'DestinationIsIpv6', 
-                     'DestinationIp', 'DestinationHostname', 
-                     'DestinationPort', 'DestinationPortName',
-                     'TargetFilename', 'CreationUtcTime', 
-                     'PreviousCreationUtcTime', 'CommandLine', 
-                     'LogonGuid', 'LogonId','TerminalSessionId', 
-                     'IntegrityLevel', 'HashType', 'Hash', 
-                     'ParentProcessGuid', 'ParentProcessId',
-                     'ParentImage', 'ParentCommandLine')]
-        $EventField
-    )
-
-    Begin{}
-    Process
-    {
-        switch ($EventField)
-        {
-            'UtcTime' {'UtcTime'}
-            'ProcessGuid' {'ProcessGuid'}
-            'ProcessId' {'ProcessId'}
-            'Image' {'Image'}
-            'ImageLoaded' {'ImageLoaded'}
-            'HashType' {'HashType'}
-            'Hash' {'Hash'}
-            'Signed' {'Signed'} 
-            'Signature' {'Signature'}
-            'User' {'User'}
-            'Protocol' {'Protocol'}
-            'Initiated' {'Initiated'} 
-            'SourceIsIpv6'{'SourceIsIpv6'}
-            'SourceIp' {'SourceIp'}
-            'SourceHostname' {'SourceHostname'}
-            'SourcePort' {'SourcePort'} 
-            'SourcePortName' {'SourcePortName'}
-            'DestinationIsIpv6' {'DestinationIsIpv6'}
-            'DestinationIp' {'DestinationIp'}
-            'DestinationHostname' {'DestinationHostname'}
-            'DestinationPort' {'DestinationPort'} 
-            'DestinationPortName' {'DestinationPortName'}
-            'TargetFilename' {'TargetFilename'}
-            'CreationUtcTime' {'CreationUtcTime'}
-            'PreviousCreationUtcTime' {'PreviousCreationUtcTime'} 
-            'CommandLine' {'CommandLine'}
-            'LogonGuid' {'LogonGuid'}
-            'LogonId' {'LogonId'}
-            'TerminalSessionId' {'TerminalSessionId'} 
-            'IntegrityLevel' {'IntegrityLevel'}
-            'HashType' {'HashType'}
-            'Hash' {'Hash'}
-            'ParentProcessGuid' {'ParentProcessGuid'}
-            'ParentProcessId' {'ParentProcessId'}
-            'ParentImage' {'ParentImage'} 
-            'ParentCommandLine' {'ParentCommandLine'}
-        }
-    }
-    End{}
-}
-
-Export-ModuleMember -Function '*-sysmon*'

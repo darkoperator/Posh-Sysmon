@@ -1,5 +1,4 @@
 ﻿# TODO:
-# * Migrate help from comment based to XML based.
 # * Add help and param block to Get-RuleWithFilter
 
 
@@ -33,7 +32,7 @@ function Get-RuleWithFilter
         $RuleObjOptions['Scope'] = 'Filtered'
         $Filters = @()
         foreach ($Node in $Nodes)
-        {
+        {   
             $FilterObjProps = @{}
             $FilterObjProps['EventField'] = $Node.Name
             $FilterObjProps['Condition'] = &{if($Node.condition -eq $null){'is'}else{$Node.condition}}
@@ -48,7 +47,7 @@ function Get-RuleWithFilter
     $RuleObj = [pscustomobject]$RuleObjOptions
     $RuleObj.pstypenames.insert(0,'Sysmon.Rule')
     $RuleObj
-}
+} 
 
 <#
 .Synopsis
@@ -212,130 +211,6 @@ function New-RuleFilter
         Get-RuleWithFilter($RuleData)
 
         $Config.Save($FileLocation)
-    }
-    End{}
-}
-
-<#
-.Synopsis
-   Returns a properly cased EventType Name string for Sysmon.
-.DESCRIPTION
-   Returns a properly cased EventType Name string for Sysmon.
-.EXAMPLE
-   Get-EvenTypeCasedString -EventType driverload
-   DriverLoad
-
-#>
-function Get-EvenTypeCasedString
-{
-    [CmdletBinding()]
-    [OutputType([string])]
-    Param
-    (
-        # EventType name that we will look the proper case for.
-        [Parameter(Mandatory=$true,
-                   ValueFromPipelineByPropertyName=$true,
-                   Position=0)]
-        [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
-                     'ProcessTerminate', 'ImageLoad', 'DriverLoad')]
-        $EventType
-    )
-
-    Begin{}
-    Process
-    {
-        switch ($EventType)
-        {
-            'NetworkConnect' {'NetworkConnect'}
-            'ProcessCreate' {'ProcessCreate'}
-            'FileCreateTime' {'FileCreateTime'}
-            'ProcessTerminate' {'ProcessTerminate'}
-            'ImageLoad' {'ImageLoad'}
-            'DriverLoad' {'DriverLoad'}
-        }
-    }
-    End{}
-}
-
-
-<#
-.Synopsis
-   Returns a properly cased Event Field Name string for Sysmon.
-.DESCRIPTION
-   Returns a properly cased Event Fielde Name string for Sysmon.
-.EXAMPLE
-    Get-EvenFieldCasedString -EventField commandline
-CommandLine
-
-#>
-function Get-EvenFieldCasedString
-{
-    [CmdletBinding()]
-    [OutputType([string])]
-    Param
-    (
-        # EventType name that we will look the proper case for.
-        [Parameter(Mandatory=$true,
-                   ValueFromPipelineByPropertyName=$true,
-                   Position=0)]
-        [ValidateSet('UtcTime', 'ProcessGuid', 'ProcessId', 'Image', 
-                     'ImageLoaded', 'HashType', 'Hash', 'Signed', 
-                     'Signature', 'User', 'Protocol', 'Initiated', 'SourceIsIpv6', 
-                     'SourceIp', 'SourceHostname', 'SourcePort', 
-                     'SourcePortName', 'DestinationIsIpv6', 
-                     'DestinationIp', 'DestinationHostname', 
-                     'DestinationPort', 'DestinationPortName',
-                     'TargetFilename', 'CreationUtcTime', 
-                     'PreviousCreationUtcTime', 'CommandLine', 
-                     'LogonGuid', 'LogonId','TerminalSessionId', 
-                     'IntegrityLevel', 'HashType', 'Hash', 
-                     'ParentProcessGuid', 'ParentProcessId',
-                     'ParentImage', 'ParentCommandLine')]
-        $EventField
-    )
-
-    Begin{}
-    Process
-    {
-        switch ($EventField)
-        {
-            'UtcTime' {'UtcTime'}
-            'ProcessGuid' {'ProcessGuid'}
-            'ProcessId' {'ProcessId'}
-            'Image' {'Image'}
-            'ImageLoaded' {'ImageLoaded'}
-            'HashType' {'HashType'}
-            'Hash' {'Hash'}
-            'Signed' {'Signed'} 
-            'Signature' {'Signature'}
-            'User' {'User'}
-            'Protocol' {'Protocol'}
-            'Initiated' {'Initiated'} 
-            'SourceIsIpv6'{'SourceIsIpv6'}
-            'SourceIp' {'SourceIp'}
-            'SourceHostname' {'SourceHostname'}
-            'SourcePort' {'SourcePort'} 
-            'SourcePortName' {'SourcePortName'}
-            'DestinationIsIpv6' {'DestinationIsIpv6'}
-            'DestinationIp' {'DestinationIp'}
-            'DestinationHostname' {'DestinationHostname'}
-            'DestinationPort' {'DestinationPort'} 
-            'DestinationPortName' {'DestinationPortName'}
-            'TargetFilename' {'TargetFilename'}
-            'CreationUtcTime' {'CreationUtcTime'}
-            'PreviousCreationUtcTime' {'PreviousCreationUtcTime'} 
-            'CommandLine' {'CommandLine'}
-            'LogonGuid' {'LogonGuid'}
-            'LogonId' {'LogonId'}
-            'TerminalSessionId' {'TerminalSessionId'} 
-            'IntegrityLevel' {'IntegrityLevel'}
-            'HashType' {'HashType'}
-            'Hash' {'Hash'}
-            'ParentProcessGuid' {'ParentProcessGuid'}
-            'ParentProcessId' {'ParentProcessId'}
-            'ParentImage' {'ParentImage'} 
-            'ParentCommandLine' {'ParentCommandLine'}
-        }
     }
     End{}
 }

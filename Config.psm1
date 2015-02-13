@@ -278,7 +278,7 @@ function Get-SysmonRule
 
         foreach($Type in $TypesToParse)
         {
-            $EvtType = Get-EvenTypeCasedString -EventType $Type
+            $EvtType = $MyInvocation.MyCommand.Module.PrivateData[$Type]
             $RuleData = $Rules.SelectNodes("//Rules/$($EvtType)")
             if($RuleData -ne $null)
             {
@@ -580,7 +580,7 @@ function Set-SysmonRule
 
         foreach($Type in $EventType)
         {
-            $EvtType = Get-EvenTypeCasedString -EventType $Type
+            $EvtType = $MyInvocation.MyCommand.Module.PrivateData[$Type]
             $RuleData = $Rules.SelectSingleNode("//Rules/$($EvtType)")
             if($RuleData -ne $null)
             {
@@ -635,7 +635,7 @@ function Remove-SysmonRule
                    ValueFromPipelineByPropertyName=$true,
                    Position=1)]
         [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
-                     'ProcessTerminate', 'ImageLoad', 'DriverLoad',  IgnoreCase = $false)]
+                     'ProcessTerminate', 'ImageLoad', 'DriverLoad')]
         [string[]]
         $EventType
     )
@@ -678,15 +678,16 @@ function Remove-SysmonRule
 
         foreach($Type in $EventType)
         {
-            $Rule = $Rules.SelectSingleNode("//Rules/$($Type)")
+            $EvtType = $MyInvocation.MyCommand.Module.PrivateData[$Type]
+            $Rule = $Rules.SelectSingleNode("//Rules/$($EvtType)")
             if ($Rule -ne $null)
             {
                 [void]$Rule.ParentNode.RemoveChild($Rule)
-                Write-Verbose -Message "Removed rule for $($Type)."
+                Write-Verbose -Message "Removed rule for $($EvtType)."
             }
             else
             {
-                Write-Warning -Message "Did not found a rule for $($Type)"
+                Write-Warning -Message "Did not found a rule for $($EvtType)"
             }
         }
         $config.Save($FileLocation)
@@ -743,46 +744,3 @@ function Get-RuleWithFilter
     $RuleObj
 }
 
-
-<#
-.Synopsis
-   Returns a properly cased EventType Name string for Sysmon.
-.DESCRIPTION
-   Returns a properly cased EventType Name string for Sysmon.
-.EXAMPLE
-   Get-EvenTypeCasedString -EventType driverload
-   DriverLoad
-
-#>
-function Get-EvenTypeCasedString
-{
-    [CmdletBinding()]
-    [OutputType([string])]
-    Param
-    (
-        # EventType name that we will look the proper case for.
-        [Parameter(Mandatory=$true,
-                   ValueFromPipelineByPropertyName=$true,
-                   Position=0)]
-        [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
-                     'ProcessTerminate', 'ImageLoad', 'DriverLoad')]
-        $EventType
-    )
-
-    Begin{}
-    Process
-    {
-        switch ($EventType)
-        {
-            'NetworkConnect' {'NetworkConnect'}
-            'ProcessCreate' {'ProcessCreate'}
-            'FileCreateTime' {'FileCreateTime'}
-            'ProcessTerminate' {'ProcessTerminate'}
-            'ImageLoad' {'ImageLoad'}
-            'DriverLoad' {'DriverLoad'}
-        }
-    }
-    End{}
-}
-
-Export-ModuleMember -Function '*-sysmon*'
