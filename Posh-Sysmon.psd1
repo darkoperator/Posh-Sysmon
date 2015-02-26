@@ -63,10 +63,22 @@ ScriptsToProcess = @()
 FormatsToProcess = @('Format\Sysmon.ConfigOption.ps1xml', 'Format\Sysmon.Rule.ps1xml','Format\Sysmon.Rule.Filter.ps1xml')
 
 # Modules to import as nested modules of the module specified in RootModule/ModuleToProcess
-NestedModules = @('Filters.psm1', 'Config.psm1')
+NestedModules = @()
 
 # Functions to export from this module
-FunctionsToExport = '*-sysmon*'
+FunctionsToExport = @('Get-SysmonConfigOption',                                                                                                                                                   
+                    'Get-SysmonRule',                                                                                                                                                       
+                    'New-SysmonConfiguration',                                                                                                                                                  
+                    'New-SysmonDriverLoadFilter',                                                                                                                                               
+                    'New-SysmonFileCreateFilter',                                                                                                                                               
+                    'New-SysmonImageLoadFilter',                                                                                                                                                
+                    'New-SysmonNetworkConnectFilter',                                                                                                                                           
+                    'New-SysmonProcessCreateFilter',                                                                                                                                            
+                    'New-SysmonProcessTerminateFilter',                                                                                                                                         
+                    'Remove-SysmonRule',                                                                                                                                                        
+                    'Remove-SysmonRuleFilter',                                                                                                                                                  
+                    'Set-SysmonConfigOption',                                                                                                                                                   
+                    'Set-SysmonRule')    
 
 # Cmdlets to export from this module
 CmdletsToExport = '*'
