@@ -1,5 +1,5 @@
 # Posh-Sysmon
-PowerShell 3.0 or above module for creating and managing Sysinternals Sysmon config files. System Monitor ([Sysmon](https://technet.microsoft.com/en-us/sysinternals/dn798348)) is a Windows system service and device driver that is part of the SysInternal tools from Microsoft. It is written by Mark Russinovich and Thomas Garnier to monitor a Windows system actions and log such actions in to the Windows Event Log. When the tool is installed on a system it can be given a XML configuration file so as to control what is logged and the same file can be used to update the configuration of a previously installed instance of the tool. 
+PowerShell 3.0 or above module for creating and managing Sysinternals Sysmon v2.0 config files. System Monitor ([Sysmon](https://technet.microsoft.com/en-us/sysinternals/dn798348)) is a Windows system service and device driver that is part of the SysInternal tools from Microsoft. It is written by Mark Russinovich and Thomas Garnier to monitor a Windows system actions and log such actions in to the Windows Event Log. When the tool is installed on a system it can be given a XML configuration file so as to control what is logged and the same file can be used to update the configuration of a previously installed instance of the tool. 
 
 All functions in the PowerShell module include help information and example of usage that can be view using the Get-Help cmdlet. 
 
@@ -39,6 +39,10 @@ Import-Module -Name Posh-Sysmon
 Get-Command -Module Posh-Sysmon
 ```
 # Change Log
+## Version 0.3
+* Tons of fixes do to a bad re-facor.
+* Filter creation is now done by specific funtions per event type.
+* Filter creation functions are now in their own sub-module.
 ## Version 0.2
 * Validate that the file is an XML file and a valid Sysmon configuration file.
 * Change option ConfigFile to Path and LiteralPath so as to match other cmdlets that work with files.
@@ -82,42 +86,6 @@ Comment      : Sysmon config for deployment in the Marketing PC OU
 </pre>
 
 
-## Create a Rule Filter
-
-In this example we create a filter for several program for the Network Connection event type. Sysmon rules work by filtering out and not logging any action by default. The default action of a Rules is to exclude from filtering out all event that match. In the following example the applications in the list will not have their network connections logged.
-
-<pre>
-PS C:\> $images = 'C:\Windows\System32\svchost.exe',
->>> 'C:\Program Files (x86)\Internet Explorer\iexplore.exe',
->>> 'C:\Program Files\Internet Explorer\iexplore.exe',
->>> 'C:\Program Files (x86)\Google\Chrome\Application\chrome.exe',
->>> 'C:\Program Files (x86)\PuTTY\putty.exe',
->>> 'C:\Program Files (x86)\PuTTY\plink.exe',
->>> 'C:\Program Files (x86)\PuTTY\pscp.exe',
->>> 'C:\Program Files (x86)\PuTTY\psftp.exe'
->
-PS C:\> New-SysmonRuleFilter -Path .\pc_marketing.xml -EventType NetworkConnect -Condition Image -EventField Image -Value $images -Verbose
-VERBOSE: No rule for NetworkConnect was found.
-VERBOSE: Creating rule for event type with default action if Exclude
-VERBOSE: Rule created successfully
-VERBOSE: Creating filters for event type NetworkConnect.
-VERBOSE: Creating filter for event filed Image with condition Image for value C:\Windows\System32\svchost.exe.
-VERBOSE: Creating filter for event filed Image with condition Image for value C:\Program Files (x86)\Internet Explorer\iexplore.exe.
-VERBOSE: Creating filter for event filed Image with condition Image for value C:\Program Files\Internet Explorer\iexplore.exe.
-VERBOSE: Creating filter for event filed Image with condition Image for value C:\Program Files (x86)\Google\Chrome\Application\chrome.exe.
-VERBOSE: Creating filter for event filed Image with condition Image for value C:\Program Files (x86)\PuTTY\putty.exe.
-VERBOSE: Creating filter for event filed Image with condition Image for value C:\Program Files (x86)\PuTTY\plink.exe.
-VERBOSE: Creating filter for event filed Image with condition Image for value C:\Program Files (x86)\PuTTY\pscp.exe.
-VERBOSE: Creating filter for event filed Image with condition Image for value C:\Program Files (x86)\PuTTY\psftp.exe.
-
-EventType     : NetworkConnect
-Scope         : Filtered
-DefaultAction : Exclude
-Filters       : {@{EventField=Image; Condition=Image; Value=C:\Windows\System32\svchost.exe}, 
-                @{EventField=Image; Condition=Image; Value=C:\Program Files (x86)\Internet Explorer\iexplore.exe}, 
-                @{EventField=Image; Condition=Image; Value=C:\Program Files\Internet Explorer\iexplore.exe}, 
-                @{EventField=Image; Condition=Image; Value=C:\Program Files (x86)\Google\Chrome\Application\chrome.exe}...}
-</pre>
 
 ## Get configured Rules and Filters
 
