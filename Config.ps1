@@ -665,7 +665,7 @@ function Set-SysmonRule
                 Write-Verbose -Message "Creating rule for event type with action of $($Action)"
                 $TypeElement = $config.CreateElement($EvtType)
                 [void]$Rules.AppendChild($TypeElement)
-                $RuleData = $Rules.SelectSingleNode("//Rules/$($EvtType)")
+                $RuleData = $Rules.SelectSingleNode("//EventFiltering/$($EvtType)")
                 $RuleData.SetAttribute('onmatch',($OnMatch.ToLower()))
                 Write-Verbose -Message 'Action has been set.'
             }
@@ -706,7 +706,7 @@ function Remove-SysmonRule
                    ValueFromPipelineByPropertyName=$true,
                    Position=1)]
         [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
-                     'ProcessTerminate', 'ImageLoad', 'DriverLoad')]
+                     'ProcessTerminate', 'ImageLoad', 'DriverLoad', 'CreateRemoteThread')]
         [string[]]
         $EventType
     )
@@ -745,12 +745,12 @@ function Remove-SysmonRule
             return
         }
 
-        $Rules = $config.SelectSingleNode('//Sysmon/Rules')
+        $Rules = $config.SelectSingleNode('//Sysmon/EventFiltering')
 
         foreach($Type in $EventType)
         {
             $EvtType = $MyInvocation.MyCommand.Module.PrivateData[$Type]
-            $Rule = $Rules.SelectSingleNode("//Rules/$($EvtType)")
+            $Rule = $Rules.SelectSingleNode("//EventFiltering/$($EvtType)")
             if ($Rule -ne $null)
             {
                 [void]$Rule.ParentNode.RemoveChild($Rule)
