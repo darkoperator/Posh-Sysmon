@@ -27,19 +27,50 @@ function New-SysmonConfiguration
                    ValueFromPipelineByPropertyName=$true,
                    Position=2)]
         [Switch]
-        $Network,
+        $NetworkConnect,
 
         # Log process loading of modules.
         [Parameter(Mandatory=$False,
                    ValueFromPipelineByPropertyName=$true,
                    Position=3)]
         [Switch]
-        $ImageLoading,
+        $DriverLoad,
 
-        # Comment for purpose of the configuration file.
+        # Log process loading of modules.
         [Parameter(Mandatory=$False,
                    ValueFromPipelineByPropertyName=$true,
                    Position=4)]
+        [Switch]
+        $ImageLoad,
+
+        [Parameter(Mandatory=$False,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=5)]
+        [Switch]
+        $CreateRemoteThread,
+
+
+        [Parameter(Mandatory=$False,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=6)]
+        [Switch]
+        $FileCreateTime,
+
+        [Parameter(Mandatory=$False,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=7)]
+        [Switch]
+        $ProcessCreate,
+
+        [Parameter(Mandatory=$False,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=8)]
+        [Switch]
+        $ProcessTerminate,
+
+        # Comment for purpose of the configuration file.
+        [Parameter(Mandatory=$False,
+                   ValueFromPipelineByPropertyName=$true)]
         [String]
         $Comment
     )
@@ -73,31 +104,71 @@ function New-SysmonConfiguration
         }
         $xmlWriter.WriteStartElement('Sysmon')
         
-        $XmlWriter.WriteAttributeString('schemaversion', '1.0')
-        $xmlWriter.WriteStartElement('Configuration')
+        $XmlWriter.WriteAttributeString('schemaversion', '2.0')
 
         Write-Verbose -Message "Enabling hashing algorithms : $($Hash)"
-        $xmlWriter.WriteElementString('Hashing',$Hash)
+        $xmlWriter.WriteElementString('HashAlgorithms',$Hash)
         
-        if ($Network)
+        # Create empty EventFiltering section.
+        $xmlWriter.WriteStartElement('EventFiltering')
+
+        if ($NetworkConnect)
         {
-            Write-Verbose -Message 'Enabling network connection logging.'
-            $xmlWriter.WriteStartElement('Network')
+            Write-Verbose -Message 'Enabling network connection logging for all connections by setting no filter and onmatch to exclude.'
+            $xmlWriter.WriteStartElement('NetworkConnect')
+            $XmlWriter.WriteAttributeString('onmatch', 'exclude')
             $xmlWriter.WriteFullEndElement()
         }
 
-        if ($ImageLoading)
+        if ($DriverLoad)
         {
-            Write-Verbose -Message 'Enabling image loading loggong.'
-            $xmlWriter.WriteStartElement('ImageLoading ')
+            Write-Verbose -Message 'Enabling logging all driver loading by setting no filter and onmatch to exclude.'
+            $xmlWriter.WriteStartElement('DriverLoad ')
+            $XmlWriter.WriteAttributeString('onmatch', 'exclude')
             $xmlWriter.WriteFullEndElement()
         }
-        
-        # Configuration
-        $xmlWriter.WriteEndElement()
 
-        # Create empty rule section.
-        $xmlWriter.WriteStartElement('Rules')
+        if ($ImageLoad)
+        {
+            Write-Verbose -Message 'Enabling logging all image loading by setting no filter and onmatch to exclude.'
+            $xmlWriter.WriteStartElement('ImageLoad ')
+            $XmlWriter.WriteAttributeString('onmatch', 'exclude')
+            $xmlWriter.WriteFullEndElement()
+        }
+
+        if ($CreateRemoteThread)
+        {
+            Write-Verbose -Message 'Enabling logging all  CreateRemoteThread API actions by setting no filter and onmatch to exclude.'
+            $xmlWriter.WriteStartElement('CreateRemoteThread ')
+            $XmlWriter.WriteAttributeString('onmatch', 'exclude')
+            $xmlWriter.WriteFullEndElement()
+        }
+
+        if ($ProcessCreate)
+        {
+            Write-Verbose -Message 'Enabling logging all  process creation by setting no filter and onmatch to exclude.'
+            $xmlWriter.WriteStartElement('ProcessCreate ')
+            $XmlWriter.WriteAttributeString('onmatch', 'exclude')
+            $xmlWriter.WriteFullEndElement()
+        }
+
+        if ($ProcessTerminate)
+        {
+            Write-Verbose -Message 'Enabling logging all  process termination by setting no filter and onmatch to exclude.'
+            $xmlWriter.WriteStartElement('ProcessTerminate ')
+            $XmlWriter.WriteAttributeString('onmatch', 'exclude')
+            $xmlWriter.WriteFullEndElement()
+        }
+
+        if ($FileCreateTime)
+        {
+            Write-Verbose -Message 'Enabling logging all  process creation by setting no filter and onmatch to exclude.'
+            $xmlWriter.WriteStartElement('FileCreateTime ')
+            $XmlWriter.WriteAttributeString('onmatch', 'exclude')
+            $xmlWriter.WriteFullEndElement()
+        }
+
+        # End Element of EventFiltering
         $xmlWriter.WriteFullEndElement()
 
         # Sysmon
@@ -165,9 +236,9 @@ function Get-SysmonConfigOption
 
         $ObjOptions = @{}
 
-        if ($Config.Sysmon.Configuration.SelectSingleNode('//Configuration/Hashing'))
+        if ($Config.Sysmon.Configuration.SelectSingleNode('//HashAlgorithms'))
         {
-            $ObjOptions['Hashing'] = $config.Sysmon.Configuration.Hashing
+            $ObjOptions['Hashing'] = $config.Sysmon.HashAlgorithms
         }
         else
         {
