@@ -97,6 +97,7 @@ ModuleList = @()
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess
 PrivateData = @{
+    'CreateRemoteThread' = 'CreateRemoteThread'
     'NetworkConnect' ='NetworkConnect'
     'ProcessCreate' = 'ProcessCreate'
     'FileCreateTime' = 'FileCreateTime'

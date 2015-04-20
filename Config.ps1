@@ -600,7 +600,7 @@ function Set-SysmonRule
                    ValueFromPipelineByPropertyName=$true,
                    Position=1)]
         [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
-                     'ProcessTerminate', 'ImageLoad', 'DriverLoad')]
+                     'ProcessTerminate', 'ImageLoad', 'DriverLoad', 'CreateRemoteThread')]
         [string[]]
         $EventType,
 
@@ -610,7 +610,7 @@ function Set-SysmonRule
                    Position=2)]
         [ValidateSet('Include', 'Exclude')]
         [String]
-        $Action = 'Exclude'
+        $OnMatch = 'Exclude'
     )
 
     Begin{}
@@ -647,16 +647,16 @@ function Set-SysmonRule
             return
         }
 
-        $Rules = $config.SelectSingleNode('//Sysmon/Rules')
+        $Rules = $config.SelectSingleNode('//Sysmon/EventFiltering')
 
         foreach($Type in $EventType)
         {
             $EvtType = $MyInvocation.MyCommand.Module.PrivateData[$Type]
-            $RuleData = $Rules.SelectSingleNode("//Rules/$($EvtType)")
+            $RuleData = $Rules.SelectSingleNode("//EventFiltering/$($EvtType)")
             if($RuleData -ne $null)
             {
                 Write-Verbose -Message "Setting as default action for $($EvtType) the action of $($Action)."
-                $RuleData.SetAttribute('default',($Action.ToLower()))
+                $RuleData.SetAttribute('onmatch',($OnMatch.ToLower()))
                 Write-Verbose -Message 'Action has been set.'
             }
             else
@@ -666,7 +666,7 @@ function Set-SysmonRule
                 $TypeElement = $config.CreateElement($EvtType)
                 [void]$Rules.AppendChild($TypeElement)
                 $RuleData = $Rules.SelectSingleNode("//Rules/$($EvtType)")
-                $RuleData.SetAttribute('default',($Action.ToLower()))
+                $RuleData.SetAttribute('onmatch',($OnMatch.ToLower()))
                 Write-Verbose -Message 'Action has been set.'
             }
 
