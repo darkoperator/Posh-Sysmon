@@ -66,7 +66,7 @@ FormatsToProcess = @('Format\Sysmon.ConfigOption.ps1xml', 'Format\Sysmon.Rule.ps
 NestedModules = @()
 
 # Functions to export from this module
-FunctionsToExport = @('Get-SysmonConfigOption',                                                                                                                                                   
+FunctionsToExport = @('Get-SysmonHashingAlgorithm',                                                                                                                                                   
                     'Get-SysmonRule',                                                                                                                                                       
                     'New-SysmonConfiguration',                                                                                                                                                  
                     'New-SysmonDriverLoadFilter',                                                                                                                                               
@@ -77,7 +77,7 @@ FunctionsToExport = @('Get-SysmonConfigOption',
                     'New-SysmonProcessTerminateFilter',                                                                                                                                         
                     'Remove-SysmonRule',                                                                                                                                                        
                     'Remove-SysmonRuleFilter',                                                                                                                                                  
-                    'Set-SysmonConfigOption',                                                                                                                                                   
+                    'Set-SysmonHashingAlgorithm',                                                                                                                                                   
                     'Set-SysmonRule')    
 
 # Cmdlets to export from this module
@@ -109,8 +109,7 @@ PrivateData = @{
     'ProcessId' = 'ProcessId'
     'Image' = 'Image'
     'ImageLoaded' = 'ImageLoaded'
-    'HashType' = 'HashType'
-    'Hash' = 'Hash'
+    'Hashes' = 'Hashes'
     'Signed' = 'Signed'
     'Signature' = 'Signature'
     'User' = 'User'

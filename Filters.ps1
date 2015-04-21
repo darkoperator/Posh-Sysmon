@@ -35,7 +35,7 @@ function New-SysmonImageLoadFilter
                    ValueFromPipelineByPropertyName=$true,
                    Position=3)]
         [ValidateSet('UtcTime', 'ProcessGuid', 'ProcessId', 'Image', 
-                     'ImageLoaded', 'HashType', 'Hash', 'Signed', 
+                     'ImageLoaded', 'Hashes', 'Signed', 
                      'Signature')]
         [string]
         $EventField,
@@ -111,8 +111,8 @@ function New-SysmonDriverLoadFilter
         [Parameter(Mandatory=$true,
                    ValueFromPipelineByPropertyName=$true,
                    Position=3)]
-        [ValidateSet('UtcTime', 'ImageLoaded', 'HashType', 
-                     'Hash', 'Signed', 'Signature')]
+        [ValidateSet('UtcTime', 'ImageLoaded', 
+                     'Hashes', 'Signed', 'Signature')]
         [string]
         $EventField,
 
@@ -346,8 +346,8 @@ function New-SysmonProcessCreateFilter
                    Position=3)]
         [ValidateSet('UtcTime', 'ProcessGuid', 'ProcessId', 'Image', 
                      'CommandLine', 'User', 'LogonGuid', 'LogonId',
-                     'TerminalSessionId', 'IntegrityLevel', 'HashType',
-                     'Hash', 'ParentProcessGuid', 'ParentProcessId',
+                     'TerminalSessionId', 'IntegrityLevel',
+                     'Hashes', 'ParentProcessGuid', 'ParentProcessId',
                      'ParentImage', 'ParentCommandLine')]
         [string]
         $EventField,
@@ -489,7 +489,8 @@ function Remove-SysmonRuleFilter
                    ValueFromPipelineByPropertyName=$true,
                    Position=1)]
         [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
-                     'ProcessTerminate', 'ImageLoad', 'DriverLoad')]
+                     'ProcessTerminate', 'ImageLoad', 'DriverLoad', 
+                     'CreateRemoteThread')]
         [string[]]
         $EventType,
 
@@ -552,7 +553,7 @@ function Remove-SysmonRuleFilter
             return
         }
 
-        $Rules = $Config.SelectSingleNode('//Sysmon/Rules')
+        $Rules = $Config.SelectSingleNode('//Sysmon/EventFiltering')
 
         # Select the proper condition string.
         switch ($Condition)
@@ -579,7 +580,7 @@ function Remove-SysmonRuleFilter
         {
             $EvtType = $MyInvocation.MyCommand.Module.PrivateData[$Type]
 
-            $EventRule = $Rules.SelectSingleNode("//Rules/$($EvtType)")
+            $EventRule = $Rules.SelectSingleNode("//EventFiltering/$($EvtType)")
         }
 
         if($EventRule -eq $null)

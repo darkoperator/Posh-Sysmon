@@ -186,7 +186,7 @@ function New-SysmonConfiguration
 }
 
 #  .ExternalHelp Config.psm1-Help.xml
-function Get-SysmonConfigOption
+function Get-SysmonHashingAlgorithm
 {
     [CmdletBinding(DefaultParameterSetName = 'Path')]
     Param
@@ -236,7 +236,7 @@ function Get-SysmonConfigOption
 
         $ObjOptions = @{}
 
-        if ($Config.Sysmon.Configuration.SelectSingleNode('//HashAlgorithms'))
+        if ($Config.Sysmon.SelectSingleNode('//HashAlgorithms'))
         {
             $ObjOptions['Hashing'] = $config.Sysmon.HashAlgorithms
         }
@@ -245,29 +245,9 @@ function Get-SysmonConfigOption
             $ObjOptions['Hashing'] = ''   
         }
 
-        # Check if network traffic is being logged.
-        if ($Config.Sysmon.Configuration.SelectSingleNode('//Configuration/Network'))
-        {
-            $ObjOptions['Network'] = 'Enabled'
-        }
-        else
-        {
-            $ObjOptions['Network'] = 'Disabled'   
-        }
-
-        # Check if image loading is being logged.
-        if ($Config.Sysmon.Configuration.SelectSingleNode('//Configuration/ImageLoading'))
-        {
-            $ObjOptions['ImageLoading'] = 'Enabled'
-        }
-        else
-        {
-            $ObjOptions['ImageLoading'] = 'Disabled'   
-        }
-
         $ObjOptions['Comment'] = $Config.'#comment'   
         $ConfigObj = [pscustomobject]$ObjOptions
-        $ConfigObj.pstypenames.insert(0,'Sysmon.ConfigOption')
+        $ConfigObj.pstypenames.insert(0,'Sysmon.HashingAlgorithm')
         $ConfigObj
 
     }
@@ -335,12 +315,12 @@ function Get-SysmonRule
 
 
         # Collect all individual rules if they exist.
-        $Rules = $Config.Sysmon.Rules
+        $Rules = $Config.Sysmon.EventFiltering
 
         if ($EventType -contains 'ALL')
         {
             $TypesToParse = @('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
-                              'ProcessTerminate', 'ImageLoad', 'DriverLoad')
+                              'ProcessTerminate', 'ImageLoad', 'DriverLoad','CreateRemoteThread')
         }
         else
         {
@@ -350,7 +330,7 @@ function Get-SysmonRule
         foreach($Type in $TypesToParse)
         {
             $EvtType = $MyInvocation.MyCommand.Module.PrivateData[$Type]
-            $RuleData = $Rules.SelectNodes("//Rules/$($EvtType)")
+            $RuleData = $Rules.SelectNodes("//EventFiltering/$($EvtType)")
             if($RuleData -ne $null)
             {
                 Write-Verbose -Message "$($EvtType) Rule Found."
@@ -364,7 +344,7 @@ function Get-SysmonRule
 
 
 #  .ExternalHelp Config.psm1-Help.xml
-function Set-SysmonConfigOption
+function Set-SysmonHashingAlgorithm
 {
     [CmdletBinding(DefaultParameterSetName = 'Path')]
     Param
@@ -387,35 +367,12 @@ function Set-SysmonConfigOption
         $LiteralPath,
 
         # Specify one or more hash algorithms used for image identification 
-        [Parameter(Mandatory=$false,
+        [Parameter(Mandatory=$true,
                    ValueFromPipelineByPropertyName=$true,
                    Position=1)]
         [ValidateSet('ALL', 'MD5', 'SHA1', 'SHA256', 'IMPHASH')]
         [string[]]
-        $HashingAlgorithm,
-
-        # Log Network Connections
-        [Parameter(Mandatory=$False,
-                   ValueFromPipelineByPropertyName=$true,
-                   Position=2)]
-        [ValidateSet('Enable', 'Disable')]
-        [string]
-        $Network,
-
-        # Log process loading of modules.
-        [Parameter(Mandatory=$False,
-                   ValueFromPipelineByPropertyName=$true,
-                   Position=3)]
-        [ValidateSet('Enable', 'Disable')]
-        [string]
-        $ImageLoading,
-
-        # Comment for purpose of the configuration file.
-        [Parameter(Mandatory=$False,
-                   ValueFromPipelineByPropertyName=$true,
-                   Position=4)]
-        [String]
-        $Comment = $null
+        $HashingAlgorithm
     )
 
     Begin{}
@@ -451,121 +408,32 @@ function Set-SysmonConfigOption
             Write-Error -Message 'XML file is not a valid Sysmon config file.'
             return
         }
+            
+        Write-Verbose -Message 'Updating Hashing option.'
+        if ($HashingAlgorithm -contains 'ALL')
+        {
+            $Hash = '*'
+        }
+        else
+        {
+            $Hash = $HashingAlgorithm -join ','
+        }
+
+        # Check if Hashing Alorithm node exists.
+        if($Config.SelectSingleNode('//Sysmon/HashAlgorithms') -ne $null)
+        {
+            $Config.Sysmon.HashAlgorithms = $Hash    
+        }
+        else
+        {
+            $HashElement = $Config.CreateElement('HashAlgorithms')
+            [void]$Config.Sysmon.Configuration.AppendChild($HashElement)
+            $Config.Sysmon.Configuration.Hashing = $Hash 
+        }
+        Write-Verbose -Message 'Hashing option has been updated.'
         
 
-        # Update hashing algorithm option if selected.
-        if ($HashingAlgorithm -ne $null)
-        {
-            Write-Verbose -Message 'Updating Hashing option.'
-            if ($HashingAlgorithm -contains 'ALL')
-            {
-                $Hash = '*'
-            }
-            else
-            {
-                $Hash = $HashingAlgorithm -join ','
-            }
-
-            # Check if Hashing Alorithm node exists.
-            if($Config.SelectSingleNode('//Sysmon/Configuration/Hashing') -ne $null)
-            {
-                $Config.Sysmon.Configuration.Hashing = $Hash    
-            }
-            else
-            {
-                $HashElement = $Config.CreateElement('Hashing')
-                [void]$Config.Sysmon.Configuration.AppendChild($HashElement)
-                $Config.Sysmon.Configuration.Hashing = $Hash 
-            }
-            Write-Verbose -Message 'Hashing option has been updated.'
-        }
-
-        # Update Image Loading monitoring option if selected.
-        if($ImageLoading.Length -ne 0)
-        {
-            $Node = $Config.SelectSingleNode('//Sysmon/Configuration/ImageLoading')
-
-            if ($ImageLoading -eq 'Enable')
-            {
-                Write-Verbose -Message 'Enabling image loading logging option.'
-                if ($Node -ne $null)
-                {
-                    Write-Verbose -Message 'ImageLoading login already enabled.'
-                }
-                else
-                {
-                    $ImageLoadingElement = $Config.CreateElement('ImageLoading')
-                    [void]$Config.Sysmon.Configuration.AppendChild($ImageLoadingElement)
-                    Write-Verbose -Message 'Image loading logging option has been enabled.'
-                }
-            }
-            else
-            {
-                if ($Node -ne $null)
-                {
-                    Write-Verbose -Message 'Disabling Image Loading logging.'
-                    [void]$Node.ParentNode.RemoveChild($Node)
-                    Write-Verbose -Message 'Logging Image Loading has been disabled.'
-                }
-                else
-                {
-                    Write-Verbose -Message 'No action taken since image loading option was not enabled.'
-                }
-            
-            }
-        }
-
-        # Update Network monitoring option if selected.
-        if($Network.Length -ne 0)
-        {
-            $NetworkNode = $Config.SelectSingleNode('//Sysmon/Configuration/Network')
-            if ($Network -eq 'Enable')
-            {
-                Write-Verbose -Message 'Enabling network logging option.'
-                if( $NetworkNode -ne $null)
-                {
-                    Write-Verbose -Message 'Network loggin already enabled.'
-                }
-                else
-                {
-                    $NetworkElement = $Config.CreateElement('Network')
-                    [void]$Config.Sysmon.Configuration.AppendChild($NetworkElement)
-                    Write-Verbose -Message 'Network logging option has been enabled.'
-                }
-            }
-            else
-            {
-                if ($NetworkNode -ne $null)
-                {
-                    Write-Verbose -Message 'Disabling network connection logging.'
-                    [void]$NetworkNode.ParentNode.RemoveChild($NetworkNode)
-                    Write-Verbose -Message 'Logging network connections has been disabled.'
-                }
-                else
-                {
-                    Write-Verbose -Message 'No action taken since Network option was not enabled.'
-                }
-            
-            }
-        }
-
-        # Update comment or create a new one if present.
-        if ($Comment.Length -ne 0)
-        {
-            Write-Verbose -Message 'Updating comment for config file.'
-            if($Config.'#comment' -ne $null)
-            {
-                $Config.'#comment' = $Comment    
-            }
-            else
-            {
-                $CommentXML = $Config.CreateComment($Comment)
-                [void]$Config.PrependChild($CommentXML)
-            }
-            Write-Verbose -Message 'Comment for config file has been updated.'
-        }
-
-        Write-Verbose -Message "Options have been set on $($FileLocation)"
+        Write-Verbose -Message "Option have been set on $($FileLocation)"
         $Config.Save($FileLocation)
     }
     End{}
@@ -664,6 +532,7 @@ function Set-SysmonRule
                 Write-Verbose -Message "No rule for $($EvtType) was found."
                 Write-Verbose -Message "Creating rule for event type with action of $($Action)"
                 $TypeElement = $config.CreateElement($EvtType)
+                $TypeElement.SetAttribute('onmatch',($OnMatch.ToLower()))
                 [void]$Rules.AppendChild($TypeElement)
                 $RuleData = $Rules.SelectSingleNode("//EventFiltering/$($EvtType)")
                 $RuleData.SetAttribute('onmatch',($OnMatch.ToLower()))
