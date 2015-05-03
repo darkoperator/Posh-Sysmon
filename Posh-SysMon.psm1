@@ -164,6 +164,12 @@ function New-RuleFilter
             return
         }
 
+         if ($Config.Sysmon.schemaversion -ne '2.0')
+        {
+            Write-Error -Message 'This version of Sysmon Rule file is not supported.'
+            return
+        }
+
         $Rules = $Config.SelectSingleNode('//Sysmon/EventFiltering')
 
         # Select the proper condition string.

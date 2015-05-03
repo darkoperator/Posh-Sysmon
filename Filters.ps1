@@ -462,6 +462,81 @@ function New-SysmonProcessTerminateFilter
 }
 
 #  .ExternalHelp Filter.psm1-Help.xml
+function New-SysmonCreateRemoteThread
+{
+    [CmdletBinding(DefaultParameterSetName = 'Path')]
+    Param
+    (
+        # Path to XML config file.
+        [Parameter(Mandatory=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   ParameterSetName='Path',
+                   Position=0)]
+        [ValidateScript({Test-Path -Path $_})]
+        $Path,
+
+        # Path to XML config file.
+        [Parameter(Mandatory=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   ParameterSetName='LiteralPath',
+                   Position=0)]
+        [ValidateScript({Test-Path -Path $_})]
+        [Alias('PSPath')]
+        $LiteralPath,
+
+        # Condition for filtering against and event field.
+        [Parameter(Mandatory=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=2)]
+        [ValidateSet('Is', 'IsNot', 'Contains', 'Excludes', 'Image',
+                     'BeginWith', 'EndWith', 'LessThan', 'MoreThan')]
+        [string]
+        $Condition,
+
+        # Event field to filter on.
+        [Parameter(Mandatory=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=3)]
+        [ValidateSet('SourceImage', 'TargetImage')]
+        [string]
+        $EventField,
+
+        # Value of Event Field to filter on.
+        [Parameter(Mandatory=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=4)]
+        [string[]]
+        $Value
+     )
+
+    Begin
+    {
+    }
+    Process
+    {
+       $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
+
+        switch($psCmdlet.ParameterSetName)
+        {
+            'Path'
+            {
+                New-RuleFilter -Path $Path -EventType CreateRemoteThread -Condition $Condition -EventField $FieldString -Value $Value
+            }
+
+            'LiteralPath' 
+            {
+                New-RuleFilter -LiteralPath $LiteralPath -EventType CreateRemoteThread -Condition $Condition -EventField $FieldString -Value $Value
+            }
+        }
+
+    }
+    End
+    {
+    }
+}
+
+
+#  .ExternalHelp Filter.psm1-Help.xml
 function Remove-SysmonRuleFilter
 {
     [CmdletBinding(DefaultParameterSetName = 'Path')]

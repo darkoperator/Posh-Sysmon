@@ -234,6 +234,12 @@ function Get-SysmonHashingAlgorithm
             return
         }
 
+        if ($Config.Sysmon.schemaversion -ne '2.0')
+        {
+            Write-Error -Message 'This version of Sysmon Rule file is not supported.'
+            return
+        }
+
         $ObjOptions = @{}
 
         if ($Config.Sysmon.SelectSingleNode('//HashAlgorithms'))
@@ -313,6 +319,11 @@ function Get-SysmonRule
             return
         }
 
+         if ($Config.Sysmon.schemaversion -ne '2.0')
+        {
+            Write-Error -Message 'This version of Sysmon Rule file is not supported.'
+            return
+        }
 
         # Collect all individual rules if they exist.
         $Rules = $Config.Sysmon.EventFiltering
@@ -406,6 +417,12 @@ function Set-SysmonHashingAlgorithm
         if ($Config.SelectSingleNode('//Sysmon') -eq $null)
         {
             Write-Error -Message 'XML file is not a valid Sysmon config file.'
+            return
+        }
+
+         if ($Config.Sysmon.schemaversion -ne '2.0')
+        {
+            Write-Error -Message 'This version of Sysmon Rule file is not supported.'
             return
         }
             
@@ -515,6 +532,12 @@ function Set-SysmonRule
             return
         }
 
+         if ($Config.Sysmon.schemaversion -ne '2.0')
+        {
+            Write-Error -Message 'This version of Sysmon Rule file is not supported.'
+            return
+        }
+
         $Rules = $config.SelectSingleNode('//Sysmon/EventFiltering')
 
         foreach($Type in $EventType)
@@ -611,6 +634,12 @@ function Remove-SysmonRule
         if ($Config.SelectSingleNode('//Sysmon') -eq $null)
         {
             Write-Error -Message 'XML file is not a valid Sysmon config file.'
+            return
+        }
+
+         if ($Config.Sysmon.schemaversion -ne '2.0')
+        {
+            Write-Error -Message 'This version of Sysmon Rule file is not supported.'
             return
         }
 
