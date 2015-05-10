@@ -1,4 +1,4 @@
-﻿#  .ExternalHelp Filter.psm1-Help.xml
+﻿#  .ExternalHelp Posh-SysMon.psm1-Help.xml
 function New-SysmonImageLoadFilter
 {
     [CmdletBinding(DefaultParameterSetName = 'Path')]
@@ -75,7 +75,7 @@ function New-SysmonImageLoadFilter
 }
 
 
-#  .ExternalHelp Filter.psm1-Help.xml
+#  .ExternalHelp Posh-SysMon.psm1-Help.xml
 function New-SysmonDriverLoadFilter
 {
     [CmdletBinding(DefaultParameterSetName = 'Path')]
@@ -151,7 +151,7 @@ function New-SysmonDriverLoadFilter
 }
 
 
-#  .ExternalHelp Filter.psm1-Help.xml
+#  .ExternalHelp Posh-SysMon.psm1-Help.xml
 function New-SysmonNetworkConnectFilter
 {
     [CmdletBinding(DefaultParameterSetName = 'Path')]
@@ -231,7 +231,7 @@ function New-SysmonNetworkConnectFilter
 }
 
 
-#  .ExternalHelp Filter.psm1-Help.xml
+#  .ExternalHelp Posh-SysMon.psm1-Help.xml
 function New-SysmonFileCreateFilter
 {
     [CmdletBinding(DefaultParameterSetName = 'Path')]
@@ -308,7 +308,7 @@ function New-SysmonFileCreateFilter
 }
 
 
-#  .ExternalHelp Filter.psm1-Help.xml
+#  .ExternalHelp Posh-SysMon.psm1-Help.xml
 function New-SysmonProcessCreateFilter
 {
     [CmdletBinding(DefaultParameterSetName = 'Path')]
@@ -387,7 +387,7 @@ function New-SysmonProcessCreateFilter
 }
 
 
-#  .ExternalHelp Filter.psm1-Help.xml
+#  .ExternalHelp Posh-SysMon.psm1-Help.xml
 function New-SysmonProcessTerminateFilter
 {
     [CmdletBinding(DefaultParameterSetName = 'Path')]
@@ -461,7 +461,7 @@ function New-SysmonProcessTerminateFilter
     }
 }
 
-#  .ExternalHelp Filter.psm1-Help.xml
+#  .ExternalHelp Posh-SysMon.psm1-Help.xml
 function New-SysmonCreateRemoteThread
 {
     [CmdletBinding(DefaultParameterSetName = 'Path')]
@@ -536,7 +536,7 @@ function New-SysmonCreateRemoteThread
 }
 
 
-#  .ExternalHelp Filter.psm1-Help.xml
+#  .ExternalHelp Posh-SysMon.psm1-Help.xml
 function Remove-SysmonRuleFilter
 {
     [CmdletBinding(DefaultParameterSetName = 'Path')]

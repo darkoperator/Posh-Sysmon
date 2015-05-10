@@ -1,5 +1,5 @@
 ﻿
-#  .ExternalHelp Config.psm1-Help.xml
+#  .ExternalHelp Posh-SysMon.psm1-Help.xml
 function New-SysmonConfiguration
 {
     [CmdletBinding()]
@@ -185,7 +185,7 @@ function New-SysmonConfiguration
     }
 }
 
-#  .ExternalHelp Config.psm1-Help.xml
+#  .ExternalHelp Posh-SysMon.psm1-Help.xml
 function Get-SysmonHashingAlgorithm
 {
     [CmdletBinding(DefaultParameterSetName = 'Path')]
@@ -261,7 +261,7 @@ function Get-SysmonHashingAlgorithm
 }
 
 
-#  .ExternalHelp Config.psm1-Help.xml
+#  .ExternalHelp Posh-SysMon.psm1-Help.xml
 function Get-SysmonRule
 {
     [CmdletBinding(DefaultParameterSetName = 'Path')]
@@ -354,7 +354,7 @@ function Get-SysmonRule
 }
 
 
-#  .ExternalHelp Config.psm1-Help.xml
+#  .ExternalHelp Posh-SysMon.psm1-Help.xml
 function Set-SysmonHashingAlgorithm
 {
     [CmdletBinding(DefaultParameterSetName = 'Path')]
@@ -457,7 +457,7 @@ function Set-SysmonHashingAlgorithm
 }
 
 
-#  .ExternalHelp Config.psm1-Help.xml
+#  .ExternalHelp Posh-SysMon.psm1-Help.xml
 function Set-SysmonRule
 {
     [CmdletBinding(DefaultParameterSetName = 'Path')]
@@ -570,7 +570,7 @@ function Set-SysmonRule
 }
 
 
-#  .ExternalHelp Config.psm1-Help.xml
+#  .ExternalHelp Posh-SysMon.psm1-Help.xml
 function Remove-SysmonRule
 {
     [CmdletBinding(DefaultParameterSetName = 'Path')]
