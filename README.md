@@ -39,6 +39,12 @@ Import-Module -Name Posh-Sysmon
 Get-Command -Module Posh-Sysmon
 ```
 # Change Log
+## Version 0.4
+Version 3.0 is a full re-write om how rules work and new event types. This update is SysMon 3.0 only. If you wish to work on SysMon 2.0 rules I recommend you use version 0.3 version of the module.
+* When creating a new sysmon rule it will allow you to enable logging of event types supported.
+* Checks that it is only working with the proper XML schema for the rules.
+* Can now create specific filter for CreateRemoteThread event type.
+* Since Rules and Config got merger config functions (Get-SysmonConfigOptio, Set-SysmonConfigOption) where removed and replaced with Get-SysmonHashingAlgorithm and Set-SysmonHashingAlgorithm
 ## Version 0.3
 * Tons of fixes do to a bad re-facor.
 * Filter creation is now done by specific funtions per event type.
@@ -62,29 +68,6 @@ VERBOSE: Enabling hashing algorithms : IMPHASH,SHA1
 VERBOSE: Enabling network connection logging.
 VERBOSE: Config file created as C:\pc_marketing.xml
 </pre>
-
-## Modify Configuration Option
-
-<pre>
-PS C:\> Set-SysmonConfigOption -Path .\pc_marketing.xml -ImageLoading Enable -Verbose
-VERBOSE: Enabling image loading logging option.
-VERBOSE: Image loading logging option has been enabled.
-VERBOSE: Options have been set on C:\pc_marketing.xml
-</pre>
-
-## List configuration Options
-
-<pre>
-PS C:\> Get-SysmonConfigOption -Path .\pc_marketing.xml 
-
-
-Hashing      : IMPHASH,SHA1
-Network      : Enabled
-ImageLoading : Enabled
-Comment      : Sysmon config for deployment in the Marketing PC OU
-
-</pre>
-
 
 
 ## Get configured Rules and Filters
