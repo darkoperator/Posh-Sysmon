@@ -7,7 +7,7 @@ All functions in the PowerShell module include help information and example of u
 
 To install the module from a PowerShell v3 session run:
 <pre>
-iex (New-Object Net.WebClient).DownloadString("https://gist.githubusercontent.com/darkoperator/3f9da4b780b5a0206bca/raw/f9d15c4f95675f71bf6be21dcbee6b0fa9c8ac4c/posh-sysmoninstall.ps1")
+iex (New-Object Net.WebClient).DownloadString("https://gist.githubusercontent.com/darkoperator/3f9da4b780b5a0206bca/raw/d5b798cac5fbdae7885c546c9efcc5cb48fbe04d/posh-sysmoninstall.ps1")
 </pre>
 
 The script that is being ran is the following during installation:
