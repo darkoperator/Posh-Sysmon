@@ -12,7 +12,7 @@
 RootModule = '.\Posh-SysMon.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.4'
+ModuleVersion = '0.5'
 
 # ID used to uniquely identify this module
 GUID = 'a8ade6cb-39d5-45a1-b4aa-acf29ee34aed'
@@ -24,7 +24,7 @@ Author = 'Carlos Perez carlos_Perez@darkoperator.com'
 CompanyName = 'Unknown'
 
 # Copyright statement for this module
-Copyright = '(c) 2014 Carlos Perez carlos_Perez@darkoperator.com. All rights reserved.'
+Copyright = '(c) 2016 Carlos Perez carlos_Perez@darkoperator.com. All rights reserved.'
 
 # Description of the functionality provided by this module
 Description = 'Module for the creation and managing of Sysinternal Sysmon configuration XML files.'
