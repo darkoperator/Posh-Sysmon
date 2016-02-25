@@ -251,7 +251,7 @@ function Get-SysmonHashingAlgorithm
             $ObjOptions['Hashing'] = ''   
         }
 
-        $ObjOptions['Comment'] = $Config.'#comment'   
+        #$ObjOptions['Comment'] = $Config.'#comment'   
         $ConfigObj = [pscustomobject]$ObjOptions
         $ConfigObj.pstypenames.insert(0,'Sysmon.HashingAlgorithm')
         $ConfigObj

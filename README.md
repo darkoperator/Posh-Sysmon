@@ -39,18 +39,23 @@ Import-Module -Name Posh-Sysmon
 Get-Command -Module Posh-Sysmon
 ```
 # Change Log
+
 ## Version 0.4
 * Added Get-SysmonEventData to get the Event Data information as custom object for selected Event Types.
+* Added Get-SysmonRuleFilter to get all filters under a specific Event Type Rule.
+
 ## Version 0.4
 Version 3.0 is a full re-write om how rules work and new event types. This update is SysMon 3.0 only. If you wish to work on SysMon 2.0 rules I recommend you use version 0.3 version of the module.
 * When creating a new sysmon rule it will allow you to enable logging of event types supported.
 * Checks that it is only working with the proper XML schema for the rules.
 * Can now create specific filter for CreateRemoteThread event type.
 * Since Rules and Config got merger config functions (Get-SysmonConfigOptio, Set-SysmonConfigOption) where removed and replaced with Get-SysmonHashingAlgorithm and Set-SysmonHashingAlgorithm
+
 ## Version 0.3
 * Tons of fixes do to a bad re-facor.
 * Filter creation is now done by specific funtions per event type.
 * Filter creation functions are now in their own sub-module.
+
 ## Version 0.2
 * Validate that the file is an XML file and a valid Sysmon configuration file.
 * Change option ConfigFile to Path and LiteralPath so as to match other cmdlets that work with files.

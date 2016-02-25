@@ -78,7 +78,9 @@ FunctionsToExport = @('Get-SysmonHashingAlgorithm',
                     'Remove-SysmonRule',                                                                                                                                                        
                     'Remove-SysmonRuleFilter',                                                                                                                                                  
                     'Set-SysmonHashingAlgorithm',                                                                                                                                                   
-                    'Set-SysmonRule')    
+                    'Set-SysmonRule',
+                    'Get-SysmonEventData',
+                    'Get-SysmonRuleFilter')    
 
 # Cmdlets to export from this module
 CmdletsToExport = '*'
