@@ -12,7 +12,7 @@
 RootModule = '.\Posh-SysMon.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.5'
+ModuleVersion = '0.5.1'
 
 # ID used to uniquely identify this module
 GUID = 'a8ade6cb-39d5-45a1-b4aa-acf29ee34aed'
