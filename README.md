@@ -40,7 +40,7 @@ Get-Command -Module Posh-Sysmon
 ```
 # Change Log
 
-## Version 0.4
+## Version 0.5
 * Added Get-SysmonEventData to get the Event Data information as custom object for selected Event Types.
 * Added Get-SysmonRuleFilter to get all filters under a specific Event Type Rule.
 
