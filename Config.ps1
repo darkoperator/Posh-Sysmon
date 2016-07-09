@@ -72,7 +72,13 @@ function New-SysmonConfiguration
         [Parameter(Mandatory=$False,
                    ValueFromPipelineByPropertyName=$true)]
         [String]
-        $Comment
+        $Comment,
+
+        [Parameter(Mandatory=$False,
+                   ValueFromPipelineByPropertyName=$true)]
+                   [ValidateSet('2.0','3.0')]
+        [String]
+        $SchemaVersion = '3.0'
     )
 
     Begin{}
@@ -104,7 +110,7 @@ function New-SysmonConfiguration
         }
         $xmlWriter.WriteStartElement('Sysmon')
         
-        $XmlWriter.WriteAttributeString('schemaversion', '2.0')
+        $XmlWriter.WriteAttributeString('schemaversion', $SchemaVersion)
 
         Write-Verbose -Message "Enabling hashing algorithms : $($Hash)"
         $xmlWriter.WriteElementString('HashAlgorithms',$Hash)
@@ -234,7 +240,7 @@ function Get-SysmonHashingAlgorithm
             return
         }
 
-        if ($Config.Sysmon.schemaversion -ne '2.0')
+        if ($Config.Sysmon.schemaversion -ne '2.0' -and $Config.Sysmon.schemaversion -ne '3.0')
         {
             Write-Error -Message 'This version of Sysmon Rule file is not supported.'
             return
@@ -319,7 +325,7 @@ function Get-SysmonRule
             return
         }
 
-         if ($Config.Sysmon.schemaversion -ne '2.0')
+         if ($Config.Sysmon.schemaversion -ne '2.0' -and $Config.Sysmon.schemaversion -ne '3.0')
         {
             Write-Error -Message 'This version of Sysmon Rule file is not supported.'
             return
@@ -420,7 +426,7 @@ function Set-SysmonHashingAlgorithm
             return
         }
 
-         if ($Config.Sysmon.schemaversion -ne '2.0')
+         if ($Config.Sysmon.schemaversion -ne '2.0' -and $Config.Sysmon.schemaversion -ne '3.0')
         {
             Write-Error -Message 'This version of Sysmon Rule file is not supported.'
             return
@@ -495,12 +501,25 @@ function Set-SysmonRule
                    Position=2)]
         [ValidateSet('Include', 'Exclude')]
         [String]
-        $OnMatch = 'Exclude'
+        $OnMatch = 'Exclude',
+
+        # Action to take for Schema 3.0 files.
+        [Parameter(Mandatory=$false,
+                   ValueFromPipelineByPropertyName=$true)]
+        [ValidateSet('Modify', 'Add')]
+        [String]
+        $Action = 'Modify'
     )
 
     Begin{}
     Process
     {
+        #if no elemrnt create one either if itis schema 2.0 or 3.0.
+        # If one is present we modify that one if Schema 2.0 and if Schema 3.0 and action modify.
+        # If Schema 3.0 and action add we check if only is present and that it is not the same OnMatch
+        # as being specified if it is we do nothing if not we add. 
+
+
         # Check if the file is a valid XML file and if not raise and error. 
         try
         {
@@ -519,7 +538,7 @@ function Set-SysmonRule
                 }
             }
         }
-        catch [System.Management.Automation.PSInvalidCastException]
+        catch [Management.Automation.PSInvalidCastException]
         {
             Write-Error -Message 'Specified file does not appear to be a XML file.'
             return
@@ -532,7 +551,7 @@ function Set-SysmonRule
             return
         }
 
-         if ($Config.Sysmon.schemaversion -ne '2.0')
+         if ($Config.Sysmon.schemaversion -ne '2.0' -and $Config.Sysmon.schemaversion -ne '3.0')
         {
             Write-Error -Message 'This version of Sysmon Rule file is not supported.'
             return
@@ -544,21 +563,51 @@ function Set-SysmonRule
         {
             $EvtType = $MyInvocation.MyCommand.Module.PrivateData[$Type]
             $RuleData = $Rules.SelectSingleNode("//EventFiltering/$($EvtType)")
+            $elements = $Rules."$($EvtType)" | Select-Object -property onmatch -Unique
+
             if($RuleData -ne $null)
             {
-                Write-Verbose -Message "Setting as default action for $($EvtType) the action of $($Action)."
-                $RuleData.SetAttribute('onmatch',($OnMatch.ToLower()))
-                Write-Verbose -Message 'Action has been set.'
+                if ($Rules."$($EvtType)".count -eq $null)
+                {
+                    if (($Config.Sysmon.schemaversion -eq '2.0') -or ($Config.Sysmon.schemaversion -eq '3.0' -and $Action -eq 'Modify'))
+                    {
+                        Write-Verbose -Message "Setting as default action for $($EvtType) the rule on match of $($OnMatch)."
+                        $RuleData.SetAttribute('onmatch',($OnMatch.ToLower()))
+                        Write-Verbose -Message 'Action has been set.'
+                    }
+                    elseif ($Config.Sysmon.schemaversion -eq '3.0' -and $Action -eq 'Add')
+                    {
+                        if ($RuleData.onmatch -ne $OnMatch)
+                        {
+                            Write-Verbose -Message "Creating rule for event type with action of $($OnMatch)"
+                            $TypeElement = $config.CreateElement($EvtType)
+                            $TypeElement.SetAttribute('onmatch',($OnMatch.ToLower()))
+                             $RuleData = $Rules.AppendChild($TypeElement)
+                            Write-Verbose -Message 'Action has been set.'
+                        }
+                        else
+                        {
+                            Write-Verbose -Message 'A rule with the specified onmatch action already exists.'
+                        }
+                    }
+                }
+                elseif ($Config.Sysmon.schemaversion -eq '3.0' -and $elements.count -eq 2)
+                {
+                    Write-Verbose -Message 'A rule with the specified onmatch action already exists.'
+                }
+                else
+                {
+                    Write-Error -Message 'This XML file does not conform to the schema.'
+                    return
+                }
             }
             else
             {
                 Write-Verbose -Message "No rule for $($EvtType) was found."
-                Write-Verbose -Message "Creating rule for event type with action of $($Action)"
+                Write-Verbose -Message "Creating rule for event type with action of $($OnMatch)"
                 $TypeElement = $config.CreateElement($EvtType)
                 $TypeElement.SetAttribute('onmatch',($OnMatch.ToLower()))
-                [void]$Rules.AppendChild($TypeElement)
-                $RuleData = $Rules.SelectSingleNode("//EventFiltering/$($EvtType)")
-                $RuleData.SetAttribute('onmatch',($OnMatch.ToLower()))
+                $RuleData = $Rules.AppendChild($TypeElement)
                 Write-Verbose -Message 'Action has been set.'
             }
 
@@ -600,7 +649,15 @@ function Remove-SysmonRule
         [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
                      'ProcessTerminate', 'ImageLoad', 'DriverLoad', 'CreateRemoteThread')]
         [string[]]
-        $EventType
+        $EventType,
+
+        # Action for event type rule and filters.
+        [Parameter(Mandatory=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=2)]
+        [ValidateSet('Include', 'Exclude')]
+        [String]
+        $OnMatch = 'Exclude'
     )
 
     Begin{}
@@ -624,7 +681,7 @@ function Remove-SysmonRule
                 }
             }
         }
-        catch [System.Management.Automation.PSInvalidCastException]
+        catch [Management.Automation.PSInvalidCastException]
         {
             Write-Error -Message 'Specified file does not appear to be a XML file.'
             return
@@ -637,28 +694,22 @@ function Remove-SysmonRule
             return
         }
 
-         if ($Config.Sysmon.schemaversion -ne '2.0')
+         if ($Config.Sysmon.schemaversion -ne '2.0' -and $Config.Sysmon.schemaversion -ne '3.0')
         {
             Write-Error -Message 'This version of Sysmon Rule file is not supported.'
             return
         }
 
         $Rules = $config.SelectSingleNode('//Sysmon/EventFiltering')
-
-        foreach($Type in $EventType)
+        foreach ($rule in $rules.ChildNodes)
         {
-            $EvtType = $MyInvocation.MyCommand.Module.PrivateData[$Type]
-            $Rule = $Rules.SelectSingleNode("//EventFiltering/$($EvtType)")
-            if ($Rule -ne $null)
+            if ($rule.name -in $EventType -and $rule.onmatch -eq $OnMatch)
             {
-                [void]$Rule.ParentNode.RemoveChild($Rule)
+                [void]$rule.ParentNode.RemoveChild($rule)
                 Write-Verbose -Message "Removed rule for $($EvtType)."
             }
-            else
-            {
-                Write-Warning -Message "Did not found a rule for $($EvtType)"
-            }
         }
+        
         $config.Save($FileLocation)
     }
     End{}

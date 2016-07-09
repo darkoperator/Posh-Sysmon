@@ -21,6 +21,14 @@ function New-SysmonImageLoadFilter
         [Alias('PSPath')]
         $LiteralPath,
 
+        # Event type on match action.
+        [Parameter(Mandatory=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=1)]
+        [ValidateSet('include', 'exclude')]
+        [string]
+        $OnMatch,
+
         # Condition for filtering against and event field.
         [Parameter(Mandatory=$true,
                    ValueFromPipelineByPropertyName=$true,
@@ -48,9 +56,7 @@ function New-SysmonImageLoadFilter
         $Value
      )
 
-    Begin
-    {
-    }
+    Begin {}
     Process
     {
         $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
@@ -59,19 +65,17 @@ function New-SysmonImageLoadFilter
         {
             'Path'
             {
-                New-RuleFilter -Path $Path -EventType ImageLoad -Condition $Condition -EventField $FieldString -Value $Value
+                New-RuleFilter -Path $Path -EventType ImageLoad -Condition $Condition -EventField $FieldString -Value $Value -OnMatch $OnMatch
             }
 
             'LiteralPath' 
             {
-                New-RuleFilter -LiteralPath $LiteralPath -EventType ImageLoad -Condition $Condition -EventField $FieldString -Value $Value
+                New-RuleFilter -LiteralPath $LiteralPath -EventType ImageLoad -Condition $Condition -EventField $FieldString -Value $Value -OnMatch $OnMatch
             }
         }
-
+        
     }
-    End
-    {
-    }
+    End { }
 }
 
 
@@ -97,6 +101,14 @@ function New-SysmonDriverLoadFilter
         [ValidateScript({Test-Path -Path $_})]
         [Alias('PSPath')]
         $LiteralPath,
+
+        # Event type on match action.
+        [Parameter(Mandatory=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=1)]
+        [ValidateSet('include', 'exclude')]
+        [string]
+        $OnMatch,
 
         # Condition for filtering against and event field.
         [Parameter(Mandatory=$true,
@@ -130,20 +142,19 @@ function New-SysmonDriverLoadFilter
     Process
     {
         $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
-
-        switch($psCmdlet.ParameterSetName)
+        foreach ($val in $Value)
         {
+
             'Path'
             {
-                New-RuleFilter -Path $Path -EventType DriverLoad -Condition $Condition -EventField $FieldString -Value $Value
+                New-RuleFilter -Path $Path -EventType DriverLoad -Condition $Condition -EventField $FieldString -Value $Value -OnMatch $OnMatch
             }
 
             'LiteralPath' 
             {
-                New-RuleFilter -LiteralPath $LiteralPath -EventType DriverLoad -Condition $Condition -EventField $FieldString -Value $Value
+                New-RuleFilter -LiteralPath $LiteralPath -EventType DriverLoad -Condition $Condition -EventField $FieldString -Value $Value -OnMatch $OnMatch
             }
         }
-
     }
     End
     {
@@ -173,6 +184,14 @@ function New-SysmonNetworkConnectFilter
         [ValidateScript({Test-Path -Path $_})]
         [Alias('PSPath')]
         $LiteralPath,
+
+        # Event type on match action.
+        [Parameter(Mandatory=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=1)]
+        [ValidateSet('include', 'exclude')]
+        [string]
+        $OnMatch,
 
         # Condition for filtering against and event field.
         [Parameter(Mandatory=$true,
@@ -204,26 +223,24 @@ function New-SysmonNetworkConnectFilter
         $Value
      )
 
-    Begin
-    {
-    }
+    Begin {}
     Process
     {
         $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
-
+        
         switch($psCmdlet.ParameterSetName)
         {
             'Path'
             {
-                New-RuleFilter -Path $Path -EventType NetworkConnect -Condition $Condition -EventField $FieldString -Value $Value
+                New-RuleFilter -Path $Path -EventType NetworkConnect -Condition $Condition -EventField $FieldString -Value $Value -OnMatch $OnMatch
             }
 
             'LiteralPath' 
             {
-                New-RuleFilter -LiteralPath $LiteralPath -EventType NetworkConnect -Condition $Condition -EventField $FieldString -Value $Value
+                New-RuleFilter -LiteralPath $LiteralPath -EventType NetworkConnect -Condition $Condition -EventField $FieldString -Value $Value -OnMatch $OnMatch
             }
         }
-
+        
     }
     End
     {
@@ -254,6 +271,14 @@ function New-SysmonFileCreateFilter
         [Alias('PSPath')]
         $LiteralPath,
 
+        # Event type on match action.
+        [Parameter(Mandatory=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=1)]
+        [ValidateSet('include', 'exclude')]
+        [string]
+        $OnMatch,
+
         # Condition for filtering against and event field.
         [Parameter(Mandatory=$true,
                    ValueFromPipelineByPropertyName=$true,
@@ -281,30 +306,26 @@ function New-SysmonFileCreateFilter
         $Value
      )
 
-    Begin
-    {
-    }
+    Begin {}
     Process
     {
         $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
-
+        
         switch($psCmdlet.ParameterSetName)
         {
             'Path'
             {
-                New-RuleFilter -Path $Path -EventType FileCreateTime -Condition $Condition -EventField $FieldString -Value $Value
+                New-RuleFilter -Path $Path -EventType FileCreateTime -Condition $Condition -EventField $FieldString -Value $Value -OnMatch $OnMatch
             }
 
             'LiteralPath' 
             {
-                New-RuleFilter -LiteralPath $LiteralPath -EventType FileCreateTime -Condition $Condition -EventField $FieldString -Value $Value
+                New-RuleFilter -LiteralPath $LiteralPath -EventType FileCreateTime -Condition $Condition -EventField $FieldString -Value $Value -OnMatch $OnMatch
             }
         }
-
+        
     }
-    End
-    {
-    }
+    End {}
 }
 
 
@@ -330,6 +351,14 @@ function New-SysmonProcessCreateFilter
         [ValidateScript({Test-Path -Path $_})]
         [Alias('PSPath')]
         $LiteralPath,
+
+        # Event type on match action.
+        [Parameter(Mandatory=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=1)]
+        [ValidateSet('include', 'exclude')]
+        [string]
+        $OnMatch,
 
         # Condition for filtering against and event field.
         [Parameter(Mandatory=$true,
@@ -360,26 +389,22 @@ function New-SysmonProcessCreateFilter
         $Value
      )
 
-    Begin
-    {
-    }
+    Begin {}
     Process
     {
         $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
-
         switch($psCmdlet.ParameterSetName)
         {
             'Path'
             {
-                New-RuleFilter -Path $Path -EventType ProcessCreate -Condition $Condition -EventField $FieldString -Value $Value
+                New-RuleFilter -Path $Path -EventType ProcessCreate -Condition $Condition -EventField $FieldString -Value $Value -OnMatch $OnMatch
             }
 
             'LiteralPath' 
             {
-                New-RuleFilter -LiteralPath $LiteralPath -EventType ProcessCreate -Condition $Condition -EventField $FieldString -Value $Value
+                New-RuleFilter -LiteralPath $LiteralPath -EventType ProcessCreate -Condition $Condition -EventField $FieldString -Value $Value -OnMatch $OnMatch
             }
         }
-
     }
     End
     {
@@ -410,6 +435,14 @@ function New-SysmonProcessTerminateFilter
         [Alias('PSPath')]
         $LiteralPath,
 
+        # Event type on match action.
+        [Parameter(Mandatory=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=1)]
+        [ValidateSet('include', 'exclude')]
+        [string]
+        $OnMatch,
+
         # Condition for filtering against and event field.
         [Parameter(Mandatory=$true,
                    ValueFromPipelineByPropertyName=$true,
@@ -435,30 +468,25 @@ function New-SysmonProcessTerminateFilter
         $Value
      )
 
-    Begin
-    {
-    }
+    Begin {}
     Process
     {
-       $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
+        $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
 
         switch($psCmdlet.ParameterSetName)
         {
             'Path'
             {
-                New-RuleFilter -Path $Path -EventType ProcessTerminate -Condition $Condition -EventField $FieldString -Value $Value
+                New-RuleFilter -Path $Path -EventType ProcessTerminate -Condition $Condition -EventField $FieldString -Value $Value -OnMatch $OnMatch
             }
 
             'LiteralPath' 
             {
-                New-RuleFilter -LiteralPath $LiteralPath -EventType ProcessTerminate -Condition $Condition -EventField $FieldString -Value $Value
+                New-RuleFilter -LiteralPath $LiteralPath -EventType ProcessTerminate -Condition $Condition -EventField $FieldString -Value $Value -OnMatch $OnMatch
             }
         }
-
     }
-    End
-    {
-    }
+    End {}
 }
 
 #  .ExternalHelp Posh-SysMon.psm1-Help.xml
@@ -483,6 +511,14 @@ function New-SysmonCreateRemoteThread
         [ValidateScript({Test-Path -Path $_})]
         [Alias('PSPath')]
         $LiteralPath,
+
+        # Event type on match action.
+        [Parameter(Mandatory=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=1)]
+        [ValidateSet('include', 'exclude')]
+        [string]
+        $OnMatch,
 
         # Condition for filtering against and event field.
         [Parameter(Mandatory=$true,
@@ -514,21 +550,23 @@ function New-SysmonCreateRemoteThread
     }
     Process
     {
-       $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
-
-        switch($psCmdlet.ParameterSetName)
+        foreach ($val in $Value)
         {
-            'Path'
-            {
-                New-RuleFilter -Path $Path -EventType CreateRemoteThread -Condition $Condition -EventField $FieldString -Value $Value
-            }
+           $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
 
-            'LiteralPath' 
+            switch($psCmdlet.ParameterSetName)
             {
-                New-RuleFilter -LiteralPath $LiteralPath -EventType CreateRemoteThread -Condition $Condition -EventField $FieldString -Value $Value
+                'Path'
+                {
+                    New-RuleFilter -Path $Path -EventType CreateRemoteThread -Condition $Condition -EventField $FieldString -Value $Value -OnMatch $OnMatch
+                }
+
+                'LiteralPath' 
+                {
+                    New-RuleFilter -LiteralPath $LiteralPath -EventType CreateRemoteThread -Condition $Condition -EventField $FieldString -Value $Value -OnMatch $OnMatch
+                }
             }
         }
-
     }
     End
     {
@@ -566,13 +604,21 @@ function Remove-SysmonRuleFilter
         [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
                      'ProcessTerminate', 'ImageLoad', 'DriverLoad', 
                      'CreateRemoteThread')]
-        [string[]]
+        [string]
         $EventType,
+
+        # Event type on match action.
+        [Parameter(Mandatory=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=2)]
+        [ValidateSet('include', 'exclude')]
+        [string]
+        $OnMatch,
 
         # Condition for filtering against and event field.
         [Parameter(Mandatory=$true,
                    ValueFromPipelineByPropertyName=$true,
-                   Position=2)]
+                   Position=3)]
         [ValidateSet('Is', 'IsNot', 'Contains', 'Excludes', 'Image',
                      'BeginWith', 'EndWith', 'LessThan', 'MoreThan')]
         [string]
@@ -581,14 +627,14 @@ function Remove-SysmonRuleFilter
         # Event field to filter on.
         [Parameter(Mandatory=$true,
                    ValueFromPipelineByPropertyName=$true,
-                   Position=3)]
+                   Position=4)]
         [string]
         $EventField,
 
         # Value of Event Field to filter on.
         [Parameter(Mandatory=$true,
                    ValueFromPipelineByPropertyName=$true,
-                   Position=4)]
+                   Position=5)]
         [string[]]
         $Value
     )
@@ -615,7 +661,7 @@ function Remove-SysmonRuleFilter
                 }
             }
         }
-        catch [System.Management.Automation.PSInvalidCastException]
+        catch [Management.Automation.PSInvalidCastException]
         {
             Write-Error -Message 'Specified file does not appear to be a XML file.'
             return
@@ -653,9 +699,9 @@ function Remove-SysmonRuleFilter
         }
         else
         {
-            $EvtType = $MyInvocation.MyCommand.Module.PrivateData[$Type]
+            $EvtType = $MyInvocation.MyCommand.Module.PrivateData[$EventType]
 
-            $EventRule = $Rules.SelectSingleNode("//EventFiltering/$($EvtType)")
+            $EventRule = $Rules.SelectNodes("//EventFiltering/$($EvtType)")
         }
 
         if($EventRule -eq $null)
@@ -663,36 +709,79 @@ function Remove-SysmonRuleFilter
             Write-Warning -Message "No rule for $($EvtType) was found."
             return
         }
-        $Filters = $EventRule.SelectNodes('*')
-        if ($Filters.count -gt 0)
+
+        if($EventRule -eq $null)
         {
-            foreach($val in $Value)
+            Write-Error -Message "No rule for $($EvtType) was found."
+            return
+        }
+        else
+        {
+            if ($EventRule.count -eq $null -or $EventRule.Count -eq 1)
             {
-                foreach($Filter in $Filters)
+                if ($EventRule.onmatch -eq $OnMatch)
                 {
-                    if ($Filter.Name -eq $EventField)
+                    $Filters = $EventRule.SelectNodes('*')
+                    if ($Filters.count -gt 0)
                     {
-                        if (($Filter.condition -eq $null) -and ($Condition -eq 'is') -and ($Filter.'#text' -eq $val))
+                        foreach($val in $Value)
                         {
-                            [void]$Filter.ParentNode.RemoveChild($Filter)
-                            Write-Verbose -Message "Filter for field $($EventField) with condition $($Condition) and value of $($val) removed."
+                            foreach($Filter in $Filters)
+                            {
+                                if ($Filter.Name -eq $EventField)
+                                {
+                                    if (($Filter.condition -eq $null) -and ($Condition -eq 'is') -and ($Filter.'#text' -eq $val))
+                                    {
+                                        [void]$Filter.ParentNode.RemoveChild($Filter)
+                                        Write-Verbose -Message "Filter for field $($EventField) with condition $($Condition) and value of $($val) removed."
+                                    }
+                                    elseif (($Filter.condition -eq $Condition) -and ($Filter.'#text' -eq $val))
+                                    {
+                                        [void]$Filter.ParentNode.RemoveChild($Filter)
+                                        Write-Verbose -Message "Filter for field $($EventField) with condition $($Condition) and value of $($val) removed."
+                                    }
+                                }
+                            }
                         }
-                        elseif (($Filter.condition -eq $Condition) -and ($Filter.'#text' -eq $val))
+                        Get-RuleWithFilter($EventRule)
+                    }
+                }
+            }
+            else
+            {
+                Write-Verbose -Message 'Mutiple nodes.'
+                foreach ($rule in $EventRule)
+                {
+                    if ($rule.onmatch -eq $OnMatch)
+                    {
+                        $Filters = $rule.SelectNodes('*')
+                        if ($Filters.count -gt 0)
                         {
-                            [void]$Filter.ParentNode.RemoveChild($Filter)
-                            Write-Verbose -Message "Filter for field $($EventField) with condition $($Condition) and value of $($val) removed."
+                            foreach($val in $Value)
+                            {
+                                foreach($Filter in $Filters)
+                                {
+                                    if ($Filter.Name -eq $EventField)
+                                    {
+                                        if (($Filter.condition -eq $null) -and ($Condition -eq 'is') -and ($Filter.'#text' -eq $val))
+                                        {
+                                            [void]$Filter.ParentNode.RemoveChild($Filter)
+                                            Write-Verbose -Message "Filter for field $($EventField) with condition $($Condition) and value of $($val) removed."
+                                        }
+                                        elseif (($Filter.condition -eq $Condition) -and ($Filter.'#text' -eq $val))
+                                        {
+                                            [void]$Filter.ParentNode.RemoveChild($Filter)
+                                            Write-Verbose -Message "Filter for field $($EventField) with condition $($Condition) and value of $($val) removed."
+                                        }
+                                    }
+                                }
+                            }
+                            Get-RuleWithFilter($rule)
                         }
                     }
                 }
             }
-            Get-RuleWithFilter($EventRule)
         }
-        else
-        {
-            Write-Warning -Message 'This event type has no filters configured.'
-            return
-        }
-
         $config.Save($FileLocation)
     }
     End{}
@@ -737,8 +826,16 @@ function Get-SysmonRuleFilter
         [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
                      'ProcessTerminate', 'ImageLoad', 'DriverLoad', 
                      'CreateRemoteThread')]
-        [string[]]
-        $EventType
+        [string]
+        $EventType,
+
+        # Event type on match action.
+        [Parameter(Mandatory=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=2)]
+        [ValidateSet('include', 'exclude')]
+        [string]
+        $OnMatch
     )
 
     Begin{}
@@ -787,35 +884,68 @@ function Get-SysmonRuleFilter
         {
             $EvtType = $MyInvocation.MyCommand.Module.PrivateData[$EventType]
 
-            $EventRule = $Rules.SelectSingleNode("//EventFiltering/$($EvtType)")
+            $EventRule = $Rules.SelectNodes("//EventFiltering/$($EvtType)")
         }
 
         if($EventRule -eq $null)
         {
-            Write-Warning -Message "No rule for $($EvtType) was found."
+            Write-Error -Message "No rule for $($EvtType) was found."
             return
-        }
-        $Filters = $EventRule.SelectNodes('*')
-        if ($Filters.count -gt 0)
-        {
-            foreach($Filter in $Filters)
-            {
-                
-                $FilterObjProps = @{}
-                $FilterObjProps['EventField'] = $Filter.Name
-                $FilterObjProps['Condition'] = &{if($Filter.condition -eq $null){'is'}else{$Filter.condition}}
-                $FilterObjProps['Value'] =  $Filter.'#text'
-                $FilterObj = [pscustomobject]$FilterObjProps
-                $FilterObj.pstypenames.insert(0,'Sysmon.Rule.Filter')
-                $FilterObj
-           
-            }
-            
         }
         else
         {
-            Write-Warning -Message 'This event type has no filters configured.'
-            return
+            if ($EventRule.count -eq $null -or $EventRule.Count -eq 1)
+            {
+                Write-Verbose -Message 'Single Node'
+                if ($EventRule.onmatch -eq $OnMatch)
+                {
+                    $Filters = $EventRule.SelectNodes('*')
+                    if ($Filters.ChildNodes.Count -gt 0)
+                    {
+                        foreach($Filter in $Filters)
+                        {
+                            $FilterObjProps = @{}
+                            $FilterObjProps['EventField'] = $Filter.Name
+                            $FilterObjProps['Condition'] = &{if($Filter.condition -eq $null){'is'}else{$Filter.condition}}
+                            $FilterObjProps['Value'] =  $Filter.'#text'
+                            $FilterObjProps['EventType'] =  $EvtType
+                            $FilterObjProps['OnMatch'] =  $OnMatch
+                            $FilterObj = [pscustomobject]$FilterObjProps
+                            $FilterObj.pstypenames.insert(0,'Sysmon.Rule.Filter')
+                            $FilterObj
+           
+                        }
+            
+                    }
+                }
+            }
+            else
+            {
+                Write-Verbose -Message 'Mutiple nodes.'
+                foreach ($rule in $EventRule)
+                {
+                    if ($rule.onmatch -eq $OnMatch)
+                    {
+                        $Filters = $rule.SelectNodes('*')
+                        if ($Filters.ChildNodes.Count -gt 0)
+                        {
+                            foreach($Filter in $Filters)
+                            {
+                                $FilterObjProps = @{}
+                                $FilterObjProps['EventField'] = $Filter.Name
+                                $FilterObjProps['Condition'] = &{if($Filter.condition -eq $null){'is'}else{$Filter.condition}}
+                                $FilterObjProps['Value'] =  $Filter.'#text'
+                                $FilterObjProps['EventType'] =  $EvtType
+                                $FilterObjProps['OnMatch'] =  $OnMatch
+                                $FilterObj = [pscustomobject]$FilterObjProps
+                                $FilterObj.pstypenames.insert(0,'Sysmon.Rule.Filter')
+                                $FilterObj
+                            }
+            
+                        }
+                    }
+                }
+            }
         }
     }
     End{}

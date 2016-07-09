@@ -12,43 +12,45 @@ function Get-RuleWithFilter
         $Rules
     )
     $RuleObjOptions = @{}
-
-    $RuleObjOptions['EventType'] = $Rules.Name
-    if ($Rules.onmatch -eq $null -or $Rules.onmatch -eq 'exclude')
+    foreach ($rule in $Rules)
     {
-           $RuleObjOptions['DefaultAction'] = 'Exclude'
-    }
-    else
-    {
-        $RuleObjOptions['DefaultAction'] = 'Include'
-    }
-
-    # Process individual filters
-    $Nodes = $Rules.selectnodes('*')
-    if ($Nodes.count -eq 0)
-    {
-        $RuleObjOptions['Scope'] = 'All Events'
-    }
-    else
-    {
-        $RuleObjOptions['Scope'] = 'Filtered'
-        $Filters = @()
-        foreach ($Node in $Nodes)
-        {   
-            $FilterObjProps = @{}
-            $FilterObjProps['EventField'] = $Node.Name
-            $FilterObjProps['Condition'] = &{if($Node.condition -eq $null){'is'}else{$Node.condition}}
-            $FilterObjProps['Value'] =  $Node.'#text'
-            $FilterObj = [pscustomobject]$FilterObjProps
-            $FilterObj.pstypenames.insert(0,'Sysmon.Rule.Filter')
-            $Filters += $FilterObj
+        $RuleObjOptions['EventType'] = $Rule.Name
+        if ($Rule.onmatch -eq $null -or $Rule.onmatch -eq 'exclude')
+        {
+               $RuleObjOptions['DefaultAction'] = 'Exclude'
         }
-        $RuleObjOptions['Filters'] = $Filters
-    }
+        else
+        {
+            $RuleObjOptions['DefaultAction'] = 'Include'
+        }
 
-    $RuleObj = [pscustomobject]$RuleObjOptions
-    $RuleObj.pstypenames.insert(0,'Sysmon.Rule')
-    $RuleObj
+        # Process individual filters
+        $Nodes = $Rule.selectnodes('*')
+        if ($Nodes.count -eq 0)
+        {
+            $RuleObjOptions['Scope'] = 'All Events'
+        }
+        else
+        {
+            $RuleObjOptions['Scope'] = 'Filtered'
+            $Filters = @()
+            foreach ($Node in $Nodes)
+            {   
+                $FilterObjProps = @{}
+                $FilterObjProps['EventField'] = $Node.Name
+                $FilterObjProps['Condition'] = &{if($Node.condition -eq $null){'is'}else{$Node.condition}}
+                $FilterObjProps['Value'] =  $Node.'#text'
+                $FilterObj = [pscustomobject]$FilterObjProps
+                $FilterObj.pstypenames.insert(0,'Sysmon.Rule.Filter')
+                $Filters += $FilterObj
+            }
+            $RuleObjOptions['Filters'] = $Filters
+        }
+
+        $RuleObj = [pscustomobject]$RuleObjOptions
+        $RuleObj.pstypenames.insert(0,'Sysmon.Rule')
+        $RuleObj
+    }
 } 
 
 <#
@@ -106,10 +108,18 @@ function New-RuleFilter
         [string]
         $EventType,
 
-        # Condition for filtering against and event field.
+        # Event type to create filter for.
         [Parameter(Mandatory=$true,
                    ValueFromPipelineByPropertyName=$true,
                    Position=2)]
+        [ValidateSet('include', 'exclude')]
+        [string]
+        $OnMatch,
+
+        # Condition for filtering against and event field.
+        [Parameter(Mandatory=$true,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=3)]
         [ValidateSet('Is', 'IsNot', 'Contains', 'Excludes', 'Image',
                      'BeginWith', 'EndWith', 'LessThan', 'MoreThan')]
         [string]
@@ -118,14 +128,14 @@ function New-RuleFilter
         # Event field to filter on.
         [Parameter(Mandatory=$true,
                    ValueFromPipelineByPropertyName=$true,
-                   Position=3)]
+                   Position=4)]
         [string]
         $EventField,
 
         # Value of Event Field to filter on.
         [Parameter(Mandatory=$true,
                    ValueFromPipelineByPropertyName=$true,
-                   Position=4)]
+                   Position=5)]
         [string[]]
         $Value
     )
@@ -151,7 +161,7 @@ function New-RuleFilter
                 }
             }
         }
-        catch [System.Management.Automation.PSInvalidCastException]
+        catch [Management.Automation.PSInvalidCastException]
         {
             Write-Error -Message 'Specified file does not appear to be a XML file.'
             return
@@ -164,7 +174,7 @@ function New-RuleFilter
             return
         }
 
-         if ($Config.Sysmon.schemaversion -ne '2.0')
+         if ($Config.Sysmon.schemaversion -ne '2.0' -and $Config.Sysmon.schemaversion -ne '3.0')
         {
             Write-Error -Message 'This version of Sysmon Rule file is not supported.'
             return
@@ -172,7 +182,7 @@ function New-RuleFilter
 
         $Rules = $Config.SelectSingleNode('//Sysmon/EventFiltering')
 
-        # Select the proper condition string.
+        # Select the proper condition string and make sure it is the proper case.
         switch ($Condition)
         {
             'Is' {$ConditionString = 'is'}
@@ -188,39 +198,65 @@ function New-RuleFilter
         }
 
         # Check if the event type exists if not create it.
-        if ($Rules -eq '')
-        {
-            $RuleData -eq $null
-        }
-        else
-        {
-            $RuleData = $Rules.SelectSingleNode("//EventFiltering/$($EventType)")
-        }
+       
+        $RuleData = $Rules.SelectNodes("//EventFiltering/$($EventType)")
 
         if($RuleData -eq $null)
         {
-            Write-Verbose -Message "No rule for $($EventType) was found."
-            Write-Verbose -Message 'Creating rule for event type with default action if Exclude'
-            $TypeElement = $Config.CreateElement($EventType)
-            $TypeElement.SetAttribute('onmatch','exclude')
-            [void]$Rules.AppendChild($TypeElement)
-            $RuleData = $Rules.SelectSingleNode("//EventFiltering/$($EventType)")
-            Write-Verbose -Message 'Rule created succesfully'
-        }
-
-        Write-Verbose -Message "Creating filters for event type $($EventType)."
-        # For each value for the event type create a filter.
-        foreach($val in $value)
+            Write-Error -Message "No rule for $($EventType) was found."
+            return
+        } # If only one element this will return null, more than one this will provide a value.
+        else
         {
-            Write-Verbose -Message "Creating filter for event filed $($EventField) with condition $($Condition) for value $($val)."
-            $FieldElement = $Config.CreateElement($EventField)
-            $Filter = $RuleData.AppendChild($FieldElement)
-            $Filter.SetAttribute('condition',$Condition)
-            $filter.InnerText = $val
+            if ($RuleData.count -eq $null)
+            {
+                if ($RuleData.onmatch -eq $OnMatch)
+                {
+                    Write-Verbose -Message 'Single node.'
+                    Write-Verbose -Message "Creating filters for event type $($EventType)."
+                    # For each value for the event type create a filter.
+                    foreach($val in $value)
+                    {
+                        Write-Verbose -Message "Creating filter for event filed $($EventField) with condition $($Condition) for value $($val)."
+                        $FieldElement = $Config.CreateElement($EventField)
+                        $Filter = $RuleData.AppendChild($FieldElement)
+                        $Filter.SetAttribute('condition',$Condition)
+                        $filter.InnerText = $val
+                        $Config.Save($FileLocation)
+                    }
+                }
+                else
+                {
+                    write-error -Message "Event type $($EventType) with a on match condition of $($OnMatch) was not found."
+                    return
+                }
+            }
+            else
+            {
+                Write-Verbose -Message 'Mutiple nodes.'
+                foreach ($rule in $RuleData)
+                {
+                    if ($rule.onmatch -eq $OnMatch)
+                    {
+                        Write-Verbose -Message "Found rule for event type $($EventType) with $($OnMatch)"
+                        Write-Verbose -Message "Creating filters for event type $($EventType)."
+                        # For each value for the event type create a filter.
+                        foreach($val in $value)
+                        {
+                            Write-Verbose -Message "Creating filter for event filed $($EventField) with condition $($Condition) for value $($val)."
+                            $FieldElement = $Config.CreateElement($EventField)
+                            $Filter = $rule.AppendChild($FieldElement)
+                            $Filter.SetAttribute('condition',$Condition)
+                            $filter.InnerText = $val
+                            $Config.Save($FileLocation)
+                        }
+                        $RuleData = $rule
+                    }
+                }
+            }
+            
         }
         Get-RuleWithFilter($RuleData)
-
-        $Config.Save($FileLocation)
     }
     End{}
 }
