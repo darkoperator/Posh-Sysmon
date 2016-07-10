@@ -40,6 +40,11 @@ Get-Command -Module Posh-Sysmon
 ```
 # Change Log
 
+## Version 0.6
+* Added support for Sysmon 4.0 XML schemea (Schema version 3.0)
+* One can select the version of schema to support when creating the configuration file. 
+* All functions have been updated to support the use of more than one rule as per Schema 3.0
+
 ## Version 0.5
 * Added Get-SysmonEventData to get the Event Data information as custom object for selected Event Types.
 * Added Get-SysmonRuleFilter to get all filters under a specific Event Type Rule.
