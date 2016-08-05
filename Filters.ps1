@@ -576,7 +576,15 @@ function New-SysmonCreateRemoteThread
   }
 }
 
-#  .ExternalHelp Posh-SysMon.psm1-Help.xml
+<#
+.SYNOPSIS
+  Create a new filter for the logging of when a running process opens another.
+.DESCRIPTION
+  Create a new filter for the logging of when a running process opens another.
+.EXAMPLE
+  C:\PS> New-SysmonProcessAccess -Path .\testver31.xml -OnMatch include -Condition Contains -EventField TargetImage lsass.exe
+  Log any process trying to open lsass.exe.
+#>
 function New-SysmonProcessAccess
 {
   [CmdletBinding(DefaultParameterSetName = 'Path')]

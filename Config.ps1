@@ -43,36 +43,47 @@ function New-SysmonConfiguration
         [Switch]
         $ImageLoad,
 
+        # Log create remote thread actions.
         [Parameter(Mandatory=$False,
                    ValueFromPipelineByPropertyName=$true,
                    Position=5)]
         [Switch]
         $CreateRemoteThread,
 
-
+        # Log file creation time modifications.
         [Parameter(Mandatory=$False,
                    ValueFromPipelineByPropertyName=$true,
                    Position=6)]
         [Switch]
         $FileCreateTime,
 
+        # Log process creation.
         [Parameter(Mandatory=$False,
                    ValueFromPipelineByPropertyName=$true,
                    Position=7)]
         [Switch]
         $ProcessCreate,
 
+        # Log process termination.
         [Parameter(Mandatory=$False,
                    ValueFromPipelineByPropertyName=$true,
                    Position=8)]
         [Switch]
         $ProcessTerminate,
 
+        # Log when a running process opens another process.
         [Parameter(Mandatory=$False,
                    ValueFromPipelineByPropertyName=$true,
                    Position=9)]
         [Switch]
         $ProcessAccess,
+
+        # Check for signature certificate revocation.
+        [Parameter(Mandatory=$False,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=10 )]
+        [Switch]
+        $CheckRevocation,
 
         # Comment for purpose of the configuration file.
         [Parameter(Mandatory=$False,
@@ -80,11 +91,12 @@ function New-SysmonConfiguration
         [String]
         $Comment,
 
+        # Schema Vesion for the configuration file, default is 3.1.
         [Parameter(Mandatory=$False,
                    ValueFromPipelineByPropertyName=$true)]
-                   [ValidateSet('2.0','3.0')]
+                   [ValidateSet('2.0','3.0', '3.1')]
         [String]
-        $SchemaVersion = '3.0'
+        $SchemaVersion = '3.1'
     )
 
     Begin{}
@@ -121,6 +133,20 @@ function New-SysmonConfiguration
         Write-Verbose -Message "Enabling hashing algorithms : $($Hash)"
         $xmlWriter.WriteElementString('HashAlgorithms',$Hash)
         
+        if ($CheckRevocation) 
+        {
+            if ($SchemaVersion -eq '3.1')
+            {
+                Write-Verbose -message 'Enabling CheckRevocation.'
+                $xmlWriter.WriteStartElement('CheckRevocation')
+                $xmlWriter.WriteFullEndElement()
+            }
+            else 
+            {
+                Write-Warning -Message 'CheckRevocation was not enabled because it is not supported in this SchemaVersion.'
+            }
+        }
+
         # Create empty EventFiltering section.
         $xmlWriter.WriteStartElement('EventFiltering')
 
@@ -199,6 +225,7 @@ function New-SysmonConfiguration
         $xmlWriter.Flush()
         $xmlWriter.Close()
         Write-Verbose -Message "Config file created as $($Config)"
+        write-verbose -Message "Configuration is for Sysmon $($sysmonVerMap[$SchemaVersion])"
     }
     End
     {
@@ -254,7 +281,7 @@ function Get-SysmonHashingAlgorithm
             return
         }
 
-        if ($Config.Sysmon.schemaversion -ne '2.0' -and $Config.Sysmon.schemaversion -ne '3.0')
+        if ($Config.Sysmon.schemaversion -notin $SysMonSupportedVersions)
         {
             Write-Error -Message 'This version of Sysmon Rule file is not supported.'
             return
@@ -339,7 +366,7 @@ function Get-SysmonRule
             return
         }
 
-         if ($Config.Sysmon.schemaversion -ne '2.0' -and $Config.Sysmon.schemaversion -ne '3.0')
+         if ($Config.Sysmon.schemaversion -notin $SysMonSupportedVersions)
         {
             Write-Error -Message 'This version of Sysmon Rule file is not supported.'
             return
@@ -441,7 +468,7 @@ function Set-SysmonHashingAlgorithm
             return
         }
 
-         if ($Config.Sysmon.schemaversion -ne '2.0' -and $Config.Sysmon.schemaversion -ne '3.0')
+         if ($Config.Sysmon.schemaversion -notin $SysMonSupportedVersions)
         {
             Write-Error -Message 'This version of Sysmon Rule file is not supported.'
             return
@@ -567,7 +594,7 @@ function Set-SysmonRule
             return
         }
 
-         if ($Config.Sysmon.schemaversion -ne '2.0' -and $Config.Sysmon.schemaversion -ne '3.0')
+         if ($Config.Sysmon.schemaversion -notin $SysMonSupportedVersions)
         {
             Write-Error -Message 'This version of Sysmon Rule file is not supported.'
             return
@@ -711,7 +738,7 @@ function Remove-SysmonRule
             return
         }
 
-         if ($Config.Sysmon.schemaversion -ne '2.0' -and $Config.Sysmon.schemaversion -ne '3.0')
+         if ($Config.Sysmon.schemaversion -notin $SysMonSupportedVersions)
         {
             Write-Error -Message 'This version of Sysmon Rule file is not supported.'
             return

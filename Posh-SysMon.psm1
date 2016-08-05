@@ -4,6 +4,20 @@
  . "$PSScriptRoot\Filters.ps1"
  . "$PSScriptRoot\Config.ps1"
 
+# Supporteted Sysmon schema versions.
+$SysMonSupportedVersions = @(
+    '2.0',
+    '3.0',
+    '3.1'
+ )
+
+# Table that maps schema version to Sysmon version.
+$sysmonVerMap = @{
+     '2.0' = '3.0'
+     '3.0' = '4.0'
+     '3.1' = '4.11'
+ }
+
 function Get-RuleWithFilter
 {
     Param
