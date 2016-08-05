@@ -104,7 +104,7 @@ function New-RuleFilter
                    Position=1)]
         [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
                      'ProcessTerminate', 'ImageLoad', 'DriverLoad', 
-                     'CreateRemoteThread', IgnoreCase = $false)]
+                     'CreateRemoteThread', 'ProcessAccess', IgnoreCase = $false)]
         [string]
         $EventType,
 

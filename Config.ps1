@@ -68,6 +68,12 @@ function New-SysmonConfiguration
         [Switch]
         $ProcessTerminate,
 
+        [Parameter(Mandatory=$False,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=9)]
+        [Switch]
+        $ProcessAccess,
+
         # Comment for purpose of the configuration file.
         [Parameter(Mandatory=$False,
                    ValueFromPipelineByPropertyName=$true)]
@@ -170,6 +176,14 @@ function New-SysmonConfiguration
         {
             Write-Verbose -Message 'Enabling logging all  process creation by setting no filter and onmatch to exclude.'
             $xmlWriter.WriteStartElement('FileCreateTime ')
+            $XmlWriter.WriteAttributeString('onmatch', 'exclude')
+            $xmlWriter.WriteFullEndElement()
+        }
+
+        if ($ProcessAccess)
+        {
+            Write-Verbose -Message 'Enabling logging all  process access by setting no filter and onmatch to exclude.'
+            $xmlWriter.WriteStartElement('ProcessAccess ')
             $XmlWriter.WriteAttributeString('onmatch', 'exclude')
             $xmlWriter.WriteFullEndElement()
         }
@@ -295,7 +309,7 @@ function Get-SysmonRule
                    ValueFromPipelineByPropertyName=$true,
                    Position=1)]
         [ValidateSet('ALL', 'NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
-                     'ProcessTerminate', 'ImageLoad', 'DriverLoad')]
+                     'ProcessTerminate', 'ImageLoad', 'DriverLoad', 'ProcessAccess')]
         [string[]]
         $EventType = @('ALL')
     )
@@ -337,7 +351,8 @@ function Get-SysmonRule
         if ($EventType -contains 'ALL')
         {
             $TypesToParse = @('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
-                              'ProcessTerminate', 'ImageLoad', 'DriverLoad','CreateRemoteThread')
+                              'ProcessTerminate', 'ImageLoad', 'DriverLoad','CreateRemoteThread',
+                              'ProcessAccess')
         }
         else
         {
@@ -491,7 +506,8 @@ function Set-SysmonRule
                    ValueFromPipelineByPropertyName=$true,
                    Position=1)]
         [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
-                     'ProcessTerminate', 'ImageLoad', 'DriverLoad', 'CreateRemoteThread')]
+                     'ProcessTerminate', 'ImageLoad', 'DriverLoad', 'CreateRemoteThread',
+                     'ProcessAccess')]
         [string[]]
         $EventType,
 
@@ -647,7 +663,8 @@ function Remove-SysmonRule
                    ValueFromPipelineByPropertyName=$true,
                    Position=1)]
         [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
-                     'ProcessTerminate', 'ImageLoad', 'DriverLoad', 'CreateRemoteThread')]
+                     'ProcessTerminate', 'ImageLoad', 'DriverLoad', 'CreateRemoteThread',
+                     'ProcessAccess')]
         [string[]]
         $EventType,
 

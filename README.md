@@ -40,6 +40,11 @@ Get-Command -Module Posh-Sysmon
 ```
 # Change Log
 
+## Version 0.7
+* Added support for ProcessAccess filtering added in Sysmon 4.1
+* Added function New-SysmonProcessAccess for creating ProcessAccess filters.
+* Fixed issue where command was displayed and not ran with New-SysmonDriverLoadFilter
+
 ## Version 0.6
 * Added support for Sysmon 4.0 XML schemea (Schema version 3.0)
 * One can select the version of schema to support when creating the configuration file. 

@@ -12,7 +12,7 @@
 RootModule = '.\Posh-SysMon.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.6'
+ModuleVersion = '0.7'
 
 # ID used to uniquely identify this module
 GUID = 'a8ade6cb-39d5-45a1-b4aa-acf29ee34aed'
@@ -80,7 +80,8 @@ FunctionsToExport = @('Get-SysmonHashingAlgorithm',
                     'Set-SysmonHashingAlgorithm',                                                                                                                                                   
                     'Set-SysmonRule',
                     'Get-SysmonEventData',
-                    'Get-SysmonRuleFilter')    
+                    'Get-SysmonRuleFilter',
+                    'New-SysmonProcessAccess')    
 
 # Cmdlets to export from this module
 CmdletsToExport = '*'
@@ -122,12 +123,20 @@ PrivateData = @{
     'SourceHostname' = 'SourceHostname'
     'SourcePort' ='SourcePort'
     'SourcePortName' = 'SourcePortName'
+    'SourceProcessGUID' = 'SourceProcessGUID'
+    'SourceImage' = 'SourceImage'
+    'SourceThreadId' = 'SourceThreadId'
     'DestinationIsIpv6' = 'DestinationIsIpv6'
     'DestinationIp' = 'DestinationIp'
     'DestinationHostname' = 'DestinationHostname'
     'DestinationPort' = 'DestinationPort'
     'DestinationPortName' = 'DestinationPortName'
+    'GrantedAccess' = 'GrantedAccess'
     'TargetFilename' = 'TargetFilename'
+    'TargetProcessGUID' = 'TargetProcessGUID'
+    'TargetImage' = 'TargetImage'
+    'TargetProcessId' = 'TargetProcessId'
+    'CallTrace' = 'CallTrace'
     'CreationUtcTime' = 'CreationUtcTime'
     'PreviousCreationUtcTime' = 'PreviousCreationUtcTime'
     'CommandLine' = 'CommandLine'
@@ -139,6 +148,7 @@ PrivateData = @{
     'ParentProcessId' = 'ParentProcessId'
     'ParentImage' = 'ParentImage'
     'ParentCommandLine' = 'ParentCommandLine'
+    'ProcessAccess' = 'ProcessAccess'
 }
 
 # HelpInfo URI of this module
