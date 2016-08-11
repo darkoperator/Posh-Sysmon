@@ -138,8 +138,8 @@ function New-SysmonConfiguration
             if ($SchemaVersion -eq '3.1')
             {
                 Write-Verbose -message 'Enabling CheckRevocation.'
-                $xmlWriter.WriteStartElement('CheckRevocation')
-                $xmlWriter.WriteFullEndElement()
+                $xmlWriter.WriteElementString('CheckRevocation','')
+                #$xmlWriter.WriteFullEndElement()
             }
             else 
             {

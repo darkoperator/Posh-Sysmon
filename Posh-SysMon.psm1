@@ -188,7 +188,7 @@ function New-RuleFilter
             return
         }
 
-         if ($Config.Sysmon.schemaversion -ne '2.0' -and $Config.Sysmon.schemaversion -ne '3.0')
+         if ($Config.Sysmon.schemaversion -notin $SysMonSupportedVersions)
         {
             Write-Error -Message 'This version of Sysmon Rule file is not supported.'
             return

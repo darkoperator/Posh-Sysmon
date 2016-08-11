@@ -60,18 +60,27 @@ function New-SysmonImageLoadFilter
   Process
   {
     $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
-
+    $cmdoptions = @{
+            'EventType' =  'ImageLoad' 
+            'Condition' = $Condition 
+            'EventField' = $FieldString 
+            'Value' = $Value 
+            'OnMatch' = $OnMatch
+            
+    }
     switch($psCmdlet.ParameterSetName)
     {
       'Path'
-      {
-        New-RuleFilter -Path $Path -EventType ImageLoad -Condition $Condition -EventField $FieldString -Value $Value -OnMatch $OnMatch
-      }
+            {
+                $cmdOptions.Add('Path',$Path)
+                New-RuleFilter @cmdOptions 
+            }
 
-      'LiteralPath' 
-      {
-        New-RuleFilter -LiteralPath $LiteralPath -EventType ImageLoad -Condition $Condition -EventField $FieldString -Value $Value -OnMatch $OnMatch
-      }
+            'LiteralPath' 
+            {
+                $cmdOptions.Add('LiteralPath',$LiteralPath)
+                New-RuleFilter @cmdOptions 
+            }
     }
         
   }
@@ -142,6 +151,15 @@ function New-SysmonDriverLoadFilter
   Process
   {
     $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
+    $cmdoptions = @{
+            'EventType' =  'DriverLoad' 
+            'Condition' = $Condition 
+            'EventField' = $FieldString 
+            'Value' = $Value 
+            'OnMatch' = $OnMatch
+            
+    }
+
     foreach ($val in $Value)
     {
 
@@ -149,12 +167,14 @@ function New-SysmonDriverLoadFilter
       {
         'Path'
         {
-          New-RuleFilter -Path $Path -EventType DriverLoad -Condition $Condition -EventField $FieldString -Value $Value -OnMatch $OnMatch
+            $cmdOptions.Add('Path',$Path)
+            New-RuleFilter @cmdOptions 
         }
 
         'LiteralPath' 
         {
-          New-RuleFilter -LiteralPath $LiteralPath -EventType DriverLoad -Condition $Condition -EventField $FieldString -Value $Value -OnMatch $OnMatch
+            $cmdOptions.Add('LiteralPath',$LiteralPath)
+            New-RuleFilter @cmdOptions
         }
       }
     }
@@ -230,18 +250,28 @@ function New-SysmonNetworkConnectFilter
   Process
   {
     $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
-        
+    $cmdoptions = @{
+            'EventType' =  'NetworkConnect' 
+            'Condition' = $Condition 
+            'EventField' = $FieldString 
+            'Value' = $Value 
+            'OnMatch' = $OnMatch
+            
+        }
+
     switch($psCmdlet.ParameterSetName)
     {
-      'Path'
-      {
-        New-RuleFilter -Path $Path -EventType NetworkConnect -Condition $Condition -EventField $FieldString -Value $Value -OnMatch $OnMatch
-      }
+        'Path'
+        {
+            $cmdOptions.Add('Path',$Path)
+            New-RuleFilter @cmdOptions 
+        }
 
-      'LiteralPath' 
-      {
-        New-RuleFilter -LiteralPath $LiteralPath -EventType NetworkConnect -Condition $Condition -EventField $FieldString -Value $Value -OnMatch $OnMatch
-      }
+        'LiteralPath' 
+        {
+            $cmdOptions.Add('LiteralPath',$LiteralPath)
+            New-RuleFilter @cmdOptions
+        }
     }
         
   }
@@ -396,17 +426,27 @@ function New-SysmonProcessCreateFilter
   Process
   {
     $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
+    $cmdoptions = @{
+            'EventType' =  'FileCreateTime' 
+            'Condition' = $Condition 
+            'EventField' = $FieldString 
+            'Value' = $Value 
+            'OnMatch' = $OnMatch
+            
+        }
     switch($psCmdlet.ParameterSetName)
     {
       'Path'
-      {
-        New-RuleFilter -Path $Path -EventType ProcessCreate -Condition $Condition -EventField $FieldString -Value $Value -OnMatch $OnMatch
-      }
+        {
+            $cmdOptions.Add('Path',$Path)
+            New-RuleFilter @cmdOptions 
+        }
 
-      'LiteralPath' 
-      {
-        New-RuleFilter -LiteralPath $LiteralPath -EventType ProcessCreate -Condition $Condition -EventField $FieldString -Value $Value -OnMatch $OnMatch
-      }
+        'LiteralPath' 
+        {
+            $cmdOptions.Add('LiteralPath',$LiteralPath)
+            New-RuleFilter @cmdOptions
+        }
     }
   }
   End
@@ -475,18 +515,27 @@ function New-SysmonProcessTerminateFilter
   Process
   {
     $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
-
+    $cmdoptions = @{
+            'EventType' =  'ProcessTerminate' 
+            'Condition' = $Condition 
+            'EventField' = $FieldString 
+            'Value' = $Value 
+            'OnMatch' = $OnMatch
+            
+        }
     switch($psCmdlet.ParameterSetName)
     {
-      'Path'
-      {
-        New-RuleFilter -Path $Path -EventType ProcessTerminate -Condition $Condition -EventField $FieldString -Value $Value -OnMatch $OnMatch
-      }
+        'Path'
+        {
+            $cmdOptions.Add('Path',$Path)
+            New-RuleFilter @cmdOptions 
+        }
 
-      'LiteralPath' 
-      {
-        New-RuleFilter -LiteralPath $LiteralPath -EventType ProcessTerminate -Condition $Condition -EventField $FieldString -Value $Value -OnMatch $OnMatch
-      }
+        'LiteralPath' 
+        {
+            $cmdOptions.Add('LiteralPath',$LiteralPath)
+            New-RuleFilter @cmdOptions 
+        }
     }
   }
   End {}
@@ -556,17 +605,26 @@ function New-SysmonCreateRemoteThread
     foreach ($val in $Value)
     {
       $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
-
+      $cmdoptions = @{
+            'EventType' =  'CreateRemoteThread' 
+            'Condition' = $Condition 
+            'EventField' = $FieldString 
+            'Value' = $Value 
+            'OnMatch' = $OnMatch
+            
+        }
       switch($psCmdlet.ParameterSetName)
       {
         'Path'
         {
-          New-RuleFilter -Path $Path -EventType CreateRemoteThread -Condition $Condition -EventField $FieldString -Value $Value -OnMatch $OnMatch
+            $cmdOptions.Add('Path',$Path)
+            New-RuleFilter @cmdOptions 
         }
 
         'LiteralPath' 
         {
-          New-RuleFilter -LiteralPath $LiteralPath -EventType CreateRemoteThread -Condition $Condition -EventField $FieldString -Value $Value -OnMatch $OnMatch
+            $cmdOptions.Add('LiteralPath',$LiteralPath)
+            New-RuleFilter @cmdOptions
         }
       }
     }
@@ -649,6 +707,14 @@ function New-SysmonProcessAccess
   Process
   {
     $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
+    $cmdoptions = @{
+            'EventType' =  'ProcessAccess' 
+            'Condition' = $Condition 
+            'EventField' = $FieldString 
+            'Value' = $Value 
+            'OnMatch' = $OnMatch
+            
+        }
     foreach ($val in $Value)
     {
 
@@ -657,12 +723,14 @@ function New-SysmonProcessAccess
         
         'Path'
         {
-          New-RuleFilter -Path $Path -EventType ProcessAccess -Condition $Condition -EventField $FieldString -Value $Value -OnMatch $OnMatch
+            $cmdOptions.Add('Path',$Path)
+            New-RuleFilter @cmdOptions 
         }
 
         'LiteralPath' 
         {
-          New-RuleFilter -LiteralPath $LiteralPath -EventType ProcessAccess -Condition $Condition -EventField $FieldString -Value $Value -OnMatch $OnMatch
+            $cmdOptions.Add('LiteralPath',$LiteralPath)
+            New-RuleFilter @cmdOptions
         }
       }
     }
@@ -1086,7 +1154,7 @@ function Get-SysmonEventData
     [string[]]
     [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
         'ProcessTerminate', 'ImageLoad', 'DriverLoad', 
-    'CreateRemoteThread')]
+    'CreateRemoteThread', 'RawAccessRead', 'ProcessAccess')]
     $EventType,
         
     # Specifies the maximum number of events that Get-WinEvent returns. Enter an integer. The default is to return all the events in the logs or files.
@@ -1137,6 +1205,8 @@ function Get-SysmonEventData
             '6' = 'DriverLoad'
             '7' = 'ImageLoad' 
             '8' = 'CreateRemoteThread'
+            '9' = 'RawAccessRead'
+            '10' = 'ProcessAccess'
         }
     }
     Process
