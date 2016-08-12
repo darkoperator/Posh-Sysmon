@@ -1250,13 +1250,13 @@ function Get-SysmonEventData
         }
         
         $ParamHash.Add('FilterHashTable',$HashFilter)
-        Get-WinEvent @ParamHash | foreach {
+        Get-WinEvent @ParamHash | ForEach-Object {
             [xml]$evtxml = $_.toxml() 
             $ProcInfo = [ordered]@{}
             $ProcInfo['EventId'] = $evtxml.Event.System.EventID
             $ProcInfo['EventType'] = $EventIdtoType[$evtxml.Event.System.EventID]
             $ProcInfo['Computer'] = $evtxml.Event.System.Computer
-            $evtxml.Event.EventData.Data | foreach {
+            $evtxml.Event.EventData.Data | ForEach-Object {
                 $ProcInfo[$_.name] = $_.'#text'
             }
             New-Object psobject -Property $ProcInfo

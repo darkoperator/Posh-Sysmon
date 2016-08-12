@@ -54,14 +54,14 @@ function Get-RuleWithFilter
                 $FilterObjProps['EventField'] = $Node.Name
                 $FilterObjProps['Condition'] = &{if($Node.condition -eq $null){'is'}else{$Node.condition}}
                 $FilterObjProps['Value'] =  $Node.'#text'
-                $FilterObj = [pscustomobject]$FilterObjProps
+                $FilterObj = [psobject]$FilterObjProps
                 $FilterObj.pstypenames.insert(0,'Sysmon.Rule.Filter')
                 $Filters += $FilterObj
             }
             $RuleObjOptions['Filters'] = $Filters
         }
 
-        $RuleObj = [pscustomobject]$RuleObjOptions
+        $RuleObj = [psobject]$RuleObjOptions
         $RuleObj.pstypenames.insert(0,'Sysmon.Rule')
         $RuleObj
     }
@@ -101,7 +101,7 @@ function New-RuleFilter
                    ParameterSetName='Path',
                    Position=0)]
         [ValidateScript({Test-Path -Path $_})]
-        $Path,
+        [string]$Path,
 
         # Path to XML config file.
         [Parameter(Mandatory=$true,
@@ -110,7 +110,7 @@ function New-RuleFilter
                    Position=0)]
         [ValidateScript({Test-Path -Path $_})]
         [Alias('PSPath')]
-        $LiteralPath,
+        [string]$LiteralPath,
 
         # Event type to create filter for.
         [Parameter(Mandatory=$true,

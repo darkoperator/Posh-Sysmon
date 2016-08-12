@@ -244,7 +244,7 @@ function Get-SysmonHashingAlgorithm
                    ParameterSetName='Path',
                    Position=0)]
         [ValidateScript({Test-Path -Path $_})]
-        $Path,
+        [string]$Path,
 
         # Path to XML config file.
         [Parameter(Mandatory=$true,
@@ -253,7 +253,7 @@ function Get-SysmonHashingAlgorithm
                    Position=0)]
         [ValidateScript({Test-Path -Path $_})]
         [Alias('PSPath')]
-        $LiteralPath
+        [string]$LiteralPath
     )
 
     Begin{}
@@ -320,7 +320,7 @@ function Get-SysmonRule
                    ParameterSetName='Path',
                    Position=0)]
         [ValidateScript({Test-Path -Path $_})]
-        $Path,
+        [string]$Path,
 
         # Path to XML config file.
         [Parameter(Mandatory=$true,
@@ -329,7 +329,7 @@ function Get-SysmonRule
                    Position=0)]
         [ValidateScript({Test-Path -Path $_})]
         [Alias('PSPath')]
-        $LiteralPath,
+        [string]$LiteralPath,
 
         # Event type to parse rules for.
         [Parameter(Mandatory=$false,
