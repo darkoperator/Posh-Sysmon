@@ -78,10 +78,17 @@ function New-SysmonConfiguration
         [Switch]
         $ProcessAccess,
 
+        # Log raw access reads of files.
+        [Parameter(Mandatory=$False,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=9)]
+        [Switch]
+        $RawAccessRead,
+
         # Check for signature certificate revocation.
         [Parameter(Mandatory=$False,
                    ValueFromPipelineByPropertyName=$true,
-                   Position=10 )]
+                   Position=11 )]
         [Switch]
         $CheckRevocation,
 
@@ -214,6 +221,14 @@ function New-SysmonConfiguration
             $xmlWriter.WriteFullEndElement()
         }
 
+        if ($RawAccessRead)
+        {
+            Write-Verbose -Message 'Enabling logging all  process access by setting no filter and onmatch to exclude.'
+            $xmlWriter.WriteStartElement('ProcessAccess ')
+            $XmlWriter.WriteAttributeString('onmatch', 'exclude')
+            $xmlWriter.WriteFullEndElement()
+        }
+
         # End Element of EventFiltering
         $xmlWriter.WriteFullEndElement()
 
@@ -336,7 +351,8 @@ function Get-SysmonRule
                    ValueFromPipelineByPropertyName=$true,
                    Position=1)]
         [ValidateSet('ALL', 'NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
-                     'ProcessTerminate', 'ImageLoad', 'DriverLoad', 'ProcessAccess')]
+                     'ProcessTerminate', 'ImageLoad', 'DriverLoad', 'ProcessAccess',
+                     'RawAccessRead','ProcessAccess')]
         [string[]]
         $EventType = @('ALL')
     )
@@ -379,7 +395,7 @@ function Get-SysmonRule
         {
             $TypesToParse = @('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
                               'ProcessTerminate', 'ImageLoad', 'DriverLoad','CreateRemoteThread',
-                              'ProcessAccess')
+                              'ProcessAccess', 'RawAccessRead')
         }
         else
         {
@@ -534,7 +550,7 @@ function Set-SysmonRule
                    Position=1)]
         [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
                      'ProcessTerminate', 'ImageLoad', 'DriverLoad', 'CreateRemoteThread',
-                     'ProcessAccess')]
+                     'ProcessAccess', 'RawAccessRead')]
         [string[]]
         $EventType,
 
@@ -691,7 +707,7 @@ function Remove-SysmonRule
                    Position=1)]
         [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
                      'ProcessTerminate', 'ImageLoad', 'DriverLoad', 'CreateRemoteThread',
-                     'ProcessAccess')]
+                     'ProcessAccess', 'RawAccessRead')]
         [string[]]
         $EventType,
 

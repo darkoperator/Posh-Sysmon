@@ -148,6 +148,7 @@ PrivateData = @{
     'ParentProcessId' = 'ParentProcessId'
     'ParentImage' = 'ParentImage'
     'ParentCommandLine' = 'ParentCommandLine'
+    'RawAccessRead' = 'RawAccessRead'
     'ProcessAccess' = 'ProcessAccess'
 }
 

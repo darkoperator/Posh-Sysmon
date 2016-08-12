@@ -740,6 +740,106 @@ function New-SysmonProcessAccess
   }
 }
 
+<#
+.SYNOPSIS
+  Create a new filter for the logging of file raw access read actions.
+.DESCRIPTION
+  Create a new filter for the logging of file raw access read actions.
+.EXAMPLE
+  C:\PS> New-SysmonProcessAccess -Path .\testver31.xml -OnMatch include -Condition Contains -EventField Image NTDS.dit
+  Log any raw access read of the file NTDS.dit.
+#>
+function New-SysmonRawAccessRead
+{
+  [CmdletBinding(DefaultParameterSetName = 'Path')]
+  Param
+  (
+    # Path to XML config file.
+    [Parameter(Mandatory=$true,
+        ValueFromPipelineByPropertyName=$true,
+        ParameterSetName='Path',
+    Position=0)]
+    [ValidateScript({Test-Path -Path $_})]
+    $Path,
+
+    # Path to XML config file.
+    [Parameter(Mandatory=$true,
+        ValueFromPipelineByPropertyName=$true,
+        ParameterSetName='LiteralPath',
+    Position=0)]
+    [ValidateScript({Test-Path -Path $_})]
+    [Alias('PSPath')]
+    $LiteralPath,
+
+    # Event type on match action.
+    [Parameter(Mandatory=$true,
+        ValueFromPipelineByPropertyName=$true,
+    Position=1)]
+    [ValidateSet('include', 'exclude')]
+    [string]
+    $OnMatch,
+
+    # Condition for filtering against and event field.
+    [Parameter(Mandatory=$true,
+        ValueFromPipelineByPropertyName=$true,
+    Position=2)]
+    [ValidateSet('Is', 'IsNot', 'Contains', 'Excludes', 'Image',
+                 'BeginWith', 'EndWith', 'LessThan', 'MoreThan')]
+    [string]
+    $Condition,
+
+    # Event field to filter on.
+    [Parameter(Mandatory=$true,
+        ValueFromPipelineByPropertyName=$true,
+    Position=3)]
+    [ValidateSet('UtcTime', 'ProcessGuid', 'ProcessId', 
+                 'Image', 'Device')]
+    [string]
+    $EventField,
+
+    # Value of Event Field to filter on.
+    [Parameter(Mandatory=$true,
+        ValueFromPipelineByPropertyName=$true,
+    Position=4)]
+    [string[]]
+    $Value
+  )
+
+  Begin {}
+  Process
+  {
+    $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
+    $cmdoptions = @{
+            'EventType' =  'ProcessAccess' 
+            'Condition' = $Condition 
+            'EventField' = $FieldString 
+            'Value' = $Value 
+            'OnMatch' = $OnMatch
+            
+        }
+    foreach ($val in $Value)
+    {
+
+      switch ($PSCmdlet.ParameterSetName)
+      {
+        
+        'Path'
+        {
+            $cmdOptions.Add('Path',$Path)
+            New-RuleFilter @cmdOptions 
+        }
+
+        'LiteralPath' 
+        {
+            $cmdOptions.Add('LiteralPath',$LiteralPath)
+            New-RuleFilter @cmdOptions
+        }
+      }
+    }
+  }
+  End {}
+}
+
 
 #  .ExternalHelp Posh-SysMon.psm1-Help.xml
 function Remove-SysmonRuleFilter
@@ -770,7 +870,7 @@ function Remove-SysmonRuleFilter
     Position=1)]
     [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
         'ProcessTerminate', 'ImageLoad', 'DriverLoad', 
-    'CreateRemoteThread')]
+        'CreateRemoteThread', 'RawAccessRead', 'ProcessAccess')]
     [string]
     $EventType,
 
@@ -992,7 +1092,7 @@ function Get-SysmonRuleFilter
     Position=1)]
     [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
         'ProcessTerminate', 'ImageLoad', 'DriverLoad', 
-    'CreateRemoteThread')]
+        'CreateRemoteThread','RawAccessRead', 'ProcessAccess')]
     [string]
     $EventType,
 
@@ -1154,7 +1254,7 @@ function Get-SysmonEventData
     [string[]]
     [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
         'ProcessTerminate', 'ImageLoad', 'DriverLoad', 
-    'CreateRemoteThread', 'RawAccessRead', 'ProcessAccess')]
+        'CreateRemoteThread', 'RawAccessRead', 'ProcessAccess')]
     $EventType,
         
     # Specifies the maximum number of events that Get-WinEvent returns. Enter an integer. The default is to return all the events in the logs or files.
