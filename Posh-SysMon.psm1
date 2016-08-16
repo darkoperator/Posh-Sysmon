@@ -234,7 +234,7 @@ function New-RuleFilter
                         Write-Verbose -Message "Creating filter for event filed $($EventField) with condition $($Condition) for value $($val)."
                         $FieldElement = $Config.CreateElement($EventField)
                         $Filter = $RuleData.AppendChild($FieldElement)
-                        $Filter.SetAttribute('condition',$Condition)
+                        $Filter.SetAttribute('condition',$ConditionString)
                         $filter.InnerText = $val
                         $Config.Save($FileLocation)
                     }
@@ -260,7 +260,7 @@ function New-RuleFilter
                             Write-Verbose -Message "Creating filter for event filed $($EventField) with condition $($Condition) for value $($val)."
                             $FieldElement = $Config.CreateElement($EventField)
                             $Filter = $rule.AppendChild($FieldElement)
-                            $Filter.SetAttribute('condition',$Condition)
+                            $Filter.SetAttribute('condition',$ConditionString)
                             $filter.InnerText = $val
                             $Config.Save($FileLocation)
                         }
