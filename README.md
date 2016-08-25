@@ -40,6 +40,9 @@ Get-Command -Module Posh-Sysmon
 ```
 # Change Log
 
+## Version 0.7.2
+* Added missing Event Types to Get-SysmonEventData.
+
 ## Version 0.7.1
 * Fixed issue with conditions with filters with space in them.
 

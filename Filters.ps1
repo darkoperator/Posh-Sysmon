@@ -1242,7 +1242,7 @@ function Get-SysmonEventData
         ParameterSetName='ID',
         ValueFromPipelineByPropertyName=$true,
     Position=0)]
-    [ValidateSet(1,2,3,5,6,7,8)]
+    [ValidateSet(1,2,3,5,6,7,8,9,10,255)]
     [Int32[]]
     $EventId,
 
@@ -1254,7 +1254,7 @@ function Get-SysmonEventData
     [string[]]
     [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
         'ProcessTerminate', 'ImageLoad', 'DriverLoad', 
-        'CreateRemoteThread', 'RawAccessRead', 'ProcessAccess')]
+        'CreateRemoteThread', 'RawAccessRead', 'ProcessAccess', 'Error')]
     $EventType,
         
     # Specifies the maximum number of events that Get-WinEvent returns. Enter an integer. The default is to return all the events in the logs or files.
@@ -1295,6 +1295,9 @@ function Get-SysmonEventData
             DriverLoad = 6
             ImageLoad = 7
             CreateRemoteThread = 8
+            RawAccessRead = 9
+            ProcessAccess = 10
+            Error = 255
         }
 
         $EventIdtoType = @{
@@ -1307,6 +1310,7 @@ function Get-SysmonEventData
             '8' = 'CreateRemoteThread'
             '9' = 'RawAccessRead'
             '10' = 'ProcessAccess'
+            '255' = 'Error'
         }
     }
     Process
