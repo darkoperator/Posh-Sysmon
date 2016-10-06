@@ -542,7 +542,7 @@ function New-SysmonProcessTerminateFilter
 }
 
 #  .ExternalHelp Posh-SysMon.psm1-Help.xml
-function New-SysmonCreateRemoteThread
+function New-SysmonCreateRemoteThreadFilter
 {
   [CmdletBinding(DefaultParameterSetName = 'Path')]
   Param
@@ -640,10 +640,10 @@ function New-SysmonCreateRemoteThread
 .DESCRIPTION
   Create a new filter for the logging of when a running process opens another.
 .EXAMPLE
-  C:\PS> New-SysmonProcessAccess -Path .\testver31.xml -OnMatch include -Condition Contains -EventField TargetImage lsass.exe
+  C:\PS> New-SysmonProcessAccessFilter -Path .\testver31.xml -OnMatch include -Condition Contains -EventField TargetImage lsass.exe
   Log any process trying to open lsass.exe.
 #>
-function New-SysmonProcessAccess
+function New-SysmonProcessAccessFilter
 {
   [CmdletBinding(DefaultParameterSetName = 'Path')]
   Param
@@ -746,10 +746,10 @@ function New-SysmonProcessAccess
 .DESCRIPTION
   Create a new filter for the logging of file raw access read actions.
 .EXAMPLE
-  C:\PS> New-SysmonProcessAccess -Path .\testver31.xml -OnMatch include -Condition Contains -EventField Image NTDS.dit
+  C:\PS> New-SysmonRawAccessReadFilter -Path .\testver31.xml -OnMatch include -Condition Contains -EventField Image NTDS.dit
   Log any raw access read of the file NTDS.dit.
 #>
-function New-SysmonRawAccessRead
+function New-SysmonRawAccessReadFilter
 {
   [CmdletBinding(DefaultParameterSetName = 'Path')]
   Param
