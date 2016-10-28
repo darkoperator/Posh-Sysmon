@@ -224,7 +224,7 @@ function New-SysmonConfiguration
         if ($RawAccessRead)
         {
             Write-Verbose -Message 'Enabling logging all  process access by setting no filter and onmatch to exclude.'
-            $xmlWriter.WriteStartElement('ProcessAccess ')
+            $xmlWriter.WriteStartElement('RawAccessRead ')
             $XmlWriter.WriteAttributeString('onmatch', 'exclude')
             $xmlWriter.WriteFullEndElement()
         }
