@@ -12,7 +12,7 @@
 RootModule = '.\Posh-SysMon.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.7.2'
+ModuleVersion = '0.7.3'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -77,7 +77,8 @@ FunctionsToExport = 'Get-SysmonHashingAlgorithm', 'Get-SysmonRule',
                'New-SysmonProcessTerminateFilter', 'Remove-SysmonRule', 
                'Remove-SysmonRuleFilter', 'Set-SysmonHashingAlgorithm', 
                'Set-SysmonRule', 'Get-SysmonEventData', 'Get-SysmonRuleFilter', 
-               'New-SysmonProcessAccess'
+               'New-SysmonProcessAccess', 'New-SysmonFileCreateStreamHash', 
+               'New-SysmonRegistryEvent', 'New-SysmonFileCreateFilter'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()
@@ -249,6 +250,17 @@ PrivateData = @{
 
     #DestinationIsIpv6 of this module
     DestinationIsIpv6 = 'DestinationIsIpv6'
+
+    # hash for FileCreateStreamHash events.
+    Hash = 'Hash'
+
+    # Target object in registry events.
+    TargetObject = 'TargetObject'
+
+    FileCreateStreamHash = 'FileCreateStreamHash'
+    RegistryEvent = 'RegistryEvent' 
+    FileCreate = 'FileCreate'
+   
 
     PSData = @{
 

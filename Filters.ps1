@@ -841,6 +841,344 @@ function New-SysmonRawAccessReadFilter
 }
 
 
+<#
+.SYNOPSIS
+  Create a new filter for the logging file creation.
+.DESCRIPTION
+  Create a new filter for the logging file creation.
+.EXAMPLE
+#>
+function New-SysmonFileCreateFilter
+{
+  [CmdletBinding(DefaultParameterSetName = 'Path')]
+  Param
+  (
+    # Path to XML config file.
+    [Parameter(Mandatory=$true,
+        ValueFromPipelineByPropertyName=$true,
+        ParameterSetName='Path',
+    Position=0)]
+    [ValidateScript({Test-Path -Path $_})]
+    $Path,
+
+    # Path to XML config file.
+    [Parameter(Mandatory=$true,
+        ValueFromPipelineByPropertyName=$true,
+        ParameterSetName='LiteralPath',
+    Position=0)]
+    [ValidateScript({Test-Path -Path $_})]
+    [Alias('PSPath')]
+    $LiteralPath,
+
+    # Event type on match action.
+    [Parameter(Mandatory=$true,
+        ValueFromPipelineByPropertyName=$true,
+    Position=1)]
+    [ValidateSet('include', 'exclude')]
+    [string]
+    $OnMatch,
+
+    # Condition for filtering against and event field.
+    [Parameter(Mandatory=$true,
+        ValueFromPipelineByPropertyName=$true,
+    Position=2)]
+    [ValidateSet('Is', 'IsNot', 'Contains', 'Excludes', 'Image',
+                 'BeginWith', 'EndWith', 'LessThan', 'MoreThan')]
+    [string]
+    $Condition,
+
+    # Event field to filter on.
+    [Parameter(Mandatory=$true,
+        ValueFromPipelineByPropertyName=$true,
+    Position=3)]
+    [ValidateSet('TargetFilename', 'ProcessGuid', 'ProcessId', 
+                 'Image')]
+    [string]
+    $EventField,
+
+    # Value of Event Field to filter on.
+    [Parameter(Mandatory=$true,
+        ValueFromPipelineByPropertyName=$true,
+    Position=4)]
+    [string[]]
+    $Value
+  )
+
+  Begin {}
+  Process
+  {
+    $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
+    $cmdoptions = @{
+            'EventType' =  'FileCreate' 
+            'Condition' = $Condition 
+            'EventField' = $FieldString 
+            'Value' = $Value 
+            'OnMatch' = $OnMatch
+            
+        }
+    foreach ($val in $Value)
+    {
+
+      switch ($PSCmdlet.ParameterSetName)
+      {
+        
+        'Path'
+        {
+            $cmdOptions.Add('Path',$Path)
+            New-RuleFilter @cmdOptions 
+        }
+
+        'LiteralPath' 
+        {
+            $cmdOptions.Add('LiteralPath',$LiteralPath)
+            New-RuleFilter @cmdOptions
+        }
+      }
+    }
+  }
+  End {}
+}
+
+
+<#
+.SYNOPSIS
+  Create a new filter for the logging of the saving of data on a file stream.
+.DESCRIPTION
+  Create a new filter for the logging of the saving of data on a file stream.
+.EXAMPLE
+C:\PS> New-SysmonRegistryEvent -Path .\32config.xml -OnMatch include -Condition Contains -EventField TargetObject 'RunOnce'
+Capture persistance attemp by creating a registry entry in the RunOnce keys.
+#>
+function New-SysmonFileCreateStreamHash
+{
+  [CmdletBinding(DefaultParameterSetName = 'Path')]
+  Param
+  (
+    # Path to XML config file.
+    [Parameter(Mandatory=$true,
+        ValueFromPipelineByPropertyName=$true,
+        ParameterSetName='Path',
+    Position=0)]
+    [ValidateScript({Test-Path -Path $_})]
+    $Path,
+
+    # Path to XML config file.
+    [Parameter(Mandatory=$true,
+        ValueFromPipelineByPropertyName=$true,
+        ParameterSetName='LiteralPath',
+    Position=0)]
+    [ValidateScript({Test-Path -Path $_})]
+    [Alias('PSPath')]
+    $LiteralPath,
+
+    # Event type on match action.
+    [Parameter(Mandatory=$true,
+        ValueFromPipelineByPropertyName=$true,
+    Position=1)]
+    [ValidateSet('include', 'exclude')]
+    [string]
+    $OnMatch,
+
+    # Condition for filtering against and event field.
+    [Parameter(Mandatory=$true,
+        ValueFromPipelineByPropertyName=$true,
+    Position=2)]
+    [ValidateSet('Is', 'IsNot', 'Contains', 'Excludes', 'Image',
+                 'BeginWith', 'EndWith', 'LessThan', 'MoreThan')]
+    [string]
+    $Condition,
+
+    # Event field to filter on.
+    [Parameter(Mandatory=$true,
+        ValueFromPipelineByPropertyName=$true,
+    Position=3)]
+    [ValidateSet('TargetFilename', 'ProcessGuid', 'ProcessId', 
+                 'Image')]
+    [string]
+    $EventField,
+
+    # Value of Event Field to filter on.
+    [Parameter(Mandatory=$true,
+        ValueFromPipelineByPropertyName=$true,
+    Position=4)]
+    [string[]]
+    $Value
+  )
+
+  Begin {}
+  Process
+  {
+    $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
+    $cmdoptions = @{
+            'EventType' =  'FileCreateStreamHash' 
+            'Condition' = $Condition 
+            'EventField' = $FieldString 
+            'Value' = $Value 
+            'OnMatch' = $OnMatch
+            
+        }
+    foreach ($val in $Value)
+    {
+
+      switch ($PSCmdlet.ParameterSetName)
+      {
+        
+        'Path'
+        {
+            $cmdOptions.Add('Path',$Path)
+            New-RuleFilter @cmdOptions 
+        }
+
+        'LiteralPath' 
+        {
+            $cmdOptions.Add('LiteralPath',$LiteralPath)
+            New-RuleFilter @cmdOptions
+        }
+      }
+    }
+  }
+  End {}
+}
+
+
+<#
+.SYNOPSIS
+  Create a new filter for the actions against the registry.
+.DESCRIPTION
+  Create a new filter for actions against the registry. Supports filtering
+  by aby of the following event types:
+  * CreateKey
+  * DeleteKey
+  * RenameKey
+  * CreateValue
+  * DeleteValue
+  * RenameValue
+  * SetValue
+
+  Hives in TargetObject are referenced as:
+  * \REGISTRY\MACHINE\HARDWARE
+  * \REGISTRY\USER\Security ID number
+  * \REGISTRY\MACHINE\SECURITY
+  * \REGISTRY\USER\.DEFAULT
+  * \REGISTRY\MACHINE\SYSTEM
+  * \REGISTRY\MACHINE\SOFTWARE
+  * \REGISTRY\MACHINE\SAM
+.EXAMPLE
+#>
+function New-SysmonRegistryEvent
+{
+  [CmdletBinding(DefaultParameterSetName = 'Path')]
+  Param
+  (
+    # Path to XML config file.
+    [Parameter(Mandatory=$true,
+        ValueFromPipelineByPropertyName=$true,
+        ParameterSetName='Path',
+    Position=0)]
+    [ValidateScript({Test-Path -Path $_})]
+    $Path,
+
+    # Path to XML config file.
+    [Parameter(Mandatory=$true,
+        ValueFromPipelineByPropertyName=$true,
+        ParameterSetName='LiteralPath',
+    Position=0)]
+    [ValidateScript({Test-Path -Path $_})]
+    [Alias('PSPath')]
+    $LiteralPath,
+
+    # Event type on match action.
+    [Parameter(Mandatory=$true,
+        ValueFromPipelineByPropertyName=$true,
+    Position=1)]
+    [ValidateSet('include', 'exclude')]
+    [string]
+    $OnMatch,
+
+    # Condition for filtering against and event field.
+    [Parameter(Mandatory=$true,
+        ValueFromPipelineByPropertyName=$true,
+    Position=2)]
+    [ValidateSet('Is', 'IsNot', 'Contains', 'Excludes', 'Image',
+                 'BeginWith', 'EndWith', 'LessThan', 'MoreThan')]
+    [string]
+    $Condition,
+
+    # Event field to filter on.
+    [Parameter(Mandatory=$true,
+        ValueFromPipelineByPropertyName=$true,
+    Position=3)]
+    [ValidateSet('TargetObject', 'ProcessGuid', 'ProcessId', 
+                 'Image', 'EventType')]
+    [string]
+    $EventField,
+
+    # Value of Event Field to filter on.
+    [Parameter(Mandatory=$true,
+        ValueFromPipelineByPropertyName=$true,
+    Position=4)]
+    [string[]]
+    $Value
+  )
+
+  Begin {
+    # Event types used to validate right type and string case
+    $EventTypeMap = @{
+      CreateKey = 'CreateKey'
+      DeleteKey = 'DeleteKey'
+      RenameKey = 'RenameKey'
+      CreateValue = 'CreateValue'
+      DeleteValue = 'DeleteValue'
+      RenameValue = 'RenameValue'
+      SetValue = 'SetValue'
+    }
+
+    $Etypes = $EventTypeMap.Keys
+  }
+  Process
+  {
+    $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
+
+    if ($EventField -in 'EventType') {
+      if ($Value -in $Etypes) {
+        $Value = $EventTypeMap[$Value]
+      } else {
+        Write-Error -Message "Not a supported EventType. Supported Event types $($Etypes -join ', ')"
+        return
+      }
+    }
+    $cmdoptions = @{
+            'EventType' =  'RegistryEvent' 
+            'Condition' = $Condition 
+            'EventField' = $FieldString 
+            'Value' = $Value 
+            'OnMatch' = $OnMatch
+            
+        }
+    foreach ($val in $Value)
+    {
+
+      switch ($PSCmdlet.ParameterSetName)
+      {
+        
+        'Path'
+        {
+            $cmdOptions.Add('Path',$Path)
+            New-RuleFilter @cmdOptions 
+        }
+
+        'LiteralPath' 
+        {
+            $cmdOptions.Add('LiteralPath',$LiteralPath)
+            New-RuleFilter @cmdOptions
+        }
+      }
+    }
+  }
+  End {}
+}
+
+
 #  .ExternalHelp Posh-SysMon.psm1-Help.xml
 function Remove-SysmonRuleFilter
 {
@@ -870,7 +1208,8 @@ function Remove-SysmonRuleFilter
     Position=1)]
     [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
         'ProcessTerminate', 'ImageLoad', 'DriverLoad', 
-        'CreateRemoteThread', 'RawAccessRead', 'ProcessAccess')]
+        'CreateRemoteThread', 'RawAccessRead', 'ProcessAccess',
+        'FileCreateStreamHash', 'RegistryEvent', 'FileCreate')]
     [string]
     $EventType,
 
@@ -1092,7 +1431,8 @@ function Get-SysmonRuleFilter
     Position=1)]
     [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
         'ProcessTerminate', 'ImageLoad', 'DriverLoad', 
-        'CreateRemoteThread','RawAccessRead', 'ProcessAccess')]
+        'CreateRemoteThread','RawAccessRead', 'ProcessAccess',
+        'FileCreateStreamHash', 'RegistryEvent', 'FileCreate')]
     [string]
     $EventType,
 
@@ -1242,7 +1582,7 @@ function Get-SysmonEventData
         ParameterSetName='ID',
         ValueFromPipelineByPropertyName=$true,
     Position=0)]
-    [ValidateSet(1,2,3,5,6,7,8,9,10,255)]
+    [ValidateSet(1,2,3,5,6,7,8,9,10,11,12,13,14,15,255)]
     [Int32[]]
     $EventId,
 
@@ -1254,7 +1594,9 @@ function Get-SysmonEventData
     [string[]]
     [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
         'ProcessTerminate', 'ImageLoad', 'DriverLoad', 
-        'CreateRemoteThread', 'RawAccessRead', 'ProcessAccess', 'Error')]
+        'CreateRemoteThread', 'RawAccessRead', 'ProcessAccess', 'Error',
+        'FileCreateStreamHash', 'RegistryValueSet', 'RegistryRename', 
+        'RegistryAddOrDelete', 'FileCreate')]
     $EventType,
         
     # Specifies the maximum number of events that Get-WinEvent returns. Enter an integer. The default is to return all the events in the logs or files.
@@ -1297,6 +1639,11 @@ function Get-SysmonEventData
             CreateRemoteThread = 8
             RawAccessRead = 9
             ProcessAccess = 10
+            FileCreate = 11
+            RegistryAddOrDelete = 12
+            RegistryValueSet = 13
+            RegistryRename = 14
+            FileCreateStreamHash = 15
             Error = 255
         }
 
@@ -1310,7 +1657,13 @@ function Get-SysmonEventData
             '8' = 'CreateRemoteThread'
             '9' = 'RawAccessRead'
             '10' = 'ProcessAccess'
+            '11' = 'FileCreate'
+            '12' = 'RegistryAddOrDelete'
+            '13' = 'RegistryValueSet'
+            '14' = 'RegistryRename'
+            '15' = 'FileCreateStreamHash'
             '255' = 'Error'
+
         }
     }
     Process

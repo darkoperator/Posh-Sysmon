@@ -81,7 +81,7 @@ function New-SysmonConfiguration
         # Log raw access reads of files.
         [Parameter(Mandatory=$False,
                    ValueFromPipelineByPropertyName=$true,
-                   Position=9)]
+                   Position=10)]
         [Switch]
         $RawAccessRead,
 
@@ -92,6 +92,27 @@ function New-SysmonConfiguration
         [Switch]
         $CheckRevocation,
 
+        # Log Registry events.
+        [Parameter(Mandatory=$False,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=12 )]
+        [Switch]
+        $RegistryEvent,
+
+        # Log File Creation events.
+        [Parameter(Mandatory=$False,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=13 )]
+        [Switch]
+        $FileCreate,
+
+        # Log File Stream creations events.
+        [Parameter(Mandatory=$False,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=14 )]
+        [Switch]
+        $FileCreateStreamHash,
+
         # Comment for purpose of the configuration file.
         [Parameter(Mandatory=$False,
                    ValueFromPipelineByPropertyName=$true)]
@@ -101,9 +122,9 @@ function New-SysmonConfiguration
         # Schema Vesion for the configuration file, default is 3.1.
         [Parameter(Mandatory=$False,
                    ValueFromPipelineByPropertyName=$true)]
-                   [ValidateSet('2.0','3.0', '3.1')]
+                   [ValidateSet('2.0','3.0', '3.1', '3.2')]
         [String]
-        $SchemaVersion = '3.1'
+        $SchemaVersion = '3.2'
     )
 
     Begin{}
@@ -140,13 +161,13 @@ function New-SysmonConfiguration
         Write-Verbose -Message "Enabling hashing algorithms : $($Hash)"
         $xmlWriter.WriteElementString('HashAlgorithms',$Hash)
         
+        # Enable checking revocation.
         if ($CheckRevocation) 
         {
-            if ($SchemaVersion -eq '3.1')
+            if ($SchemaVersion -eq '3.1' -or $SchemaVersion -eq '3.2')
             {
                 Write-Verbose -message 'Enabling CheckRevocation.'
                 $xmlWriter.WriteElementString('CheckRevocation','')
-                #$xmlWriter.WriteFullEndElement()
             }
             else 
             {
@@ -227,6 +248,54 @@ function New-SysmonConfiguration
             $xmlWriter.WriteStartElement('RawAccessRead ')
             $XmlWriter.WriteAttributeString('onmatch', 'exclude')
             $xmlWriter.WriteFullEndElement()
+        }
+
+        # Log registry events.
+        if ($RegistryEvent) 
+        {
+            if ($SchemaVersion -eq '3.2')
+            {
+                Write-Verbose -message 'Enabling RegistryEvent.'
+                $xmlWriter.WriteStartElement('RegistryEvent ')
+                $XmlWriter.WriteAttributeString('onmatch', 'exclude')
+                $xmlWriter.WriteFullEndElement()
+            }
+            else 
+            {
+                Write-Warning -Message 'RegistryEvent was not enabled because it is not supported in this SchemaVersion.'
+            }
+        }
+
+        # Log file create events.
+        if ($FileCreate) 
+        {
+            if ($SchemaVersion -eq '3.2')
+            {
+                Write-Verbose -message 'Enabling FileCreate.'
+                $xmlWriter.WriteStartElement('FileCreate ')
+                $XmlWriter.WriteAttributeString('onmatch', 'exclude')
+                $xmlWriter.WriteFullEndElement()
+            }
+            else 
+            {
+                Write-Warning -Message 'FileCreate was not enabled because it is not supported in this SchemaVersion.'
+            }
+        }
+
+        # Log file create events.
+        if ($FileCreateStreamHash) 
+        {
+            if ($SchemaVersion -eq '3.2')
+            {
+                Write-Verbose -message 'Enabling FileCreateStreamHash.'
+                $xmlWriter.WriteStartElement('FileCreateStreamHash ')
+                $XmlWriter.WriteAttributeString('onmatch', 'exclude')
+                $xmlWriter.WriteFullEndElement()
+            }
+            else 
+            {
+                Write-Warning -Message 'FileCreateStreamHash was not enabled because it is not supported in this SchemaVersion.'
+            }
         }
 
         # End Element of EventFiltering
@@ -352,7 +421,8 @@ function Get-SysmonRule
                    Position=1)]
         [ValidateSet('ALL', 'NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
                      'ProcessTerminate', 'ImageLoad', 'DriverLoad', 'ProcessAccess',
-                     'RawAccessRead','ProcessAccess')]
+                     'RawAccessRead','ProcessAccess', 'FileCreateStreamHash', 
+                     'RegistryEvent', 'FileCreate')]
         [string[]]
         $EventType = @('ALL')
     )
@@ -395,7 +465,8 @@ function Get-SysmonRule
         {
             $TypesToParse = @('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
                               'ProcessTerminate', 'ImageLoad', 'DriverLoad','CreateRemoteThread',
-                              'ProcessAccess', 'RawAccessRead')
+                              'ProcessAccess', 'RawAccessRead', 'FileCreateStreamHash', 
+                              'RegistryEvent', 'FileCreate')
         }
         else
         {
@@ -550,7 +621,8 @@ function Set-SysmonRule
                    Position=1)]
         [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
                      'ProcessTerminate', 'ImageLoad', 'DriverLoad', 'CreateRemoteThread',
-                     'ProcessAccess', 'RawAccessRead')]
+                     'ProcessAccess', 'RawAccessRead', 'FileCreateStreamHash', 
+                     'RegistryEvent', 'FileCreate')]
         [string[]]
         $EventType,
 
@@ -573,7 +645,7 @@ function Set-SysmonRule
     Begin{}
     Process
     {
-        #if no elemrnt create one either if itis schema 2.0 or 3.0.
+        # if no elemrnt create one either if it is schema 2.0 or 3.0.
         # If one is present we modify that one if Schema 2.0 and if Schema 3.0 and action modify.
         # If Schema 3.0 and action add we check if only is present and that it is not the same OnMatch
         # as being specified if it is we do nothing if not we add. 
@@ -628,7 +700,7 @@ function Set-SysmonRule
             {
                 if ($Rules."$($EvtType)".count -eq $null)
                 {
-                    if (($Config.Sysmon.schemaversion -eq '2.0') -or ($Config.Sysmon.schemaversion -eq '3.0' -and $Action -eq 'Modify'))
+                    if (($Config.Sysmon.schemaversion -eq '2.0') -or ($Config.Sysmon.schemaversion -in ('3.0', '3.1', '3.2') -and $Action -eq 'Modify'))
                     {
                         Write-Verbose -Message "Setting as default action for $($EvtType) the rule on match of $($OnMatch)."
                         $RuleData.SetAttribute('onmatch',($OnMatch.ToLower()))
@@ -650,7 +722,7 @@ function Set-SysmonRule
                         }
                     }
                 }
-                elseif ($Config.Sysmon.schemaversion -eq '3.0' -and $elements.count -eq 2)
+                elseif ($Config.Sysmon.schemaversion -in ('3.0', '3.1', '3.2') -and $elements.count -eq 2)
                 {
                     Write-Verbose -Message 'A rule with the specified onmatch action already exists.'
                 }
@@ -707,7 +779,8 @@ function Remove-SysmonRule
                    Position=1)]
         [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
                      'ProcessTerminate', 'ImageLoad', 'DriverLoad', 'CreateRemoteThread',
-                     'ProcessAccess', 'RawAccessRead')]
+                     'ProcessAccess', 'RawAccessRead', 'FileCreateStreamHash', 
+                     'RegistryEvent', 'FileCreate')]
         [string[]]
         $EventType,
 
