@@ -1209,6 +1209,7 @@ function Remove-SysmonRuleFilter
     [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
         'ProcessTerminate', 'ImageLoad', 'DriverLoad', 
         'CreateRemoteThread', 'RawAccessRead', 'ProcessAccess',
+        'FileCreateStreamHash', 'RegistryEvent', 'FileCreate',  
         'FileCreateStreamHash', 'RegistryEvent', 'FileCreate')]
     [string]
     $EventType,
