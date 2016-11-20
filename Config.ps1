@@ -2,7 +2,7 @@
 #  .ExternalHelp Posh-SysMon.psm1-Help.xml
 function New-SysmonConfiguration
 {
-    [CmdletBinding()]
+    [CmdletBinding(HelpUri = 'https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/New-SysmonConfiguration.md')]
     Param
     (
         # Path to write XML config file.
@@ -319,7 +319,8 @@ function New-SysmonConfiguration
 #  .ExternalHelp Posh-SysMon.psm1-Help.xml
 function Get-SysmonHashingAlgorithm
 {
-    [CmdletBinding(DefaultParameterSetName = 'Path')]
+    [CmdletBinding(DefaultParameterSetName = 'Path',
+                   HelpUri = 'https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/Get-SysmonHashingAlgorithm.md')]
     Param
     (
         # Path to XML config file.
@@ -395,7 +396,8 @@ function Get-SysmonHashingAlgorithm
 #  .ExternalHelp Posh-SysMon.psm1-Help.xml
 function Get-SysmonRule
 {
-    [CmdletBinding(DefaultParameterSetName = 'Path')]
+    [CmdletBinding(DefaultParameterSetName = 'Path',
+                   HelpUri = 'https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/Get-SysmonRule.md')]
     Param
     (
         # Path to XML config file.
@@ -492,7 +494,8 @@ function Get-SysmonRule
 #  .ExternalHelp Posh-SysMon.psm1-Help.xml
 function Set-SysmonHashingAlgorithm
 {
-    [CmdletBinding(DefaultParameterSetName = 'Path')]
+    [CmdletBinding(DefaultParameterSetName = 'Path',
+                   HelpUri = 'https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/Set-SysmonHashingAlgorithm.md')]
     Param
     (
         # Path to XML config file.
@@ -595,7 +598,8 @@ function Set-SysmonHashingAlgorithm
 #  .ExternalHelp Posh-SysMon.psm1-Help.xml
 function Set-SysmonRule
 {
-    [CmdletBinding(DefaultParameterSetName = 'Path')]
+    [CmdletBinding(DefaultParameterSetName = 'Path',
+                   HelpUri = 'https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/Set-SysmonRule.md')]
     Param
     (
         # Path to XML config file.
@@ -753,7 +757,8 @@ function Set-SysmonRule
 #  .ExternalHelp Posh-SysMon.psm1-Help.xml
 function Remove-SysmonRule
 {
-    [CmdletBinding(DefaultParameterSetName = 'Path')]
+    [CmdletBinding(DefaultParameterSetName = 'Path',
+                   HelpUri = 'https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/Remove-SysmonRule.md')]
     Param
     (
         # Path to XML config file.

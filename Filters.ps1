@@ -1,7 +1,8 @@
 ﻿#  .ExternalHelp Posh-SysMon.psm1-Help.xml
 function New-SysmonImageLoadFilter
 {
-  [CmdletBinding(DefaultParameterSetName = 'Path')]
+  [CmdletBinding(DefaultParameterSetName = 'Path',
+                 HelpUri = 'https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/New-SysmonImageLoadFilter.md')]
   Param
   (
     # Path to XML config file.
@@ -91,7 +92,8 @@ function New-SysmonImageLoadFilter
 #  .ExternalHelp Posh-SysMon.psm1-Help.xml
 function New-SysmonDriverLoadFilter
 {
-  [CmdletBinding(DefaultParameterSetName = 'Path')]
+  [CmdletBinding(DefaultParameterSetName = 'Path',
+                 HelpUri = 'https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/New-SysmonDriverLoadFilter.md')]
   Param
   (
     # Path to XML config file.
@@ -188,7 +190,8 @@ function New-SysmonDriverLoadFilter
 #  .ExternalHelp Posh-SysMon.psm1-Help.xml
 function New-SysmonNetworkConnectFilter
 {
-  [CmdletBinding(DefaultParameterSetName = 'Path')]
+  [CmdletBinding(DefaultParameterSetName = 'Path',
+                 HelpUri = 'https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/New-SysmonNetworkConnectFilter.md')]
   Param
   (
     # Path to XML config file.
@@ -284,7 +287,8 @@ function New-SysmonNetworkConnectFilter
 #  .ExternalHelp Posh-SysMon.psm1-Help.xml
 function New-SysmonFileCreateFilter
 {
-  [CmdletBinding(DefaultParameterSetName = 'Path')]
+  [CmdletBinding(DefaultParameterSetName = 'Path',
+                 HelpUri = 'https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/New-SysmonFileCreateFilter.md')]
   Param
   (
     # Path to XML config file.
@@ -365,7 +369,8 @@ function New-SysmonFileCreateFilter
 #  .ExternalHelp Posh-SysMon.psm1-Help.xml
 function New-SysmonProcessCreateFilter
 {
-  [CmdletBinding(DefaultParameterSetName = 'Path')]
+  [CmdletBinding(DefaultParameterSetName = 'Path',
+                 HelpUri = 'https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/New-SysmonProcessCreateFilter.md')]
   Param
   (
     # Path to XML config file.
@@ -458,7 +463,8 @@ function New-SysmonProcessCreateFilter
 #  .ExternalHelp Posh-SysMon.psm1-Help.xml
 function New-SysmonProcessTerminateFilter
 {
-  [CmdletBinding(DefaultParameterSetName = 'Path')]
+  [CmdletBinding(DefaultParameterSetName = 'Path',
+                 HelpUri = 'https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/New-SysmonProcessTerminateFilter.md')]
   Param
   (
     # Path to XML config file.
@@ -544,7 +550,8 @@ function New-SysmonProcessTerminateFilter
 #  .ExternalHelp Posh-SysMon.psm1-Help.xml
 function New-SysmonCreateRemoteThreadFilter
 {
-  [CmdletBinding(DefaultParameterSetName = 'Path')]
+  [CmdletBinding(DefaultParameterSetName = 'Path',
+                 HelpUri = 'https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/New-SysmonCreateRemoteThreadFilter.md')]
   Param
   (
     # Path to XML config file.
@@ -645,7 +652,8 @@ function New-SysmonCreateRemoteThreadFilter
 #>
 function New-SysmonProcessAccessFilter
 {
-  [CmdletBinding(DefaultParameterSetName = 'Path')]
+  [CmdletBinding(DefaultParameterSetName = 'Path',
+                 HelpUri = 'https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/New-SysmonProcessAccessFilter.md')]
   Param
   (
     # Path to XML config file.
@@ -751,7 +759,8 @@ function New-SysmonProcessAccessFilter
 #>
 function New-SysmonRawAccessReadFilter
 {
-  [CmdletBinding(DefaultParameterSetName = 'Path')]
+  [CmdletBinding(DefaultParameterSetName = 'Path',
+                 HelpUri = 'https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/New-SysmonRawAccessReadFilter.md')]
   Param
   (
     # Path to XML config file.
@@ -850,7 +859,8 @@ function New-SysmonRawAccessReadFilter
 #>
 function New-SysmonFileCreateFilter
 {
-  [CmdletBinding(DefaultParameterSetName = 'Path')]
+  [CmdletBinding(DefaultParameterSetName = 'Path',
+                 HelpUri = 'https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/New-SysmonFileCreateFilter.md')]
   Param
   (
     # Path to XML config file.
@@ -951,7 +961,8 @@ Capture persistance attemp by creating a registry entry in the RunOnce keys.
 #>
 function New-SysmonFileCreateStreamHash
 {
-  [CmdletBinding(DefaultParameterSetName = 'Path')]
+  [CmdletBinding(DefaultParameterSetName = 'Path',
+                 HelpUri = 'https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/New-SysmonFileCreateStreamHash.md')]
   Param
   (
     # Path to XML config file.
@@ -1067,7 +1078,8 @@ function New-SysmonFileCreateStreamHash
 #>
 function New-SysmonRegistryEvent
 {
-  [CmdletBinding(DefaultParameterSetName = 'Path')]
+  [CmdletBinding(DefaultParameterSetName = 'Path',
+                 HelpUri = 'https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/New-SysmonRegistryEvent.md')]
   Param
   (
     # Path to XML config file.
@@ -1182,7 +1194,8 @@ function New-SysmonRegistryEvent
 #  .ExternalHelp Posh-SysMon.psm1-Help.xml
 function Remove-SysmonRuleFilter
 {
-  [CmdletBinding(DefaultParameterSetName = 'Path')]
+  [CmdletBinding(DefaultParameterSetName = 'Path',
+                 HelpUri = 'https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/Remove-SysmonRuleFilter.md')]
   Param
   (
     # Path to XML config file.
@@ -1405,7 +1418,8 @@ function Remove-SysmonRuleFilter
 #>
 function Get-SysmonRuleFilter
 {
-  [CmdletBinding(DefaultParameterSetName = 'Path')]
+  [CmdletBinding(DefaultParameterSetName = 'Path',
+                 HelpUri = 'https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/Get-SysmonRuleFilter.md')]
   Param
   (
     # Path to XML config file.
@@ -1575,7 +1589,8 @@ function Get-SysmonRuleFilter
 #>
 function Get-SysmonEventData
 {
-  [CmdletBinding(DefaultParameterSetName='ID')]
+  [CmdletBinding(DefaultParameterSetName='ID',
+                 HelpUri = 'https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/Get-SysmonEventData.md')]
   Param
   (
     # Sysmon Event ID of records to show

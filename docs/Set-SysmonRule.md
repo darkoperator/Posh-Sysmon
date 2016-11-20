@@ -22,14 +22,10 @@ Set-SysmonRule [-LiteralPath] <Object> [-EventType] <String[]> [[-OnMatch] <Stri
 ```
 
 ## DESCRIPTION
-Creates a rules for a specified Event Type and sets the default action
-for the rule and filters under it.
-Ir a rule alreade exists it udates
-the default action taken by a event type rule if one aready
-present.
+Creates a rules for a specified Event Type and sets the default action for the rule and filters under it.
+Ir a rule alreade exists it udates the default action taken by a event type rule if one aready present.
 The default is exclude.
-This default is set for event type
-and affects all filters under it.
+This default is set for event type and affects all filters under it.
 
 ## EXAMPLES
 
@@ -137,8 +133,11 @@ Accept wildcard characters: False
 ## INPUTS
 
 ### System.Object
+
 ### System.String[]
+
 ### System.String
+
 ## OUTPUTS
 
 ## NOTES

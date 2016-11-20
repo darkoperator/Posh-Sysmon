@@ -20,9 +20,7 @@ New-SysmonConfiguration [-Path] <String> [-HashingAlgorithm] <String[]> [-Networ
 
 ## DESCRIPTION
 Creates a new Sysmon XML configuration file.
-Configuration options
-and a descriptive comment can be given when generating the
-XML config file.
+Configuration options and a descriptive comment can be given when generating the XML config file.
 
 ## EXAMPLES
 
@@ -80,7 +78,7 @@ Aliases:
 
 Required: False
 Position: 2
-Default value: None
+Default value: False
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
@@ -95,7 +93,7 @@ Aliases:
 
 Required: False
 Position: 3
-Default value: None
+Default value: False
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
@@ -110,7 +108,7 @@ Aliases:
 
 Required: False
 Position: 4
-Default value: None
+Default value: False
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
@@ -125,7 +123,7 @@ Aliases:
 
 Required: False
 Position: 5
-Default value: None
+Default value: False
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
@@ -140,7 +138,7 @@ Aliases:
 
 Required: False
 Position: 6
-Default value: None
+Default value: False
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
@@ -155,7 +153,7 @@ Aliases:
 
 Required: False
 Position: 7
-Default value: None
+Default value: False
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
@@ -170,7 +168,7 @@ Aliases:
 
 Required: False
 Position: 8
-Default value: None
+Default value: False
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
@@ -193,6 +191,7 @@ Accept wildcard characters: False
 ### -SchemaVersion
 Schema version for the configuration file.
 - SysMon 3.0 uses 2.0
+
 - SysMon 4.0 uses 3.0
 
 ```yaml
@@ -217,7 +216,7 @@ Aliases:
 
 Required: False
 Position: Named
-Default value: None
+Default value: False
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
@@ -232,7 +231,7 @@ Aliases:
 
 Required: False
 Position: Named
-Default value: None
+Default value: False
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
@@ -247,7 +246,7 @@ Aliases:
 
 Required: False
 Position: Named
-Default value: None
+Default value: False
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
@@ -262,7 +261,7 @@ Aliases:
 
 Required: False
 Position: Named
-Default value: None
+Default value: False
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
@@ -277,7 +276,7 @@ Aliases:
 
 Required: False
 Position: Named
-Default value: None
+Default value: False
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
@@ -292,7 +291,7 @@ Aliases:
 
 Required: False
 Position: Named
-Default value: None
+Default value: False
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
@@ -300,8 +299,11 @@ Accept wildcard characters: False
 ## INPUTS
 
 ### System.String
+
 ### System.String[]
+
 ### System.Management.Automation.SwitchParameter
+
 ## OUTPUTS
 
 ## NOTES

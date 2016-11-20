@@ -130,8 +130,11 @@ Accept wildcard characters: False
 ## INPUTS
 
 ### System.Object
+
 ### System.String
+
 ### System.String[]
+
 ## OUTPUTS
 
 ## NOTES

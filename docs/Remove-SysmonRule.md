@@ -99,7 +99,9 @@ Accept wildcard characters: False
 ## INPUTS
 
 ### System.Object
+
 ### System.String[]
+
 ## OUTPUTS
 
 ## NOTES
