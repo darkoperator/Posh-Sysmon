@@ -4,40 +4,15 @@ PowerShell 3.0 or above module for creating and managing Sysinternals Sysmon v2.
 All functions in the PowerShell module include help information and example of usage that can be view using the Get-Help cmdlet. 
 
 # Installation
+For installation it is highly recomended that you install from the PowerShell Gallery using the Install-Module cmdlet. 
 
-To install the module from a PowerShell v3 session run:
+On PowerShell v5 and above:
 <pre>
-iex (New-Object Net.WebClient).DownloadString("https://gist.githubusercontent.com/darkoperator/3f9da4b780b5a0206bca/raw/d5b798cac5fbdae7885c546c9efcc5cb48fbe04d/posh-sysmoninstall.ps1")
+Install-Module -Name Posh-Sysmon
 </pre>
 
-The script that is being ran is the following during installation:
+If you are running PS 3.0 to 4.0 you can use the PowerShell Gallery also following instruction in [PowerShell Gallery Documentation](https://msdn.microsoft.com/powershell/gallery/readme)
 
-```PowerShell
-# Make sure the module is not loaded
-Remove-Module posh-sysmon -ErrorAction SilentlyContinue
-# Download latest version
-$webclient = New-Object System.Net.WebClient
-$url = "https://github.com/darkoperator/Posh-Sysmon/archive/master.zip"
-Write-Host "Downloading latest version of Posh-Sysmon from $url" -ForegroundColor Cyan
-$file = "$($env:TEMP)\Posh-Sysmon.zip"
-$webclient.DownloadFile($url,$file)
-Write-Host "File saved to $file" -ForegroundColor Green
-# Unblock and Decompress
-Unblock-File -Path $file
-$targetondisk = "$($env:USERPROFILE)\Documents\WindowsPowerShell\Modules"
-New-Item -ItemType Directory -Force -Path $targetondisk | out-null
-$shell_app=new-object -com shell.application
-$zip_file = $shell_app.namespace($file)
-Write-Host "Uncompressing the Zip file to $($targetondisk)" -ForegroundColor Cyan
-$destination = $shell_app.namespace($targetondisk)
-$destination.Copyhere($zip_file.items(), 0x10)
-# Rename and import
-Write-Host "Renaming folder" -ForegroundColor Cyan
-Rename-Item -Path ($targetondisk+"\Posh-Sysmon-master") -NewName "Posh-Sysmon" -Force
-Write-Host "Module has been installed" -ForegroundColor Green
-Import-Module -Name Posh-Sysmon
-Get-Command -Module Posh-Sysmon
-```
 # Change Log
 
 ## Version 0.7.3
