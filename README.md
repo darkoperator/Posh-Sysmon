@@ -24,6 +24,7 @@ If you are running PS 3.0 to 4.0 you can use the PowerShell Gallery also followi
 * New function New-SysmonRegistryEvent for creating registry event filters.
 * New function New-SysmonFileCreateStreamHash for creating file stream hash event filters. 
 * Updated Get-SysmonRule, Set-SysmonRule, Remove-SysmonRule and Remove-SysmonRuleFilter for the new event type rules.
+* Added Online Help option for all functions.
 
 ## Version 0.7.2
 * Added missing Event Types to Get-SysmonEventData.
