@@ -40,6 +40,16 @@ Get-Command -Module Posh-Sysmon
 ```
 # Change Log
 
+## Version 0.7.3
+* Several bug fixes when creating RawAccess and ProcessOpen rules. 
+* By default the new schema is 3.2 for the latest version of Sysmon 5.0
+* New-SysmonConfiguration function has options to enable all logging for FileCreate, RegistryEvent and FileCreateStreamHash
+* Get-SysmonEventData can now parse File Create, Registry and File Stream creation events.
+* New function New-SysmonFileCreateFilter for creating file creation filters.
+* New function New-SysmonRegistryEvent for creating registry event filters.
+* New function New-SysmonFileCreateStreamHash for creating file stream hash event filters. 
+* Updated Get-SysmonRule, Set-SysmonRule, Remove-SysmonRule and Remove-SysmonRuleFilter for the new event type rules.
+
 ## Version 0.7.2
 * Added missing Event Types to Get-SysmonEventData.
 
