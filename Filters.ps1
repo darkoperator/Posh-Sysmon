@@ -432,7 +432,7 @@ function New-SysmonProcessCreateFilter
   {
     $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
     $cmdoptions = @{
-            'EventType' =  'FileCreateTime' 
+            'EventType' =  'ProcessCreate' 
             'Condition' = $Condition 
             'EventField' = $FieldString 
             'Value' = $Value 
@@ -819,7 +819,7 @@ function New-SysmonRawAccessReadFilter
   {
     $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
     $cmdoptions = @{
-            'EventType' =  'ProcessAccess' 
+            'EventType' =  'RawAccessRead' 
             'Condition' = $Condition 
             'EventField' = $FieldString 
             'Value' = $Value 
