@@ -26,12 +26,12 @@ Configuration options and a descriptive comment can be given when generating the
 
 ### -------------------------- EXAMPLE 1 --------------------------
 ```
-New-SysmonConfiguration -ConfigFile .\pc_cofig.xml -HashingAlgorithm SHA1,IMPHASH -Network -ImageLoading -Comment "Config for helpdesk PCs." -Verbose
+New-SysmonConfiguration -Path .\pc_config.xml -HashingAlgorithm SHA1,IMPHASH -Network -ImageLoad -Comment "Config for helpdesk PCs." -Verbose
 
 VERBOSE: Enabling hashing algorithms : SHA1,IMPHASH
 VERBOSE: Enabling network connection logging.
 VERBOSE: Enabling image loading logging.
-VERBOSE: Config file created as C:\\pc_cofig.xml
+VERBOSE: Config file created as C:\\pc_config.xml
 ```
 
 Create a configuration file that will log all network connction, image loading and sets a descriptive comment.
