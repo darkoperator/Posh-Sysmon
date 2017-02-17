@@ -12,7 +12,7 @@
 RootModule = '.\Posh-SysMon.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.7.4'
+ModuleVersion = '0.7.5'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -24,10 +24,10 @@ GUID = 'a8ade6cb-39d5-45a1-b4aa-acf29ee34aed'
 Author = 'Carlos Perez carlos_Perez@darkoperator.com'
 
 # Company or vendor of this module
-CompanyName = 'Unknown'
+CompanyName = 'Darkoperator.com'
 
 # Copyright statement for this module
-Copyright = '(c) 2016 Carlos Perez carlos_Perez@darkoperator.com. All rights reserved.'
+Copyright = '(c) 2017 Carlos Perez carlos_Perez@darkoperator.com. All rights reserved.'
 
 # Description of the functionality provided by this module
 Description = 'Module for the creation and managing of Sysinternal Sysmon configuration XML files.'
@@ -78,7 +78,8 @@ FunctionsToExport = 'Get-SysmonHashingAlgorithm', 'Get-SysmonRule',
                'Remove-SysmonRuleFilter', 'Set-SysmonHashingAlgorithm', 
                'Set-SysmonRule', 'Get-SysmonEventData', 'Get-SysmonRuleFilter', 
                'New-SysmonProcessAccess', 'New-SysmonFileCreateStreamHash', 
-               'New-SysmonRegistryEvent', 'New-SysmonFileCreateFilter'
+               'New-SysmonRegistryEvent', 'New-SysmonFileCreateFilter',
+               'New-SysmonPipeEvent'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()
@@ -260,6 +261,8 @@ PrivateData = @{
     FileCreateStreamHash = 'FileCreateStreamHash'
     RegistryEvent = 'RegistryEvent' 
     FileCreate = 'FileCreate'
+    Pipe = 'Pipe'
+    PipeEvent = 'PipeEvent'
    
 
     PSData = @{

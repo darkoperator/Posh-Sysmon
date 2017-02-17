@@ -113,18 +113,25 @@ function New-SysmonConfiguration
         [Switch]
         $FileCreateStreamHash,
 
+        # Log File Stream creations events.
+        [Parameter(Mandatory=$False,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=15 )]
+        [Switch]
+        $PipeEvent,
+
         # Comment for purpose of the configuration file.
         [Parameter(Mandatory=$False,
                    ValueFromPipelineByPropertyName=$true)]
         [String]
         $Comment,
 
-        # Schema Vesion for the configuration file, default is 3.1.
+        # Schema Vesion for the configuration file, default is 3.3.
         [Parameter(Mandatory=$False,
                    ValueFromPipelineByPropertyName=$true)]
-                   [ValidateSet('2.0','3.0', '3.1', '3.2')]
+                   [ValidateSet('2.0','3.0', '3.1', '3.2','3.3')]
         [String]
-        $SchemaVersion = '3.2'
+        $SchemaVersion = '3.3'
     )
 
     Begin{}
@@ -164,7 +171,7 @@ function New-SysmonConfiguration
         # Enable checking revocation.
         if ($CheckRevocation) 
         {
-            if ($SchemaVersion -eq '3.1' -or $SchemaVersion -eq '3.2')
+            if ($SchemaVersion -in @('3.1','3.2','3.3'))
             {
                 Write-Verbose -message 'Enabling CheckRevocation.'
                 $xmlWriter.WriteElementString('CheckRevocation','')
@@ -253,7 +260,7 @@ function New-SysmonConfiguration
         # Log registry events.
         if ($RegistryEvent) 
         {
-            if ($SchemaVersion -eq '3.2')
+            if ($SchemaVersion -in @('3.2','3.3'))
             {
                 Write-Verbose -message 'Enabling RegistryEvent.'
                 $xmlWriter.WriteStartElement('RegistryEvent ')
@@ -269,7 +276,7 @@ function New-SysmonConfiguration
         # Log file create events.
         if ($FileCreate) 
         {
-            if ($SchemaVersion -eq '3.2')
+            if ($SchemaVersion -in @('3.2','3.3'))
             {
                 Write-Verbose -message 'Enabling FileCreate.'
                 $xmlWriter.WriteStartElement('FileCreate ')
@@ -285,7 +292,7 @@ function New-SysmonConfiguration
         # Log file create events.
         if ($FileCreateStreamHash) 
         {
-            if ($SchemaVersion -eq '3.2')
+            if ($SchemaVersion -in @('3.2','3.3'))
             {
                 Write-Verbose -message 'Enabling FileCreateStreamHash.'
                 $xmlWriter.WriteStartElement('FileCreateStreamHash ')
@@ -295,6 +302,22 @@ function New-SysmonConfiguration
             else 
             {
                 Write-Warning -Message 'FileCreateStreamHash was not enabled because it is not supported in this SchemaVersion.'
+            }
+        }
+
+        # NamedPipes create and connect events.
+        if ($PipeEvent) 
+        {
+            if ($SchemaVersion -in @('3.2','3.3'))
+            {
+                Write-Verbose -message 'Enabling PipeEvent.'
+                $xmlWriter.WriteStartElement('PipeEvent ')
+                $XmlWriter.WriteAttributeString('onmatch', 'exclude')
+                $xmlWriter.WriteFullEndElement()
+            }
+            else 
+            {
+                Write-Warning -Message 'PipeEvent was not enabled because it is not supported in this SchemaVersion.'
             }
         }
 
@@ -704,13 +727,13 @@ function Set-SysmonRule
             {
                 if ($Rules."$($EvtType)".count -eq $null)
                 {
-                    if (($Config.Sysmon.schemaversion -eq '2.0') -or ($Config.Sysmon.schemaversion -in ('3.0', '3.1', '3.2') -and $Action -eq 'Modify'))
+                    if (($Config.Sysmon.schemaversion -eq '2.0') -or ($Config.Sysmon.schemaversion -in @('3.0', '3.1', '3.2','3.3') -and $Action -eq 'Modify'))
                     {
                         Write-Verbose -Message "Setting as default action for $($EvtType) the rule on match of $($OnMatch)."
                         $RuleData.SetAttribute('onmatch',($OnMatch.ToLower()))
                         Write-Verbose -Message 'Action has been set.'
                     }
-                    elseif ($Config.Sysmon.schemaversion -eq '3.0' -and $Action -eq 'Add')
+                    elseif ($Config.Sysmon.schemaversion -in @('3.0', '3.1', '3.2','3.3') -and $Action -eq 'Add')
                     {
                         if ($RuleData.onmatch -ne $OnMatch)
                         {
@@ -726,7 +749,7 @@ function Set-SysmonRule
                         }
                     }
                 }
-                elseif ($Config.Sysmon.schemaversion -in ('3.0', '3.1', '3.2') -and $elements.count -eq 2)
+                elseif ($Config.Sysmon.schemaversion -in ('3.0', '3.1', '3.2','3.3') -and $elements.count -eq 2)
                 {
                     Write-Verbose -Message 'A rule with the specified onmatch action already exists.'
                 }

@@ -9,7 +9,8 @@ $SysMonSupportedVersions = @(
     '2.0',
     '3.0',
     '3.1',
-    '3.2'
+    '3.2',
+    '3.3'
  )
 
 # Table that maps schema version to Sysmon version.
@@ -18,6 +19,7 @@ $sysmonVerMap = @{
      '3.0' = '4.0'
      '3.1' = '4.11'
      '3.2' = '5.0'
+     '3.3' = '6.0'
  }
 
 function Get-RuleWithFilter
@@ -121,8 +123,8 @@ function New-RuleFilter
         [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
                      'ProcessTerminate', 'ImageLoad', 'DriverLoad', 
                      'CreateRemoteThread', 'ProcessAccess','RawAccessRead', 
-                     'FileCreate', 'RegistryEvent', 'FileCreateStreamHash', 
-                     IgnoreCase = $false)]
+                     'FileCreate', 'RegistryEvent', 'FileCreateStreamHash',
+                     'PipeEvent',IgnoreCase = $false)]
         [string]
         $EventType,
 

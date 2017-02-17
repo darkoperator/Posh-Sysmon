@@ -14,8 +14,8 @@ Creates a new Sysmon XML configuration file.
 ```
 New-SysmonConfiguration [-Path] <String> [-HashingAlgorithm] <String[]> [-NetworkConnect] [-DriverLoad]
  [-ImageLoad] [-CreateRemoteThread] [-FileCreateTime] [-ProcessCreate] [-ProcessTerminate] [-ProcessAccess]
- [-RawAccessRead] [-CheckRevocation] [-RegistryEvent] [-FileCreate] [-FileCreateStreamHash] [-Comment <String>]
- [-SchemaVersion <String>]
+ [-RawAccessRead] [-CheckRevocation] [-RegistryEvent] [-FileCreate] [-FileCreateStreamHash] [-PipeEvent]
+ [-Comment <String>] [-SchemaVersion <String>]
 ```
 
 ## DESCRIPTION
@@ -292,6 +292,21 @@ Aliases:
 Required: False
 Position: Named
 Default value: False
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -PipeEvent
+{{Fill PipeEvent Description}}
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases: 
+
+Required: False
+Position: Named
+Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```

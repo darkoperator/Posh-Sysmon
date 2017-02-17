@@ -1190,6 +1190,104 @@ function New-SysmonRegistryEvent
   End {}
 }
 
+<#
+.SYNOPSIS
+  Create a new filter for when a Named Pipe is created or connected.
+.DESCRIPTION
+   Create a new filter for when a Named Pipe is created or connected.
+   Useful for watching malware inter process communication.
+#>
+function New-SysmonPipeEvent
+{
+  [CmdletBinding(DefaultParameterSetName = 'Path',
+                 HelpUri = 'https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/New-SysmonPipeEvent.md')]
+  Param
+  (
+    # Path to XML config file.
+    [Parameter(Mandatory=$true,
+        ValueFromPipelineByPropertyName=$true,
+        ParameterSetName='Path',
+    Position=0)]
+    [ValidateScript({Test-Path -Path $_})]
+    $Path,
+
+    # Path to XML config file.
+    [Parameter(Mandatory=$true,
+        ValueFromPipelineByPropertyName=$true,
+        ParameterSetName='LiteralPath',
+    Position=0)]
+    [ValidateScript({Test-Path -Path $_})]
+    [Alias('PSPath')]
+    $LiteralPath,
+
+    # Event type on match action.
+    [Parameter(Mandatory=$true,
+        ValueFromPipelineByPropertyName=$true,
+    Position=1)]
+    [ValidateSet('include', 'exclude')]
+    [string]
+    $OnMatch,
+
+    # Condition for filtering against and event field.
+    [Parameter(Mandatory=$true,
+        ValueFromPipelineByPropertyName=$true,
+    Position=2)]
+    [ValidateSet('Is', 'IsNot', 'Contains', 'Excludes', 'Image',
+                 'BeginWith', 'EndWith', 'LessThan', 'MoreThan')]
+    [string]
+    $Condition,
+
+    # Event field to filter on.
+    [Parameter(Mandatory=$true,
+        ValueFromPipelineByPropertyName=$true,
+    Position=3)]
+    [ValidateSet('Pipe', 'ProcessGuid', 'ProcessId', 
+                 'Image')]
+    [string]
+    $EventField,
+
+    # Value of Event Field to filter on.
+    [Parameter(Mandatory=$true,
+        ValueFromPipelineByPropertyName=$true,
+    Position=4)]
+    [string[]]
+    $Value
+  )
+
+  Begin {}
+  Process
+  {
+    $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
+    $cmdoptions = @{
+            'EventType' =  'PipeEvent' 
+            'Condition' = $Condition 
+            'EventField' = $FieldString 
+            'Value' = $Value 
+            'OnMatch' = $OnMatch
+            
+        }
+    foreach ($val in $Value)
+    {
+
+      switch ($PSCmdlet.ParameterSetName)
+      {
+        
+        'Path'
+        {
+            $cmdOptions.Add('Path',$Path)
+            New-RuleFilter @cmdOptions 
+        }
+
+        'LiteralPath' 
+        {
+            $cmdOptions.Add('LiteralPath',$LiteralPath)
+            New-RuleFilter @cmdOptions
+        }
+      }
+    }
+  }
+  End {}
+}
 
 #  .ExternalHelp Posh-SysMon.psm1-Help.xml
 function Remove-SysmonRuleFilter
@@ -1223,7 +1321,8 @@ function Remove-SysmonRuleFilter
         'ProcessTerminate', 'ImageLoad', 'DriverLoad', 
         'CreateRemoteThread', 'RawAccessRead', 'ProcessAccess',
         'FileCreateStreamHash', 'RegistryEvent', 'FileCreate',  
-        'FileCreateStreamHash', 'RegistryEvent', 'FileCreate')]
+        'FileCreateStreamHash', 'RegistryEvent', 'FileCreate',
+        'PipeEvent')]
     [string]
     $EventType,
 
@@ -1447,7 +1546,8 @@ function Get-SysmonRuleFilter
     [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
         'ProcessTerminate', 'ImageLoad', 'DriverLoad', 
         'CreateRemoteThread','RawAccessRead', 'ProcessAccess',
-        'FileCreateStreamHash', 'RegistryEvent', 'FileCreate')]
+        'FileCreateStreamHash', 'RegistryEvent', 'FileCreate',
+        'PipeEvent')]
     [string]
     $EventType,
 
@@ -1598,7 +1698,7 @@ function Get-SysmonEventData
         ParameterSetName='ID',
         ValueFromPipelineByPropertyName=$true,
     Position=0)]
-    [ValidateSet(1,2,3,5,6,7,8,9,10,11,12,13,14,15,255)]
+    [ValidateSet(1,2,3,5,6,7,8,9,10,11,12,13,14,15,16,17,18,255)]
     [Int32[]]
     $EventId,
 
@@ -1612,7 +1712,8 @@ function Get-SysmonEventData
         'ProcessTerminate', 'ImageLoad', 'DriverLoad', 
         'CreateRemoteThread', 'RawAccessRead', 'ProcessAccess', 'Error',
         'FileCreateStreamHash', 'RegistryValueSet', 'RegistryRename', 
-        'RegistryAddOrDelete', 'FileCreate')]
+        'RegistryAddOrDelete', 'FileCreate','ConfigChange','PipeCreated',
+        'PipeConnected')]
     $EventType,
         
     # Specifies the maximum number of events that Get-WinEvent returns. Enter an integer. The default is to return all the events in the logs or files.
@@ -1660,6 +1761,9 @@ function Get-SysmonEventData
             RegistryValueSet = 13
             RegistryRename = 14
             FileCreateStreamHash = 15
+            ConfigChange = 16
+            PipeCreated = 17
+            PipeConnected = 18
             Error = 255
         }
 
@@ -1678,6 +1782,9 @@ function Get-SysmonEventData
             '13' = 'RegistryValueSet'
             '14' = 'RegistryRename'
             '15' = 'FileCreateStreamHash'
+            '16' = 'ConfigChange'
+            '17' = 'PipeCreated'
+            '18' = 'PipeConnected'
             '255' = 'Error'
 
         }
