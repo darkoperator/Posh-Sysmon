@@ -955,14 +955,11 @@ function New-SysmonFileCreateFilter
   Create a new filter for the logging of the saving of data on a file stream.
 .DESCRIPTION
   Create a new filter for the logging of the saving of data on a file stream.
-.EXAMPLE
-C:\PS> New-SysmonRegistryEvent -Path .\32config.xml -OnMatch include -Condition Contains -EventField TargetObject 'RunOnce'
-Capture persistance attemp by creating a registry entry in the RunOnce keys.
 #>
-function New-SysmonFileCreateStreamHash
+function New-SysmonFileCreateStreamHashFilter
 {
   [CmdletBinding(DefaultParameterSetName = 'Path',
-                 HelpUri = 'https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/New-SysmonFileCreateStreamHash.md')]
+                 HelpUri = 'https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/New-SysmonFileCreateStreamHashFilter.md')]
   Param
   (
     # Path to XML config file.
@@ -1075,11 +1072,13 @@ function New-SysmonFileCreateStreamHash
   * \REGISTRY\MACHINE\SOFTWARE
   * \REGISTRY\MACHINE\SAM
 .EXAMPLE
+C:\PS> New-SysmonRegistryFilter -Path .\32config.xml -OnMatch include -Condition Contains -EventField TargetObject 'RunOnce'
+Capture persistance attemp by creating a registry entry in the RunOnce keys.
 #>
-function New-SysmonRegistryEvent
+function New-SysmonRegistryFilter
 {
   [CmdletBinding(DefaultParameterSetName = 'Path',
-                 HelpUri = 'https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/New-SysmonRegistryEvent.md')]
+                 HelpUri = 'https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/New-SysmonRegistryFilter.md')]
   Param
   (
     # Path to XML config file.
@@ -1197,10 +1196,10 @@ function New-SysmonRegistryEvent
    Create a new filter for when a Named Pipe is created or connected.
    Useful for watching malware inter process communication.
 #>
-function New-SysmonPipeEvent
+function New-SysmonPipeFilter
 {
   [CmdletBinding(DefaultParameterSetName = 'Path',
-                 HelpUri = 'https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/New-SysmonPipeEvent.md')]
+                 HelpUri = 'https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/New-SysmonPipeFilter.md')]
   Param
   (
     # Path to XML config file.

@@ -77,9 +77,9 @@ FunctionsToExport = 'Get-SysmonHashingAlgorithm', 'Get-SysmonRule',
                'New-SysmonProcessTerminateFilter', 'Remove-SysmonRule', 
                'Remove-SysmonRuleFilter', 'Set-SysmonHashingAlgorithm', 
                'Set-SysmonRule', 'Get-SysmonEventData', 'Get-SysmonRuleFilter', 
-               'New-SysmonProcessAccess', 'New-SysmonFileCreateStreamHash', 
-               'New-SysmonRegistryEvent', 'New-SysmonFileCreateFilter',
-               'New-SysmonPipeEvent'
+               'New-SysmonProcessAccessFilter', 'New-SysmonFileCreateStreamHashFilter', 
+               'New-SysmonRegistryFilter', 'New-SysmonFileCreateFilter',
+               'New-SysmonPipeFIlter'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()
