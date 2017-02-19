@@ -189,10 +189,7 @@ Accept wildcard characters: False
 ```
 
 ### -SchemaVersion
-Schema version for the configuration file.
-- SysMon 3.0 uses 2.0
-
-- SysMon 4.0 uses 3.0
+Schema Vesion for the configuration file, default is 3.3.
 
 ```yaml
 Type: String
@@ -207,7 +204,7 @@ Accept wildcard characters: False
 ```
 
 ### -CheckRevocation
-{{Fill CheckRevocation Description}}
+Check for signature certificate revocation.
 
 ```yaml
 Type: SwitchParameter
@@ -222,7 +219,7 @@ Accept wildcard characters: False
 ```
 
 ### -FileCreate
-{{Fill FileCreate Description}}
+Log File Creation events.
 
 ```yaml
 Type: SwitchParameter
@@ -237,7 +234,7 @@ Accept wildcard characters: False
 ```
 
 ### -FileCreateStreamHash
-{{Fill FileCreateStreamHash Description}}
+Log File Creation events.
 
 ```yaml
 Type: SwitchParameter
@@ -252,7 +249,7 @@ Accept wildcard characters: False
 ```
 
 ### -ProcessAccess
-{{Fill ProcessAccess Description}}
+Log when a running process opens another process.
 
 ```yaml
 Type: SwitchParameter
@@ -267,7 +264,7 @@ Accept wildcard characters: False
 ```
 
 ### -RawAccessRead
-{{Fill RawAccessRead Description}}
+Log raw access reads of files.
 
 ```yaml
 Type: SwitchParameter
@@ -282,7 +279,7 @@ Accept wildcard characters: False
 ```
 
 ### -RegistryEvent
-{{Fill RegistryEvent Description}}
+Log Registry events.
 
 ```yaml
 Type: SwitchParameter
@@ -297,7 +294,7 @@ Accept wildcard characters: False
 ```
 
 ### -PipeEvent
-{{Fill PipeEvent Description}}
+Log NamedPipes connection and creations events.
 
 ```yaml
 Type: SwitchParameter

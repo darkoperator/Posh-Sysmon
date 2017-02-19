@@ -113,7 +113,7 @@ function New-SysmonConfiguration
         [Switch]
         $FileCreateStreamHash,
 
-        # Log File Stream creations events.
+        # Log NamedPipes connection and creations events.
         [Parameter(Mandatory=$False,
                    ValueFromPipelineByPropertyName=$true,
                    Position=15 )]
@@ -447,7 +447,7 @@ function Get-SysmonRule
         [ValidateSet('ALL', 'NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
                      'ProcessTerminate', 'ImageLoad', 'DriverLoad', 'ProcessAccess',
                      'RawAccessRead','ProcessAccess', 'FileCreateStreamHash', 
-                     'RegistryEvent', 'FileCreate')]
+                     'RegistryEvent', 'FileCreate', 'PipeEvent')]
         [string[]]
         $EventType = @('ALL')
     )
@@ -491,7 +491,7 @@ function Get-SysmonRule
             $TypesToParse = @('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
                               'ProcessTerminate', 'ImageLoad', 'DriverLoad','CreateRemoteThread',
                               'ProcessAccess', 'RawAccessRead', 'FileCreateStreamHash', 
-                              'RegistryEvent', 'FileCreate')
+                              'RegistryEvent', 'FileCreate', 'PipeEvent')
         }
         else
         {
@@ -867,7 +867,7 @@ function Remove-SysmonRule
             if ($rule.name -in $EventType -and $rule.onmatch -eq $OnMatch)
             {
                 [void]$rule.ParentNode.RemoveChild($rule)
-                Write-Verbose -Message "Removed rule for $($EvtType)."
+                Write-Verbose -Message "Removed rule for $($EventType)."
             }
         }
         

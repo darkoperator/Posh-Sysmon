@@ -29,43 +29,43 @@ function Get-RuleWithFilter
         [Parameter(Mandatory=$true)]
         $Rules
     )
-    $RuleObjOptions = @{}
     foreach ($rule in $Rules)
     {
+        $RuleObjOptions = [ordered]@{}
         $RuleObjOptions['EventType'] = $Rule.Name
         if ($Rule.onmatch -eq $null -or $Rule.onmatch -eq 'exclude')
         {
-               $RuleObjOptions['DefaultAction'] = 'Exclude'
+               $RuleObjOptions.Add('DefaultAction','Exclude')
         }
         else
         {
-            $RuleObjOptions['DefaultAction'] = 'Include'
+            $RuleObjOptions.Add('DefaultAction','Include')
         }
 
         # Process individual filters
         $Nodes = $Rule.selectnodes('*')
         if ($Nodes.count -eq 0)
         {
-            $RuleObjOptions['Scope'] = 'All Events'
+            $RuleObjOptions.add('Scope','All Events')
         }
         else
         {
-            $RuleObjOptions['Scope'] = 'Filtered'
+            $RuleObjOptions.add('Scope','Filtered')
             $Filters = @()
             foreach ($Node in $Nodes)
             {   
-                $FilterObjProps = @{}
+                $FilterObjProps = [ordered]@{}
                 $FilterObjProps['EventField'] = $Node.Name
                 $FilterObjProps['Condition'] = &{if($Node.condition -eq $null){'is'}else{$Node.condition}}
                 $FilterObjProps['Value'] =  $Node.'#text'
-                $FilterObj = [psobject]$FilterObjProps
+                $FilterObj = New-Object -TypeName psobject -Property$FilterObjProps
                 $FilterObj.pstypenames.insert(0,'Sysmon.Rule.Filter')
                 $Filters += $FilterObj
             }
-            $RuleObjOptions['Filters'] = $Filters
+            $RuleObjOptions.add('Filters',$Filters)
         }
 
-        $RuleObj = [psobject]$RuleObjOptions
+        $RuleObj = New-Object -TypeName psobject -Property $RuleObjOptions
         $RuleObj.pstypenames.insert(0,'Sysmon.Rule')
         $RuleObj
     }

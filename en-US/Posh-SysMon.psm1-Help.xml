@@ -283,9 +283,7 @@ Comment      : Config for helpdesk PCs.</dev:code>
 <dev:defaultValue>None</dev:defaultValue>
 </command:parameter>
 <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none"><maml:name>SchemaVersion</maml:name>
-<maml:Description><maml:para>Schema version for the configuration file. - SysMon 3.0 uses 2.0
-</maml:para>
-<maml:para>- SysMon 4.0 uses 3.0
+<maml:Description><maml:para>Schema Vesion for the configuration file, default is 3.3.
 </maml:para>
 </maml:Description>
 <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
@@ -294,7 +292,7 @@ Comment      : Config for helpdesk PCs.</dev:code>
 <dev:defaultValue>3.0</dev:defaultValue>
 </command:parameter>
 <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none"><maml:name>CheckRevocation</maml:name>
-<maml:Description><maml:para>{{Fill CheckRevocation Description}}
+<maml:Description><maml:para>Check for signature certificate revocation.
 </maml:para>
 </maml:Description>
 <dev:type><maml:name>SwitchParameter</maml:name>
@@ -302,7 +300,7 @@ Comment      : Config for helpdesk PCs.</dev:code>
 <dev:defaultValue>False</dev:defaultValue>
 </command:parameter>
 <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none"><maml:name>FileCreate</maml:name>
-<maml:Description><maml:para>{{Fill FileCreate Description}}
+<maml:Description><maml:para>Log File Creation events.
 </maml:para>
 </maml:Description>
 <dev:type><maml:name>SwitchParameter</maml:name>
@@ -310,7 +308,7 @@ Comment      : Config for helpdesk PCs.</dev:code>
 <dev:defaultValue>False</dev:defaultValue>
 </command:parameter>
 <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none"><maml:name>FileCreateStreamHash</maml:name>
-<maml:Description><maml:para>{{Fill FileCreateStreamHash Description}}
+<maml:Description><maml:para>Log File Creation events.
 </maml:para>
 </maml:Description>
 <dev:type><maml:name>SwitchParameter</maml:name>
@@ -318,7 +316,7 @@ Comment      : Config for helpdesk PCs.</dev:code>
 <dev:defaultValue>False</dev:defaultValue>
 </command:parameter>
 <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none"><maml:name>ProcessAccess</maml:name>
-<maml:Description><maml:para>{{Fill ProcessAccess Description}}
+<maml:Description><maml:para>Log when a running process opens another process.
 </maml:para>
 </maml:Description>
 <dev:type><maml:name>SwitchParameter</maml:name>
@@ -326,7 +324,7 @@ Comment      : Config for helpdesk PCs.</dev:code>
 <dev:defaultValue>False</dev:defaultValue>
 </command:parameter>
 <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none"><maml:name>RawAccessRead</maml:name>
-<maml:Description><maml:para>{{Fill RawAccessRead Description}}
+<maml:Description><maml:para>Log raw access reads of files.
 </maml:para>
 </maml:Description>
 <dev:type><maml:name>SwitchParameter</maml:name>
@@ -334,7 +332,7 @@ Comment      : Config for helpdesk PCs.</dev:code>
 <dev:defaultValue>False</dev:defaultValue>
 </command:parameter>
 <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none"><maml:name>RegistryEvent</maml:name>
-<maml:Description><maml:para>{{Fill RegistryEvent Description}}
+<maml:Description><maml:para>Log Registry events.
 </maml:para>
 </maml:Description>
 <dev:type><maml:name>SwitchParameter</maml:name>
@@ -342,7 +340,7 @@ Comment      : Config for helpdesk PCs.</dev:code>
 <dev:defaultValue>False</dev:defaultValue>
 </command:parameter>
 <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none"><maml:name>PipeEvent</maml:name>
-<maml:Description><maml:para>{{Fill PipeEvent Description}}
+<maml:Description><maml:para>Log NamedPipes connection and creations events.
 </maml:para>
 </maml:Description>
 <dev:type><maml:name>SwitchParameter</maml:name>
@@ -442,9 +440,7 @@ Comment      : Config for helpdesk PCs.</dev:code>
 <dev:defaultValue>None</dev:defaultValue>
 </command:parameter>
 <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none"><maml:name>SchemaVersion</maml:name>
-<maml:Description><maml:para>Schema version for the configuration file. - SysMon 3.0 uses 2.0
-</maml:para>
-<maml:para>- SysMon 4.0 uses 3.0
+<maml:Description><maml:para>Schema Vesion for the configuration file, default is 3.3.
 </maml:para>
 </maml:Description>
 <command:parameterValue required="true" variableLength="false">String</command:parameterValue>
@@ -453,7 +449,7 @@ Comment      : Config for helpdesk PCs.</dev:code>
 <dev:defaultValue>3.0</dev:defaultValue>
 </command:parameter>
 <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none"><maml:name>CheckRevocation</maml:name>
-<maml:Description><maml:para>{{Fill CheckRevocation Description}}
+<maml:Description><maml:para>Check for signature certificate revocation.
 </maml:para>
 </maml:Description>
 <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
@@ -462,7 +458,7 @@ Comment      : Config for helpdesk PCs.</dev:code>
 <dev:defaultValue>False</dev:defaultValue>
 </command:parameter>
 <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none"><maml:name>FileCreate</maml:name>
-<maml:Description><maml:para>{{Fill FileCreate Description}}
+<maml:Description><maml:para>Log File Creation events.
 </maml:para>
 </maml:Description>
 <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
@@ -471,7 +467,7 @@ Comment      : Config for helpdesk PCs.</dev:code>
 <dev:defaultValue>False</dev:defaultValue>
 </command:parameter>
 <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none"><maml:name>FileCreateStreamHash</maml:name>
-<maml:Description><maml:para>{{Fill FileCreateStreamHash Description}}
+<maml:Description><maml:para>Log File Creation events.
 </maml:para>
 </maml:Description>
 <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
@@ -480,7 +476,7 @@ Comment      : Config for helpdesk PCs.</dev:code>
 <dev:defaultValue>False</dev:defaultValue>
 </command:parameter>
 <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none"><maml:name>ProcessAccess</maml:name>
-<maml:Description><maml:para>{{Fill ProcessAccess Description}}
+<maml:Description><maml:para>Log when a running process opens another process.
 </maml:para>
 </maml:Description>
 <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
@@ -489,7 +485,7 @@ Comment      : Config for helpdesk PCs.</dev:code>
 <dev:defaultValue>False</dev:defaultValue>
 </command:parameter>
 <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none"><maml:name>RawAccessRead</maml:name>
-<maml:Description><maml:para>{{Fill RawAccessRead Description}}
+<maml:Description><maml:para>Log raw access reads of files.
 </maml:para>
 </maml:Description>
 <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
@@ -498,7 +494,7 @@ Comment      : Config for helpdesk PCs.</dev:code>
 <dev:defaultValue>False</dev:defaultValue>
 </command:parameter>
 <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none"><maml:name>RegistryEvent</maml:name>
-<maml:Description><maml:para>{{Fill RegistryEvent Description}}
+<maml:Description><maml:para>Log Registry events.
 </maml:para>
 </maml:Description>
 <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
@@ -507,7 +503,7 @@ Comment      : Config for helpdesk PCs.</dev:code>
 <dev:defaultValue>False</dev:defaultValue>
 </command:parameter>
 <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="none"><maml:name>PipeEvent</maml:name>
-<maml:Description><maml:para>{{Fill PipeEvent Description}}
+<maml:Description><maml:para>Log NamedPipes connection and creations events.
 </maml:para>
 </maml:Description>
 <command:parameterValue required="false" variableLength="false">SwitchParameter</command:parameterValue>
