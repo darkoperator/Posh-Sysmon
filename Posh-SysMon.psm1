@@ -58,7 +58,7 @@ function Get-RuleWithFilter
                 $FilterObjProps['EventField'] = $Node.Name
                 $FilterObjProps['Condition'] = &{if($Node.condition -eq $null){'is'}else{$Node.condition}}
                 $FilterObjProps['Value'] =  $Node.'#text'
-                $FilterObj = New-Object -TypeName psobject -Property$FilterObjProps
+                $FilterObj = New-Object -TypeName psobject -Property $FilterObjProps
                 $FilterObj.pstypenames.insert(0,'Sysmon.Rule.Filter')
                 $Filters += $FilterObj
             }

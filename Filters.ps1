@@ -162,11 +162,8 @@ function New-SysmonDriverLoadFilter
             
     }
 
-    foreach ($val in $Value)
+    switch($psCmdlet.ParameterSetName)
     {
-
-      switch($psCmdlet.ParameterSetName)
-      {
         'Path'
         {
             $cmdOptions.Add('Path',$Path)
@@ -176,9 +173,9 @@ function New-SysmonDriverLoadFilter
         'LiteralPath' 
         {
             $cmdOptions.Add('LiteralPath',$LiteralPath)
+
             New-RuleFilter @cmdOptions
         }
-      }
     }
   }
   End
@@ -604,13 +601,8 @@ function New-SysmonCreateRemoteThreadFilter
     $Value
   )
 
-  Begin
-  {
-  }
-  Process
-  {
-    foreach ($val in $Value)
-    {
+  Begin { }
+  Process {
       $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
       $cmdoptions = @{
             'EventType' =  'CreateRemoteThread' 
@@ -620,25 +612,19 @@ function New-SysmonCreateRemoteThreadFilter
             'OnMatch' = $OnMatch
             
         }
-      switch($psCmdlet.ParameterSetName)
-      {
-        'Path'
-        {
-            $cmdOptions.Add('Path',$Path)
-            New-RuleFilter @cmdOptions 
-        }
+        switch($psCmdlet.ParameterSetName) {
+            'Path' {
+                $cmdOptions.Add('Path',$Path)
+                New-RuleFilter @cmdOptions 
+            }
 
-        'LiteralPath' 
-        {
-            $cmdOptions.Add('LiteralPath',$LiteralPath)
-            New-RuleFilter @cmdOptions
+            'LiteralPath' {
+                $cmdOptions.Add('LiteralPath',$LiteralPath)
+                New-RuleFilter @cmdOptions
+            }
         }
-      }
-    }
   }
-  End
-  {
-  }
+  End {}
 }
 
 <#
@@ -650,12 +636,10 @@ function New-SysmonCreateRemoteThreadFilter
   C:\PS> New-SysmonProcessAccessFilter -Path .\testver31.xml -OnMatch include -Condition Contains -EventField TargetImage lsass.exe
   Log any process trying to open lsass.exe.
 #>
-function New-SysmonProcessAccessFilter
-{
+function New-SysmonProcessAccessFilter {
   [CmdletBinding(DefaultParameterSetName = 'Path',
                  HelpUri = 'https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/New-SysmonProcessAccessFilter.md')]
-  Param
-  (
+  Param (
     # Path to XML config file.
     [Parameter(Mandatory=$true,
         ValueFromPipelineByPropertyName=$true,
@@ -712,8 +696,7 @@ function New-SysmonProcessAccessFilter
   )
 
   Begin {}
-  Process
-  {
+  Process {
     $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
     $cmdoptions = @{
             'EventType' =  'ProcessAccess' 
@@ -722,30 +705,20 @@ function New-SysmonProcessAccessFilter
             'Value' = $Value 
             'OnMatch' = $OnMatch
             
-        }
-    foreach ($val in $Value)
-    {
-
-      switch ($PSCmdlet.ParameterSetName)
-      {
-        
-        'Path'
-        {
+    }
+    switch ($PSCmdlet.ParameterSetName) {
+        'Path' {
             $cmdOptions.Add('Path',$Path)
             New-RuleFilter @cmdOptions 
         }
 
-        'LiteralPath' 
-        {
+        'LiteralPath' {
             $cmdOptions.Add('LiteralPath',$LiteralPath)
             New-RuleFilter @cmdOptions
         }
-      }
     }
   }
-  End
-  {
-  }
+  End {}
 }
 
 <#
@@ -757,12 +730,10 @@ function New-SysmonProcessAccessFilter
   C:\PS> New-SysmonRawAccessReadFilter -Path .\testver31.xml -OnMatch include -Condition Contains -EventField Image NTDS.dit
   Log any raw access read of the file NTDS.dit.
 #>
-function New-SysmonRawAccessReadFilter
-{
+function New-SysmonRawAccessReadFilter {
   [CmdletBinding(DefaultParameterSetName = 'Path',
                  HelpUri = 'https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/New-SysmonRawAccessReadFilter.md')]
-  Param
-  (
+  Param (
     # Path to XML config file.
     [Parameter(Mandatory=$true,
         ValueFromPipelineByPropertyName=$true,
@@ -815,8 +786,7 @@ function New-SysmonRawAccessReadFilter
   )
 
   Begin {}
-  Process
-  {
+  Process {
     $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
     $cmdoptions = @{
             'EventType' =  'RawAccessRead' 
@@ -825,25 +795,18 @@ function New-SysmonRawAccessReadFilter
             'Value' = $Value 
             'OnMatch' = $OnMatch
             
-        }
-    foreach ($val in $Value)
-    {
+    }
 
-      switch ($PSCmdlet.ParameterSetName)
-      {
-        
-        'Path'
-        {
+    switch ($PSCmdlet.ParameterSetName) {
+        'Path' {
             $cmdOptions.Add('Path',$Path)
             New-RuleFilter @cmdOptions 
         }
 
-        'LiteralPath' 
-        {
+        'LiteralPath' {
             $cmdOptions.Add('LiteralPath',$LiteralPath)
             New-RuleFilter @cmdOptions
         }
-      }
     }
   }
   End {}
@@ -857,12 +820,10 @@ function New-SysmonRawAccessReadFilter
   Create a new filter for the logging file creation.
 .EXAMPLE
 #>
-function New-SysmonFileCreateFilter
-{
+function New-SysmonFileCreateFilter {
   [CmdletBinding(DefaultParameterSetName = 'Path',
                  HelpUri = 'https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/New-SysmonFileCreateFilter.md')]
-  Param
-  (
+  Param (
     # Path to XML config file.
     [Parameter(Mandatory=$true,
         ValueFromPipelineByPropertyName=$true,
@@ -915,35 +876,26 @@ function New-SysmonFileCreateFilter
   )
 
   Begin {}
-  Process
-  {
+  Process {
     $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
     $cmdoptions = @{
             'EventType' =  'FileCreate' 
             'Condition' = $Condition 
             'EventField' = $FieldString 
             'Value' = $Value 
-            'OnMatch' = $OnMatch
-            
-        }
-    foreach ($val in $Value)
-    {
+            'OnMatch' = $OnMatch  
+    }
 
-      switch ($PSCmdlet.ParameterSetName)
-      {
-        
-        'Path'
-        {
+    switch ($PSCmdlet.ParameterSetName) {
+        'Path' {
             $cmdOptions.Add('Path',$Path)
             New-RuleFilter @cmdOptions 
         }
 
-        'LiteralPath' 
-        {
+        'LiteralPath' {
             $cmdOptions.Add('LiteralPath',$LiteralPath)
             New-RuleFilter @cmdOptions
         }
-      }
     }
   }
   End {}
@@ -956,12 +908,10 @@ function New-SysmonFileCreateFilter
 .DESCRIPTION
   Create a new filter for the logging of the saving of data on a file stream.
 #>
-function New-SysmonFileCreateStreamHashFilter
-{
+function New-SysmonFileCreateStreamHashFilter {
   [CmdletBinding(DefaultParameterSetName = 'Path',
                  HelpUri = 'https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/New-SysmonFileCreateStreamHashFilter.md')]
-  Param
-  (
+  Param (
     # Path to XML config file.
     [Parameter(Mandatory=$true,
         ValueFromPipelineByPropertyName=$true,
@@ -1014,35 +964,26 @@ function New-SysmonFileCreateStreamHashFilter
   )
 
   Begin {}
-  Process
-  {
+  Process {
     $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
     $cmdoptions = @{
             'EventType' =  'FileCreateStreamHash' 
             'Condition' = $Condition 
             'EventField' = $FieldString 
             'Value' = $Value 
-            'OnMatch' = $OnMatch
-            
-        }
-    foreach ($val in $Value)
-    {
+            'OnMatch' = $OnMatch  
+    }
 
-      switch ($PSCmdlet.ParameterSetName)
-      {
-        
-        'Path'
-        {
+    switch ($PSCmdlet.ParameterSetName) {
+        'Path' {
             $cmdOptions.Add('Path',$Path)
             New-RuleFilter @cmdOptions 
         }
 
-        'LiteralPath' 
-        {
+        'LiteralPath' {
             $cmdOptions.Add('LiteralPath',$LiteralPath)
             New-RuleFilter @cmdOptions
         }
-      }
     }
   }
   End {}
@@ -1075,12 +1016,10 @@ function New-SysmonFileCreateStreamHashFilter
 C:\PS> New-SysmonRegistryFilter -Path .\32config.xml -OnMatch include -Condition Contains -EventField TargetObject 'RunOnce'
 Capture persistance attemp by creating a registry entry in the RunOnce keys.
 #>
-function New-SysmonRegistryFilter
-{
+function New-SysmonRegistryFilter {
   [CmdletBinding(DefaultParameterSetName = 'Path',
                  HelpUri = 'https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/New-SysmonRegistryFilter.md')]
-  Param
-  (
+  Param (
     # Path to XML config file.
     [Parameter(Mandatory=$true,
         ValueFromPipelineByPropertyName=$true,
@@ -1146,8 +1085,7 @@ function New-SysmonRegistryFilter
 
     $Etypes = $EventTypeMap.Keys
   }
-  Process
-  {
+  Process {
     $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
 
     if ($EventField -in 'EventType') {
@@ -1165,25 +1103,18 @@ function New-SysmonRegistryFilter
             'Value' = $Value 
             'OnMatch' = $OnMatch
             
-        }
-    foreach ($val in $Value)
-    {
+    }
 
-      switch ($PSCmdlet.ParameterSetName)
-      {
-        
-        'Path'
-        {
+    switch ($PSCmdlet.ParameterSetName) {
+        'Path' {
             $cmdOptions.Add('Path',$Path)
             New-RuleFilter @cmdOptions 
         }
 
-        'LiteralPath' 
-        {
+        'LiteralPath' {
             $cmdOptions.Add('LiteralPath',$LiteralPath)
             New-RuleFilter @cmdOptions
         }
-      }
     }
   }
   End {}
@@ -1196,12 +1127,10 @@ function New-SysmonRegistryFilter
    Create a new filter for when a Named Pipe is created or connected.
    Useful for watching malware inter process communication.
 #>
-function New-SysmonPipeFilter
-{
+function New-SysmonPipeFilter {
   [CmdletBinding(DefaultParameterSetName = 'Path',
                  HelpUri = 'https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/New-SysmonPipeFilter.md')]
-  Param
-  (
+  Param (
     # Path to XML config file.
     [Parameter(Mandatory=$true,
         ValueFromPipelineByPropertyName=$true,
@@ -1254,8 +1183,7 @@ function New-SysmonPipeFilter
   )
 
   Begin {}
-  Process
-  {
+  Process {
     $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
     $cmdoptions = @{
             'EventType' =  'PipeEvent' 
@@ -1264,37 +1192,27 @@ function New-SysmonPipeFilter
             'Value' = $Value 
             'OnMatch' = $OnMatch
             
-        }
-    foreach ($val in $Value)
-    {
-
-      switch ($PSCmdlet.ParameterSetName)
-      {
-        
-        'Path'
-        {
+    }
+    switch ($PSCmdlet.ParameterSetName) {
+        'Path' {
             $cmdOptions.Add('Path',$Path)
             New-RuleFilter @cmdOptions 
         }
 
-        'LiteralPath' 
-        {
+        'LiteralPath' {
             $cmdOptions.Add('LiteralPath',$LiteralPath)
             New-RuleFilter @cmdOptions
         }
-      }
     }
   }
   End {}
 }
 
 #  .ExternalHelp Posh-SysMon.psm1-Help.xml
-function Remove-SysmonRuleFilter
-{
+function Remove-SysmonRuleFilter {
   [CmdletBinding(DefaultParameterSetName = 'Path',
                  HelpUri = 'https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/Remove-SysmonRuleFilter.md')]
-  Param
-  (
+  Param (
     # Path to XML config file.
     [Parameter(Mandatory=$true,
         ValueFromPipelineByPropertyName=$true,
@@ -1358,36 +1276,29 @@ function Remove-SysmonRuleFilter
   )
 
   Begin{}
-  Process
-  {
+  Process {
     $EvtType = $null
     # Check if the file is a valid XML file and if not raise and error. 
-    try
-    {
-      switch($psCmdlet.ParameterSetName)
-      {
-        'Path'
-        {
+    try {
+      switch($psCmdlet.ParameterSetName) {
+        'Path' {
           [xml]$Config = Get-Content -Path $Path
           $FileLocation = (Resolve-Path -Path $Path).Path
         }
 
-        'LiteralPath' 
-        {
+        'LiteralPath' {
           [xml]$Config = Get-Content -LiteralPath $LiteralPath
           $FileLocation = (Resolve-Path -LiteralPath $LiteralPath).Path
         }
       }
     }
-    catch [Management.Automation.PSInvalidCastException]
-    {
+    catch [Management.Automation.PSInvalidCastException] {
       Write-Error -Message 'Specified file does not appear to be a XML file.'
       return
     }
         
     # Validate the XML file is a valid Sysmon file.
-    if ($Config.SelectSingleNode('//Sysmon') -eq $null)
-    {
+    if ($Config.SelectSingleNode('//Sysmon') -eq $null) {
       Write-Error -Message 'XML file is not a valid Sysmon config file.'
       return
     }
@@ -1395,8 +1306,7 @@ function Remove-SysmonRuleFilter
     $Rules = $Config.SelectSingleNode('//Sysmon/EventFiltering')
 
     # Select the proper condition string.
-    switch ($Condition)
-    {
+    switch ($Condition) {
       'Is' {$ConditionString = 'is'}
       'IsNot' {$ConditionString = 'is not'}
       'Contains' {$ConditionString = 'contains'}
@@ -1410,51 +1320,35 @@ function Remove-SysmonRuleFilter
     }
 
     # Check if the event type exists if not create it.
-    if ($Rules -eq '')
-    {
+    if ($Rules -eq '') {
       Write-Error -Message 'Rule element does not exist. This appears to not be a valid config file'
       return
-    }
-    else
-    {
+    } else {
       $EvtType = $MyInvocation.MyCommand.Module.PrivateData[$EventType]
 
       $EventRule = $Rules.SelectNodes("//EventFiltering/$($EvtType)")
     }
 
-    if($EventRule -eq $null)
-    {
+    if($EventRule -eq $null) {
       Write-Warning -Message "No rule for $($EvtType) was found."
       return
     }
 
-    if($EventRule -eq $null)
-    {
+    if($EventRule -eq $null) {
       Write-Error -Message "No rule for $($EvtType) was found."
       return
-    }
-    else
-    {
-      if ($EventRule.count -eq $null -or $EventRule.Count -eq 1)
-      {
-        if ($EventRule.onmatch -eq $OnMatch)
-        {
+    } else {
+      if ($EventRule.count -eq $null -or $EventRule.Count -eq 1) {
+        if ($EventRule.onmatch -eq $OnMatch) {
           $Filters = $EventRule.SelectNodes('*')
-          if ($Filters.count -gt 0)
-          {
-            foreach($val in $Value)
-            {
-              foreach($Filter in $Filters)
-              {
-                if ($Filter.Name -eq $EventField)
-                {
-                  if (($Filter.condition -eq $null) -and ($Condition -eq 'is') -and ($Filter.'#text' -eq $val))
-                  {
+          if ($Filters.count -gt 0) {
+            foreach($val in $Value) {
+              foreach($Filter in $Filters) {
+                if ($Filter.Name -eq $EventField) {
+                  if (($Filter.condition -eq $null) -and ($Condition -eq 'is') -and ($Filter.'#text' -eq $val)) {
                     [void]$Filter.ParentNode.RemoveChild($Filter)
                     Write-Verbose -Message "Filter for field $($EventField) with condition $($Condition) and value of $($val) removed."
-                  }
-                  elseif (($Filter.condition -eq $Condition) -and ($Filter.'#text' -eq $val))
-                  {
+                  } elseif (($Filter.condition -eq $Condition) -and ($Filter.'#text' -eq $val)) {
                     [void]$Filter.ParentNode.RemoveChild($Filter)
                     Write-Verbose -Message "Filter for field $($EventField) with condition $($Condition) and value of $($val) removed."
                   }
@@ -1464,30 +1358,19 @@ function Remove-SysmonRuleFilter
             Get-RuleWithFilter($EventRule)
           }
         }
-      }
-      else
-      {
+      } else {
         Write-Verbose -Message 'Mutiple nodes.'
-        foreach ($rule in $EventRule)
-        {
-          if ($rule.onmatch -eq $OnMatch)
-          {
+        foreach ($rule in $EventRule) {
+          if ($rule.onmatch -eq $OnMatch) {
             $Filters = $rule.SelectNodes('*')
-            if ($Filters.count -gt 0)
-            {
-              foreach($val in $Value)
-              {
-                foreach($Filter in $Filters)
-                {
-                  if ($Filter.Name -eq $EventField)
-                  {
-                    if (($Filter.condition -eq $null) -and ($Condition -eq 'is') -and ($Filter.'#text' -eq $val))
-                    {
+            if ($Filters.count -gt 0) {
+              foreach($val in $Value) {
+                foreach($Filter in $Filters) {
+                  if ($Filter.Name -eq $EventField) {
+                    if (($Filter.condition -eq $null) -and ($Condition -eq 'is') -and ($Filter.'#text' -eq $val)) {
                       [void]$Filter.ParentNode.RemoveChild($Filter)
                       Write-Verbose -Message "Filter for field $($EventField) with condition $($Condition) and value of $($val) removed."
-                    }
-                    elseif (($Filter.condition -eq $Condition) -and ($Filter.'#text' -eq $val))
-                    {
+                    } elseif (($Filter.condition -eq $Condition) -and ($Filter.'#text' -eq $val)) {
                       [void]$Filter.ParentNode.RemoveChild($Filter)
                       Write-Verbose -Message "Filter for field $($EventField) with condition $($Condition) and value of $($val) removed."
                     }
@@ -1514,12 +1397,10 @@ function Remove-SysmonRuleFilter
     C:\PS>  Get-SysmonRuleFilter -Path C:\sysmon.xml -EventType ProcessCreate 
     Get the filter under the ProcessCreate Rule.
 #>
-function Get-SysmonRuleFilter
-{
+function Get-SysmonRuleFilter {
   [CmdletBinding(DefaultParameterSetName = 'Path',
                  HelpUri = 'https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/Get-SysmonRuleFilter.md')]
-  Param
-  (
+  Param (
     # Path to XML config file.
     [Parameter(Mandatory=$true,
         ValueFromPipelineByPropertyName=$true,
@@ -1560,12 +1441,10 @@ function Get-SysmonRuleFilter
   )
 
   Begin{}
-  Process
-  {
+  Process {
     $EvtType = $null
     # Check if the file is a valid XML file and if not raise and error. 
-    try
-    {
+    try {
       switch($psCmdlet.ParameterSetName)
       {
         'Path'
