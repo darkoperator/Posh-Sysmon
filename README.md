@@ -14,10 +14,11 @@ Install-Module -Name Posh-Sysmon
 If you are running PS 3.0 to 4.0 you can use the PowerShell Gallery also following instruction in [PowerShell Gallery Documentation](https://msdn.microsoft.com/powershell/gallery/readme)
 
 # Change Log
-## Version 0.7.4
+## Version 0.7.5
 * Support for Schema 3.3 of Sysmon v6.
 * New function New-SysmonPipeEvent for filtering for named pipeline cration and connection events.
 * Support of PipeEvent in config creation and event type functions.
+* Several bug fixes on filtering functions when give an array of values.
 
 ## Version 0.7.3
 * Several bug fixes when creating RawAccess and ProcessOpen rules. 
