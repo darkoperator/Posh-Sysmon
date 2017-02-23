@@ -1,0 +1,156 @@
+<!ELEMENT Sysmon (EventFiltering|HashAlgorithms|ProcessAccessConfig|CheckRevocation)*>
+<!ATTLIST Sysmon schemaversion CDATA #REQUIRED>
+<!ELEMENT EventFiltering (ProcessCreate|FileCreateTime|NetworkConnect|ProcessTerminate|DriverLoad|ImageLoad|CreateRemoteThread|RawAccessRead|ProcessAccess|FileCreate|RegistryEvent|RegistryEvent|RegistryEvent|FileCreateStreamHash)*>
+<!ELEMENT ProcessCreate (UtcTime|ProcessGuid|ProcessId|Image|CommandLine|CurrentDirectory|User|LogonGuid|LogonId|TerminalSessionId|IntegrityLevel|Hashes|ParentProcessGuid|ParentProcessId|ParentImage|ParentCommandLine)*>
+<!ATTLIST ProcessCreate onmatch (include|exclude) #IMPLIED>
+<!ATTLIST ProcessCreate default (include|exclude) #IMPLIED>
+<!ELEMENT UtcTime (#PCDATA)*>
+<!ATTLIST UtcTime condition CDATA "is">
+<!ELEMENT ProcessGuid (#PCDATA)*>
+<!ATTLIST ProcessGuid condition CDATA "is">
+<!ELEMENT ProcessId (#PCDATA)*>
+<!ATTLIST ProcessId condition CDATA "is">
+<!ELEMENT Image (#PCDATA)*>
+<!ATTLIST Image condition CDATA "is">
+<!ELEMENT CommandLine (#PCDATA)*>
+<!ATTLIST CommandLine condition CDATA "is">
+<!ELEMENT CurrentDirectory (#PCDATA)*>
+<!ATTLIST CurrentDirectory condition CDATA "is">
+<!ELEMENT User (#PCDATA)*>
+<!ATTLIST User condition CDATA "is">
+<!ELEMENT LogonGuid (#PCDATA)*>
+<!ATTLIST LogonGuid condition CDATA "is">
+<!ELEMENT LogonId (#PCDATA)*>
+<!ATTLIST LogonId condition CDATA "is">
+<!ELEMENT TerminalSessionId (#PCDATA)*>
+<!ATTLIST TerminalSessionId condition CDATA "is">
+<!ELEMENT IntegrityLevel (#PCDATA)*>
+<!ATTLIST IntegrityLevel condition CDATA "is">
+<!ELEMENT Hashes (#PCDATA)*>
+<!ATTLIST Hashes condition CDATA "is">
+<!ELEMENT ParentProcessGuid (#PCDATA)*>
+<!ATTLIST ParentProcessGuid condition CDATA "is">
+<!ELEMENT ParentProcessId (#PCDATA)*>
+<!ATTLIST ParentProcessId condition CDATA "is">
+<!ELEMENT ParentImage (#PCDATA)*>
+<!ATTLIST ParentImage condition CDATA "is">
+<!ELEMENT ParentCommandLine (#PCDATA)*>
+<!ATTLIST ParentCommandLine condition CDATA "is">
+<!ELEMENT FileCreateTime (UtcTime|ProcessGuid|ProcessId|Image|TargetFilename|CreationUtcTime|PreviousCreationUtcTime)*>
+<!ATTLIST FileCreateTime onmatch (include|exclude) #IMPLIED>
+<!ATTLIST FileCreateTime default (include|exclude) #IMPLIED>
+<!ELEMENT TargetFilename (#PCDATA)*>
+<!ATTLIST TargetFilename condition CDATA "is">
+<!ELEMENT CreationUtcTime (#PCDATA)*>
+<!ATTLIST CreationUtcTime condition CDATA "is">
+<!ELEMENT PreviousCreationUtcTime (#PCDATA)*>
+<!ATTLIST PreviousCreationUtcTime condition CDATA "is">
+<!ELEMENT NetworkConnect (UtcTime|ProcessGuid|ProcessId|Image|User|Protocol|Initiated|SourceIsIpv6|SourceIp|SourceHostname|SourcePort|SourcePortName|DestinationIsIpv6|DestinationIp|DestinationHostname|DestinationPort|DestinationPortName)*>
+<!ATTLIST NetworkConnect onmatch (include|exclude) #IMPLIED>
+<!ATTLIST NetworkConnect default (include|exclude) #IMPLIED>
+<!ELEMENT Protocol (#PCDATA)*>
+<!ATTLIST Protocol condition CDATA "is">
+<!ELEMENT Initiated (#PCDATA)*>
+<!ATTLIST Initiated condition CDATA "is">
+<!ELEMENT SourceIsIpv6 (#PCDATA)*>
+<!ATTLIST SourceIsIpv6 condition CDATA "is">
+<!ELEMENT SourceIp (#PCDATA)*>
+<!ATTLIST SourceIp condition CDATA "is">
+<!ELEMENT SourceHostname (#PCDATA)*>
+<!ATTLIST SourceHostname condition CDATA "is">
+<!ELEMENT SourcePort (#PCDATA)*>
+<!ATTLIST SourcePort condition CDATA "is">
+<!ELEMENT SourcePortName (#PCDATA)*>
+<!ATTLIST SourcePortName condition CDATA "is">
+<!ELEMENT DestinationIsIpv6 (#PCDATA)*>
+<!ATTLIST DestinationIsIpv6 condition CDATA "is">
+<!ELEMENT DestinationIp (#PCDATA)*>
+<!ATTLIST DestinationIp condition CDATA "is">
+<!ELEMENT DestinationHostname (#PCDATA)*>
+<!ATTLIST DestinationHostname condition CDATA "is">
+<!ELEMENT DestinationPort (#PCDATA)*>
+<!ATTLIST DestinationPort condition CDATA "is">
+<!ELEMENT DestinationPortName (#PCDATA)*>
+<!ATTLIST DestinationPortName condition CDATA "is">
+<!ELEMENT ProcessTerminate (UtcTime|ProcessGuid|ProcessId|Image)*>
+<!ATTLIST ProcessTerminate onmatch (include|exclude) #IMPLIED>
+<!ATTLIST ProcessTerminate default (include|exclude) #IMPLIED>
+<!ELEMENT DriverLoad (UtcTime|ImageLoaded|Hashes|Signed|SignatureStatus|Signature)*>
+<!ATTLIST DriverLoad onmatch (include|exclude) #IMPLIED>
+<!ATTLIST DriverLoad default (include|exclude) #IMPLIED>
+<!ELEMENT ImageLoaded (#PCDATA)*>
+<!ATTLIST ImageLoaded condition CDATA "is">
+<!ELEMENT Signed (#PCDATA)*>
+<!ATTLIST Signed condition CDATA "is">
+<!ELEMENT SignatureStatus (#PCDATA)*>
+<!ATTLIST SignatureStatus condition CDATA "is">
+<!ELEMENT Signature (#PCDATA)*>
+<!ATTLIST Signature condition CDATA "is">
+<!ELEMENT ImageLoad (UtcTime|ProcessGuid|ProcessId|Image|ImageLoaded|Hashes|Signed|SignatureStatus|Signature)*>
+<!ATTLIST ImageLoad onmatch (include|exclude) #IMPLIED>
+<!ATTLIST ImageLoad default (include|exclude) #IMPLIED>
+<!ELEMENT CreateRemoteThread (UtcTime|SourceProcessGuid|SourceProcessId|SourceImage|TargetProcessGuid|TargetProcessId|TargetImage|NewThreadId|StartAddress|StartModule|StartFunction)*>
+<!ATTLIST CreateRemoteThread onmatch (include|exclude) #IMPLIED>
+<!ATTLIST CreateRemoteThread default (include|exclude) #IMPLIED>
+<!ELEMENT SourceProcessGuid (#PCDATA)*>
+<!ATTLIST SourceProcessGuid condition CDATA "is">
+<!ELEMENT SourceProcessId (#PCDATA)*>
+<!ATTLIST SourceProcessId condition CDATA "is">
+<!ELEMENT SourceImage (#PCDATA)*>
+<!ATTLIST SourceImage condition CDATA "is">
+<!ELEMENT TargetProcessGuid (#PCDATA)*>
+<!ATTLIST TargetProcessGuid condition CDATA "is">
+<!ELEMENT TargetProcessId (#PCDATA)*>
+<!ATTLIST TargetProcessId condition CDATA "is">
+<!ELEMENT TargetImage (#PCDATA)*>
+<!ATTLIST TargetImage condition CDATA "is">
+<!ELEMENT NewThreadId (#PCDATA)*>
+<!ATTLIST NewThreadId condition CDATA "is">
+<!ELEMENT StartAddress (#PCDATA)*>
+<!ATTLIST StartAddress condition CDATA "is">
+<!ELEMENT StartModule (#PCDATA)*>
+<!ATTLIST StartModule condition CDATA "is">
+<!ELEMENT StartFunction (#PCDATA)*>
+<!ATTLIST StartFunction condition CDATA "is">
+<!ELEMENT RawAccessRead (UtcTime|ProcessGuid|ProcessId|Image|Device)*>
+<!ATTLIST RawAccessRead onmatch (include|exclude) #IMPLIED>
+<!ATTLIST RawAccessRead default (include|exclude) #IMPLIED>
+<!ELEMENT Device (#PCDATA)*>
+<!ATTLIST Device condition CDATA "is">
+<!ELEMENT ProcessAccess (UtcTime|SourceProcessGUID|SourceProcessId|SourceThreadId|SourceImage|TargetProcessGUID|TargetProcessId|TargetImage|GrantedAccess|CallTrace)*>
+<!ATTLIST ProcessAccess onmatch (include|exclude) #IMPLIED>
+<!ATTLIST ProcessAccess default (include|exclude) #IMPLIED>
+<!ELEMENT SourceProcessGUID (#PCDATA)*>
+<!ATTLIST SourceProcessGUID condition CDATA "is">
+<!ELEMENT SourceThreadId (#PCDATA)*>
+<!ATTLIST SourceThreadId condition CDATA "is">
+<!ELEMENT TargetProcessGUID (#PCDATA)*>
+<!ATTLIST TargetProcessGUID condition CDATA "is">
+<!ELEMENT GrantedAccess (#PCDATA)*>
+<!ATTLIST GrantedAccess condition CDATA "is">
+<!ELEMENT CallTrace (#PCDATA)*>
+<!ATTLIST CallTrace condition CDATA "is">
+<!ELEMENT FileCreate (UtcTime|ProcessGuid|ProcessId|Image|TargetFilename|CreationUtcTime)*>
+<!ATTLIST FileCreate onmatch (include|exclude) #IMPLIED>
+<!ATTLIST FileCreate default (include|exclude) #IMPLIED>
+<!ELEMENT RegistryEvent (UtcTime|ProcessGuid|ProcessId|Image|EventType|TargetObject)*>
+<!ATTLIST RegistryEvent onmatch (include|exclude) #IMPLIED>
+<!ATTLIST RegistryEvent default (include|exclude) #IMPLIED>
+<!ELEMENT EventType (#PCDATA)*>
+<!ATTLIST EventType condition CDATA "is">
+<!ELEMENT TargetObject (#PCDATA)*>
+<!ATTLIST TargetObject condition CDATA "is">
+<!ELEMENT RegistryEvent (UtcTime|ProcessGuid|ProcessId|Image|EventType|TargetObject|Details)*>
+<!ELEMENT Details (#PCDATA)*>
+<!ATTLIST Details condition CDATA "is">
+<!ELEMENT RegistryEvent (UtcTime|ProcessGuid|ProcessId|Image|EventType|TargetObject|NewName)*>
+<!ELEMENT NewName (#PCDATA)*>
+<!ATTLIST NewName condition CDATA "is">
+<!ELEMENT FileCreateStreamHash (UtcTime|ProcessGuid|ProcessId|Image|TargetFilename|CreationUtcTime|Hash)*>
+<!ATTLIST FileCreateStreamHash onmatch (include|exclude) #IMPLIED>
+<!ATTLIST FileCreateStreamHash default (include|exclude) #IMPLIED>
+<!ELEMENT Hash (#PCDATA)*>
+<!ATTLIST Hash condition CDATA "is">
+<!ELEMENT HashAlgorithms (#PCDATA)>
+<!ELEMENT ProcessAccessConfig (#PCDATA)>
+<!ELEMENT CheckRevocation EMPTY>
