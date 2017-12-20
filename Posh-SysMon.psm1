@@ -4,13 +4,14 @@
  . "$PSScriptRoot\Filters.ps1"
  . "$PSScriptRoot\Config.ps1"
 
-# Supporteted Sysmon schema versions.
+# Supported Sysmon schema versions.
 $SysMonSupportedVersions = @(
     '2.0',
     '3.0',
     '3.1',
     '3.2',
-    '3.3'
+    '3.3',
+    '3.4'
  )
 
 # Table that maps schema version to Sysmon version.
@@ -20,6 +21,7 @@ $sysmonVerMap = @{
      '3.1' = '4.11'
      '3.2' = '5.0'
      '3.3' = '6.0'
+     '3.4' = '6.2'
  }
 
 function Get-RuleWithFilter
@@ -124,7 +126,7 @@ function New-RuleFilter
                      'ProcessTerminate', 'ImageLoad', 'DriverLoad', 
                      'CreateRemoteThread', 'ProcessAccess','RawAccessRead', 
                      'FileCreate', 'RegistryEvent', 'FileCreateStreamHash',
-                     'PipeEvent',IgnoreCase = $false)]
+                     'PipeEvent','WmiEvent',IgnoreCase = $false)]
         [string]
         $EventType,
 
