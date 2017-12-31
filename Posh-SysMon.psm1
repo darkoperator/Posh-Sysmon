@@ -10,7 +10,8 @@ $SysMonSupportedVersions = @(
     '3.0',
     '3.1',
     '3.2',
-    '3.3'
+    '3.3',
+    '3.4'
  )
 
 # Table that maps schema version to Sysmon version.
@@ -20,6 +21,7 @@ $sysmonVerMap = @{
      '3.1' = '4.11'
      '3.2' = '5.0'
      '3.3' = '6.0'
+     '3.4' = '6.1, 6.2'
  }
 
 function Get-RuleWithFilter
@@ -53,7 +55,7 @@ function Get-RuleWithFilter
             $RuleObjOptions.add('Scope','Filtered')
             $Filters = @()
             foreach ($Node in $Nodes)
-            {   
+            {
                 $FilterObjProps = [ordered]@{}
                 $FilterObjProps['EventField'] = $Node.Name
                 $FilterObjProps['Condition'] = &{if($Node.condition -eq $null){'is'}else{$Node.condition}}
@@ -69,7 +71,7 @@ function Get-RuleWithFilter
         $RuleObj.pstypenames.insert(0,'Sysmon.Rule')
         $RuleObj
     }
-} 
+}
 
 <#
 .Synopsis
@@ -78,7 +80,7 @@ function Get-RuleWithFilter
    Creates a filter for an event field for an event type in a Sysmon XML configuration file.
 .EXAMPLE
    New-nRuleFilter -Path .\pc_cofig.xml -EventType NetworkConnect -EventField image -Condition Is -Value 'iexplorer.exe' -Verbose
-    
+
     VERBOSE: No rule for NetworkConnect was found.
     VERBOSE: Creating rule for event type with default action if Exclude
     VERBOSE: Rule created succesfully
@@ -120,11 +122,11 @@ function New-RuleFilter
         [Parameter(Mandatory=$true,
                    ValueFromPipelineByPropertyName=$true,
                    Position=1)]
-        [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
-                     'ProcessTerminate', 'ImageLoad', 'DriverLoad', 
-                     'CreateRemoteThread', 'ProcessAccess','RawAccessRead', 
+        [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime',
+                     'ProcessTerminate', 'ImageLoad', 'DriverLoad',
+                     'CreateRemoteThread', 'ProcessAccess','RawAccessRead',
                      'FileCreate', 'RegistryEvent', 'FileCreateStreamHash',
-                     'PipeEvent',IgnoreCase = $false)]
+                     'PipeEvent', 'WmiEvent',IgnoreCase = $false)]
         [string]
         $EventType,
 
@@ -163,7 +165,7 @@ function New-RuleFilter
     Begin{}
     Process
     {
-        # Check if the file is a valid XML file and if not raise and error. 
+        # Check if the file is a valid XML file and if not raise and error.
         try
         {
             switch($psCmdlet.ParameterSetName)
@@ -174,7 +176,7 @@ function New-RuleFilter
                     $FileLocation = (Resolve-Path -Path $Path).Path
                 }
 
-                'LiteralPath' 
+                'LiteralPath'
                 {
                     [xml]$Config = Get-Content -LiteralPath $LiteralPath
                     $FileLocation = (Resolve-Path -LiteralPath $LiteralPath).Path
@@ -186,7 +188,7 @@ function New-RuleFilter
             Write-Error -Message 'Specified file does not appear to be a XML file.'
             return
         }
-        
+
         # Validate the XML file is a valid Sysmon file.
         if ($Config.SelectSingleNode('//Sysmon') -eq $null)
         {
@@ -218,7 +220,7 @@ function New-RuleFilter
         }
 
         # Check if the event type exists if not create it.
-       
+
         $RuleData = $Rules.SelectNodes("//EventFiltering/$($EventType)")
 
         if($RuleData -eq $null)
@@ -274,7 +276,7 @@ function New-RuleFilter
                     }
                 }
             }
-            
+
         }
         Get-RuleWithFilter($RuleData)
     }

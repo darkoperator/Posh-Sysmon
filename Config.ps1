@@ -470,7 +470,7 @@ function Get-SysmonRule
         [ValidateSet('ALL', 'NetworkConnect', 'ProcessCreate', 'FileCreateTime',
                      'ProcessTerminate', 'ImageLoad', 'DriverLoad', 'ProcessAccess',
                      'RawAccessRead','ProcessAccess', 'FileCreateStreamHash',
-                     'RegistryEvent', 'FileCreate', 'PipeEvent')]
+                     'RegistryEvent', 'FileCreate', 'PipeEvent', 'WmiEvent')]
         [string[]]
         $EventType = @('ALL')
     )
@@ -514,7 +514,7 @@ function Get-SysmonRule
             $TypesToParse = @('NetworkConnect', 'ProcessCreate', 'FileCreateTime',
                               'ProcessTerminate', 'ImageLoad', 'DriverLoad','CreateRemoteThread',
                               'ProcessAccess', 'RawAccessRead', 'FileCreateStreamHash',
-                              'RegistryEvent', 'FileCreate', 'PipeEvent')
+                              'RegistryEvent', 'FileCreate', 'PipeEvent', 'WmiEvent')
         }
         else
         {
