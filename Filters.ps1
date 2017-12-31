@@ -10,7 +10,7 @@ function New-SysmonImageLoadFilter {
             Position=0)]
         [ValidateScript({Test-Path -Path $_})]
         $Path,
-        
+
         # Path to XML config file.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -19,7 +19,7 @@ function New-SysmonImageLoadFilter {
         [ValidateScript({Test-Path -Path $_})]
         [Alias('PSPath')]
         $LiteralPath,
-        
+
         # Event type on match action.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -27,7 +27,7 @@ function New-SysmonImageLoadFilter {
         [ValidateSet('include', 'exclude')]
         [string]
         $OnMatch,
-        
+
         # Condition for filtering against and event field.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -36,17 +36,17 @@ function New-SysmonImageLoadFilter {
             'BeginWith', 'EndWith', 'LessThan', 'MoreThan')]
         [string]
         $Condition,
-        
+
         # Event field to filter on.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
             Position=3)]
-        [ValidateSet('UtcTime', 'ProcessGuid', 'ProcessId', 'Image', 
-            'ImageLoaded', 'Hashes', 'Signed', 
+        [ValidateSet('UtcTime', 'ProcessGuid', 'ProcessId', 'Image',
+            'ImageLoaded', 'Hashes', 'Signed',
             'Signature')]
         [string]
         $EventField,
-        
+
         # Value of Event Field to filter on.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -54,34 +54,34 @@ function New-SysmonImageLoadFilter {
         [string[]]
         $Value
     )
-    
+
     Begin {}
     Process
     {
         $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
         $cmdoptions = @{
-            'EventType' =  'ImageLoad' 
-            'Condition' = $Condition 
-            'EventField' = $FieldString 
-            'Value' = $Value 
+            'EventType' =  'ImageLoad'
+            'Condition' = $Condition
+            'EventField' = $FieldString
+            'Value' = $Value
             'OnMatch' = $OnMatch
-            
+
         }
         switch($psCmdlet.ParameterSetName)
         {
             'Path'
             {
                 $cmdOptions.Add('Path',$Path)
-                New-RuleFilter @cmdOptions 
+                New-RuleFilter @cmdOptions
             }
-            
-            'LiteralPath' 
+
+            'LiteralPath'
             {
                 $cmdOptions.Add('LiteralPath',$LiteralPath)
-                New-RuleFilter @cmdOptions 
+                New-RuleFilter @cmdOptions
             }
         }
-        
+
     }
     End { }
 }
@@ -99,7 +99,7 @@ function New-SysmonDriverLoadFilter {
             Position=0)]
         [ValidateScript({Test-Path -Path $_})]
         $Path,
-        
+
         # Path to XML config file.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -108,7 +108,7 @@ function New-SysmonDriverLoadFilter {
         [ValidateScript({Test-Path -Path $_})]
         [Alias('PSPath')]
         $LiteralPath,
-        
+
         # Event type on match action.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -116,7 +116,7 @@ function New-SysmonDriverLoadFilter {
         [ValidateSet('include', 'exclude')]
         [string]
         $OnMatch,
-        
+
         # Condition for filtering against and event field.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -125,16 +125,16 @@ function New-SysmonDriverLoadFilter {
             'BeginWith', 'EndWith', 'LessThan', 'MoreThan')]
         [string]
         $Condition,
-        
+
         # Event field to filter on.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
             Position=3)]
-        [ValidateSet('UtcTime', 'ImageLoaded', 
+        [ValidateSet('UtcTime', 'ImageLoaded',
             'Hashes', 'Signed', 'Signature')]
         [string]
         $EventField,
-        
+
         # Value of Event Field to filter on.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -142,28 +142,28 @@ function New-SysmonDriverLoadFilter {
         [string[]]
         $Value
     )
-    
+
     Begin {}
     Process {
         $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
         $cmdoptions = @{
-            'EventType' =  'DriverLoad' 
-            'Condition' = $Condition 
-            'EventField' = $FieldString 
-            'Value' = $Value 
+            'EventType' =  'DriverLoad'
+            'Condition' = $Condition
+            'EventField' = $FieldString
+            'Value' = $Value
             'OnMatch' = $OnMatch
-            
+
         }
-        
+
         switch($psCmdlet.ParameterSetName) {
             'Path' {
                 $cmdOptions.Add('Path',$Path)
-                New-RuleFilter @cmdOptions 
+                New-RuleFilter @cmdOptions
             }
-            
+
             'LiteralPath' {
                 $cmdOptions.Add('LiteralPath',$LiteralPath)
-                
+
                 New-RuleFilter @cmdOptions
             }
         }
@@ -185,7 +185,7 @@ function New-SysmonNetworkConnectFilter
             Position=0)]
         [ValidateScript({Test-Path -Path $_})]
         $Path,
-        
+
         # Path to XML config file.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -194,7 +194,7 @@ function New-SysmonNetworkConnectFilter
         [ValidateScript({Test-Path -Path $_})]
         [Alias('PSPath')]
         $LiteralPath,
-        
+
         # Event type on match action.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -202,7 +202,7 @@ function New-SysmonNetworkConnectFilter
         [ValidateSet('include', 'exclude')]
         [string]
         $OnMatch,
-        
+
         # Condition for filtering against and event field.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -211,20 +211,20 @@ function New-SysmonNetworkConnectFilter
             'BeginWith', 'EndWith', 'LessThan', 'MoreThan')]
         [string]
         $Condition,
-        
+
         # Event field to filter on.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
             Position=3)]
-        [ValidateSet('UtcTime', 'ProcessGuid', 'ProcessId', 'Image', 
-            'User', 'Protocol', 'Initiated', 'SourceIsIpv6', 
-            'SourceIp', 'SourceHostname', 'SourcePort', 
-            'SourcePortName', 'DestinationIsIpv6', 
-            'DestinationIp', 'DestinationHostname', 
+        [ValidateSet('UtcTime', 'ProcessGuid', 'ProcessId', 'Image',
+            'User', 'Protocol', 'Initiated', 'SourceIsIpv6',
+            'SourceIp', 'SourceHostname', 'SourcePort',
+            'SourcePortName', 'DestinationIsIpv6',
+            'DestinationIp', 'DestinationHostname',
             'DestinationPort', 'DestinationPortName')]
         [string]
         $EventField,
-        
+
         # Value of Event Field to filter on.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -232,25 +232,25 @@ function New-SysmonNetworkConnectFilter
         [string[]]
         $Value
     )
-    
+
     Begin {}
     Process {
         $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
         $cmdoptions = @{
-            'EventType' =  'NetworkConnect' 
-            'Condition' = $Condition 
-            'EventField' = $FieldString 
-            'Value' = $Value 
+            'EventType' =  'NetworkConnect'
+            'Condition' = $Condition
+            'EventField' = $FieldString
+            'Value' = $Value
             'OnMatch' = $OnMatch
-            
+
         }
-        
+
         switch($psCmdlet.ParameterSetName) {
             'Path' {
                 $cmdOptions.Add('Path',$Path)
-                New-RuleFilter @cmdOptions 
+                New-RuleFilter @cmdOptions
             }
-            
+
             'LiteralPath' {
                 $cmdOptions.Add('LiteralPath',$LiteralPath)
                 New-RuleFilter @cmdOptions
@@ -273,7 +273,7 @@ function New-SysmonFileCreateFilter {
             Position=0)]
         [ValidateScript({Test-Path -Path $_})]
         $Path,
-        
+
         # Path to XML config file.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -282,7 +282,7 @@ function New-SysmonFileCreateFilter {
         [ValidateScript({Test-Path -Path $_})]
         [Alias('PSPath')]
         $LiteralPath,
-        
+
         # Event type on match action.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -290,7 +290,7 @@ function New-SysmonFileCreateFilter {
         [ValidateSet('include', 'exclude')]
         [string]
         $OnMatch,
-        
+
         # Condition for filtering against and event field.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -299,17 +299,17 @@ function New-SysmonFileCreateFilter {
         'BeginWith', 'EndWith', 'LessThan', 'MoreThan')]
         [string]
         $Condition,
-        
+
         # Event field to filter on.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
             Position=3)]
-        [ValidateSet('UtcTime', 'ProcessGuid', 'ProcessId', 'Image', 
-            'TargetFilename', 'CreationUtcTime', 
+        [ValidateSet('UtcTime', 'ProcessGuid', 'ProcessId', 'Image',
+            'TargetFilename', 'CreationUtcTime',
             'PreviousCreationUtcTime')]
         [string]
         $EventField,
-        
+
         # Value of Event Field to filter on.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -317,21 +317,21 @@ function New-SysmonFileCreateFilter {
         [string[]]
         $Value
     )
-    
+
     Begin {}
     Process {
         $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
-        
+
         switch($psCmdlet.ParameterSetName) {
             'Path' {
                 New-RuleFilter -Path $Path -EventType FileCreateTime -Condition $Condition -EventField $FieldString -Value $Value -OnMatch $OnMatch
             }
-            
+
             'LiteralPath' {
                 New-RuleFilter -LiteralPath $LiteralPath -EventType FileCreateTime -Condition $Condition -EventField $FieldString -Value $Value -OnMatch $OnMatch
             }
         }
-        
+
     }
     End {}
 }
@@ -350,7 +350,7 @@ function New-SysmonProcessCreateFilter
             Position=0)]
         [ValidateScript({Test-Path -Path $_})]
         $Path,
-        
+
         # Path to XML config file.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -359,7 +359,7 @@ function New-SysmonProcessCreateFilter
         [ValidateScript({Test-Path -Path $_})]
         [Alias('PSPath')]
         $LiteralPath,
-        
+
         # Event type on match action.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -367,7 +367,7 @@ function New-SysmonProcessCreateFilter
         [ValidateSet('include', 'exclude')]
         [string]
         $OnMatch,
-        
+
         # Condition for filtering against and event field.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -376,19 +376,19 @@ function New-SysmonProcessCreateFilter
             'BeginWith', 'EndWith', 'LessThan', 'MoreThan')]
         [string]
         $Condition,
-        
+
         # Event field to filter on.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
             Position=3)]
-        [ValidateSet('UtcTime', 'ProcessGuid', 'ProcessId', 'Image', 
+        [ValidateSet('UtcTime', 'ProcessGuid', 'ProcessId', 'Image',
             'CommandLine', 'User', 'LogonGuid', 'LogonId',
             'TerminalSessionId', 'IntegrityLevel',
             'Hashes', 'ParentProcessGuid', 'ParentProcessId',
             'ParentImage', 'ParentCommandLine')]
         [string]
         $EventField,
-        
+
         # Value of Event Field to filter on.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -396,24 +396,24 @@ function New-SysmonProcessCreateFilter
         [string[]]
         $Value
     )
-    
+
     Begin {}
     Process {
         $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
         $cmdoptions = @{
-            'EventType' =  'ProcessCreate' 
-            'Condition' = $Condition 
-            'EventField' = $FieldString 
-            'Value' = $Value 
+            'EventType' =  'ProcessCreate'
+            'Condition' = $Condition
+            'EventField' = $FieldString
+            'Value' = $Value
             'OnMatch' = $OnMatch
-            
+
         }
         switch($psCmdlet.ParameterSetName) {
             'Path' {
                 $cmdOptions.Add('Path',$Path)
-                New-RuleFilter @cmdOptions 
+                New-RuleFilter @cmdOptions
             }
-            
+
             'LiteralPath' {
                 $cmdOptions.Add('LiteralPath',$LiteralPath)
                 New-RuleFilter @cmdOptions
@@ -437,7 +437,7 @@ function New-SysmonProcessTerminateFilter
             Position=0)]
         [ValidateScript({Test-Path -Path $_})]
         $Path,
-        
+
         # Path to XML config file.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -446,7 +446,7 @@ function New-SysmonProcessTerminateFilter
         [ValidateScript({Test-Path -Path $_})]
         [Alias('PSPath')]
         $LiteralPath,
-        
+
         # Event type on match action.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -454,7 +454,7 @@ function New-SysmonProcessTerminateFilter
         [ValidateSet('include', 'exclude')]
         [string]
         $OnMatch,
-        
+
         # Condition for filtering against and event field.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -463,7 +463,7 @@ function New-SysmonProcessTerminateFilter
             'BeginWith', 'EndWith', 'LessThan', 'MoreThan')]
         [string]
         $Condition,
-        
+
         # Event field to filter on.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -471,7 +471,7 @@ function New-SysmonProcessTerminateFilter
         [ValidateSet('UtcTime', 'ProcessGuid', 'ProcessId')]
         [string]
         $EventField,
-        
+
         # Value of Event Field to filter on.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -479,31 +479,31 @@ function New-SysmonProcessTerminateFilter
         [string[]]
         $Value
     )
-    
+
     Begin {}
     Process
     {
         $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
         $cmdoptions = @{
-            'EventType' =  'ProcessTerminate' 
-            'Condition' = $Condition 
-            'EventField' = $FieldString 
-            'Value' = $Value 
+            'EventType' =  'ProcessTerminate'
+            'Condition' = $Condition
+            'EventField' = $FieldString
+            'Value' = $Value
             'OnMatch' = $OnMatch
-            
+
         }
         switch($psCmdlet.ParameterSetName)
         {
             'Path'
             {
                 $cmdOptions.Add('Path',$Path)
-                New-RuleFilter @cmdOptions 
+                New-RuleFilter @cmdOptions
             }
-            
-            'LiteralPath' 
+
+            'LiteralPath'
             {
                 $cmdOptions.Add('LiteralPath',$LiteralPath)
-                New-RuleFilter @cmdOptions 
+                New-RuleFilter @cmdOptions
             }
         }
     }
@@ -523,7 +523,7 @@ function New-SysmonCreateRemoteThreadFilter
             Position=0)]
         [ValidateScript({Test-Path -Path $_})]
         $Path,
-        
+
         # Path to XML config file.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -532,7 +532,7 @@ function New-SysmonCreateRemoteThreadFilter
         [ValidateScript({Test-Path -Path $_})]
         [Alias('PSPath')]
         $LiteralPath,
-        
+
         # Event type on match action.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -540,7 +540,7 @@ function New-SysmonCreateRemoteThreadFilter
         [ValidateSet('include', 'exclude')]
         [string]
         $OnMatch,
-        
+
         # Condition for filtering against and event field.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -549,7 +549,7 @@ function New-SysmonCreateRemoteThreadFilter
             'BeginWith', 'EndWith', 'LessThan', 'MoreThan')]
         [string]
         $Condition,
-        
+
         # Event field to filter on.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -557,7 +557,7 @@ function New-SysmonCreateRemoteThreadFilter
         [ValidateSet('SourceImage', 'TargetImage')]
         [string]
         $EventField,
-        
+
         # Value of Event Field to filter on.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -565,24 +565,24 @@ function New-SysmonCreateRemoteThreadFilter
         [string[]]
         $Value
     )
-    
+
     Begin { }
     Process {
         $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
         $cmdoptions = @{
-            'EventType' =  'CreateRemoteThread' 
-            'Condition' = $Condition 
-            'EventField' = $FieldString 
-            'Value' = $Value 
+            'EventType' =  'CreateRemoteThread'
+            'Condition' = $Condition
+            'EventField' = $FieldString
+            'Value' = $Value
             'OnMatch' = $OnMatch
-            
+
         }
         switch($psCmdlet.ParameterSetName) {
             'Path' {
                 $cmdOptions.Add('Path',$Path)
-                New-RuleFilter @cmdOptions 
+                New-RuleFilter @cmdOptions
             }
-            
+
             'LiteralPath' {
                 $cmdOptions.Add('LiteralPath',$LiteralPath)
                 New-RuleFilter @cmdOptions
@@ -612,7 +612,7 @@ function New-SysmonProcessAccessFilter {
             Position=0)]
         [ValidateScript({Test-Path -Path $_})]
         $Path,
-        
+
         # Path to XML config file.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -621,7 +621,7 @@ function New-SysmonProcessAccessFilter {
         [ValidateScript({Test-Path -Path $_})]
         [Alias('PSPath')]
         $LiteralPath,
-        
+
         # Event type on match action.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -629,7 +629,7 @@ function New-SysmonProcessAccessFilter {
         [ValidateSet('include', 'exclude')]
         [string]
         $OnMatch,
-        
+
         # Condition for filtering against and event field.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -638,18 +638,18 @@ function New-SysmonProcessAccessFilter {
             'BeginWith', 'EndWith', 'LessThan', 'MoreThan')]
             [string]
         $Condition,
-        
+
         # Event field to filter on.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
             Position=3)]
-        [ValidateSet('UtcTime', 'SourceProcessGUID', 
+        [ValidateSet('UtcTime', 'SourceProcessGUID',
             'SourceProcessId', 'SourceThreadId', 'SourceImage',
             'TargetProcessGUID', 'TargetProcessId', 'TargetImage',
             'GrantedAccess','CallTrace')]
         [string]
         $EventField,
-        
+
         # Value of Event Field to filter on.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -657,24 +657,24 @@ function New-SysmonProcessAccessFilter {
         [string[]]
         $Value
     )
-    
+
     Begin {}
     Process {
         $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
         $cmdoptions = @{
-            'EventType' =  'ProcessAccess' 
-            'Condition' = $Condition 
-            'EventField' = $FieldString 
-            'Value' = $Value 
+            'EventType' =  'ProcessAccess'
+            'Condition' = $Condition
+            'EventField' = $FieldString
+            'Value' = $Value
             'OnMatch' = $OnMatch
-            
+
         }
         switch ($PSCmdlet.ParameterSetName) {
             'Path' {
                 $cmdOptions.Add('Path',$Path)
-                New-RuleFilter @cmdOptions 
+                New-RuleFilter @cmdOptions
             }
-            
+
             'LiteralPath' {
                 $cmdOptions.Add('LiteralPath',$LiteralPath)
                 New-RuleFilter @cmdOptions
@@ -704,7 +704,7 @@ function New-SysmonRawAccessReadFilter {
             Position=0)]
         [ValidateScript({Test-Path -Path $_})]
         $Path,
-        
+
         # Path to XML config file.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -713,7 +713,7 @@ function New-SysmonRawAccessReadFilter {
         [ValidateScript({Test-Path -Path $_})]
         [Alias('PSPath')]
         $LiteralPath,
-        
+
         # Event type on match action.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -721,7 +721,7 @@ function New-SysmonRawAccessReadFilter {
         [ValidateSet('include', 'exclude')]
         [string]
         $OnMatch,
-        
+
         # Condition for filtering against and event field.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -730,16 +730,16 @@ function New-SysmonRawAccessReadFilter {
             'BeginWith', 'EndWith', 'LessThan', 'MoreThan')]
         [string]
         $Condition,
-        
+
         # Event field to filter on.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
             Position=3)]
-        [ValidateSet('UtcTime', 'ProcessGuid', 'ProcessId', 
+        [ValidateSet('UtcTime', 'ProcessGuid', 'ProcessId',
             'Image', 'Device')]
         [string]
         $EventField,
-        
+
         # Value of Event Field to filter on.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -747,25 +747,25 @@ function New-SysmonRawAccessReadFilter {
         [string[]]
         $Value
     )
-    
+
     Begin {}
     Process {
         $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
         $cmdoptions = @{
-            'EventType' =  'RawAccessRead' 
-            'Condition' = $Condition 
-            'EventField' = $FieldString 
-            'Value' = $Value 
+            'EventType' =  'RawAccessRead'
+            'Condition' = $Condition
+            'EventField' = $FieldString
+            'Value' = $Value
             'OnMatch' = $OnMatch
-            
+
         }
-        
+
         switch ($PSCmdlet.ParameterSetName) {
             'Path' {
                 $cmdOptions.Add('Path',$Path)
-                New-RuleFilter @cmdOptions 
+                New-RuleFilter @cmdOptions
             }
-            
+
             'LiteralPath' {
                 $cmdOptions.Add('LiteralPath',$LiteralPath)
                 New-RuleFilter @cmdOptions
@@ -794,7 +794,7 @@ function New-SysmonFileCreateFilter {
             Position=0)]
         [ValidateScript({Test-Path -Path $_})]
         $Path,
-        
+
         # Path to XML config file.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -803,7 +803,7 @@ function New-SysmonFileCreateFilter {
         [ValidateScript({Test-Path -Path $_})]
         [Alias('PSPath')]
         $LiteralPath,
-        
+
         # Event type on match action.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -811,7 +811,7 @@ function New-SysmonFileCreateFilter {
         [ValidateSet('include', 'exclude')]
         [string]
         $OnMatch,
-        
+
         # Condition for filtering against and event field.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -820,16 +820,16 @@ function New-SysmonFileCreateFilter {
             'BeginWith', 'EndWith', 'LessThan', 'MoreThan')]
         [string]
         $Condition,
-        
+
         # Event field to filter on.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
             Position=3)]
-        [ValidateSet('TargetFilename', 'ProcessGuid', 'ProcessId', 
+        [ValidateSet('TargetFilename', 'ProcessGuid', 'ProcessId',
             'Image')]
         [string]
         $EventField,
-        
+
         # Value of Event Field to filter on.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -837,24 +837,24 @@ function New-SysmonFileCreateFilter {
         [string[]]
         $Value
     )
-    
+
     Begin {}
     Process {
         $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
         $cmdoptions = @{
-            'EventType' =  'FileCreate' 
-            'Condition' = $Condition 
-            'EventField' = $FieldString 
-            'Value' = $Value 
-            'OnMatch' = $OnMatch  
+            'EventType' =  'FileCreate'
+            'Condition' = $Condition
+            'EventField' = $FieldString
+            'Value' = $Value
+            'OnMatch' = $OnMatch
         }
-        
+
         switch ($PSCmdlet.ParameterSetName) {
             'Path' {
                 $cmdOptions.Add('Path',$Path)
-                New-RuleFilter @cmdOptions 
+                New-RuleFilter @cmdOptions
             }
-            
+
             'LiteralPath' {
                 $cmdOptions.Add('LiteralPath',$LiteralPath)
                 New-RuleFilter @cmdOptions
@@ -882,7 +882,7 @@ function New-SysmonFileCreateStreamHashFilter {
             Position=0)]
         [ValidateScript({Test-Path -Path $_})]
         $Path,
-        
+
         # Path to XML config file.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -891,7 +891,7 @@ function New-SysmonFileCreateStreamHashFilter {
         [ValidateScript({Test-Path -Path $_})]
         [Alias('PSPath')]
         $LiteralPath,
-        
+
         # Event type on match action.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -899,7 +899,7 @@ function New-SysmonFileCreateStreamHashFilter {
         [ValidateSet('include', 'exclude')]
         [string]
         $OnMatch,
-        
+
         # Condition for filtering against and event field.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -908,16 +908,16 @@ function New-SysmonFileCreateStreamHashFilter {
             'BeginWith', 'EndWith', 'LessThan', 'MoreThan')]
         [string]
         $Condition,
-        
+
         # Event field to filter on.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
             Position=3)]
-        [ValidateSet('TargetFilename', 'ProcessGuid', 'ProcessId', 
+        [ValidateSet('TargetFilename', 'ProcessGuid', 'ProcessId',
             'Image')]
         [string]
         $EventField,
-        
+
         # Value of Event Field to filter on.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -925,24 +925,24 @@ function New-SysmonFileCreateStreamHashFilter {
         [string[]]
         $Value
     )
-    
+
     Begin {}
     Process {
         $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
         $cmdoptions = @{
-            'EventType' =  'FileCreateStreamHash' 
-            'Condition' = $Condition 
-            'EventField' = $FieldString 
-            'Value' = $Value 
-            'OnMatch' = $OnMatch  
+            'EventType' =  'FileCreateStreamHash'
+            'Condition' = $Condition
+            'EventField' = $FieldString
+            'Value' = $Value
+            'OnMatch' = $OnMatch
         }
-        
+
         switch ($PSCmdlet.ParameterSetName) {
             'Path' {
                 $cmdOptions.Add('Path',$Path)
-                New-RuleFilter @cmdOptions 
+                New-RuleFilter @cmdOptions
             }
-            
+
             'LiteralPath' {
                 $cmdOptions.Add('LiteralPath',$LiteralPath)
                 New-RuleFilter @cmdOptions
@@ -967,7 +967,7 @@ by aby of the following event types:
 * RenameValue
 * SetValue
 
-Hives in TargetObject are referenced as:
+Hives on Schema 3.2 in TargetObject are referenced as:
 * \REGISTRY\MACHINE\HARDWARE
 * \REGISTRY\USER\Security ID number
 * \REGISTRY\MACHINE\SECURITY
@@ -975,6 +975,12 @@ Hives in TargetObject are referenced as:
 * \REGISTRY\MACHINE\SYSTEM
 * \REGISTRY\MACHINE\SOFTWARE
 * \REGISTRY\MACHINE\SAM
+
+Hives on Schema 3.3 and above in TargetObject are referenced as:
+* HKLM
+* HKCR
+* HKEY_USER
+
 .EXAMPLE
 C:\PS> New-SysmonRegistryFilter -Path .\32config.xml -OnMatch include -Condition Contains -EventField TargetObject 'RunOnce'
 Capture persistance attemp by creating a registry entry in the RunOnce keys.
@@ -990,7 +996,7 @@ function New-SysmonRegistryFilter {
             Position=0)]
         [ValidateScript({Test-Path -Path $_})]
         $Path,
-        
+
         # Path to XML config file.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -999,7 +1005,7 @@ function New-SysmonRegistryFilter {
         [ValidateScript({ Test-Path -Path $_ })]
         [Alias('PSPath')]
         $LiteralPath,
-        
+
         # Event type on match action.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -1007,7 +1013,7 @@ function New-SysmonRegistryFilter {
         [ValidateSet('include', 'exclude')]
         [string]
         $OnMatch,
-        
+
         # Condition for filtering against and event field.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -1016,16 +1022,16 @@ function New-SysmonRegistryFilter {
             'BeginWith', 'EndWith', 'LessThan', 'MoreThan')]
         [string]
         $Condition,
-        
+
         # Event field to filter on.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
             Position=3)]
-        [ValidateSet('TargetObject', 'ProcessGuid', 'ProcessId', 
+        [ValidateSet('TargetObject', 'ProcessGuid', 'ProcessId',
             'Image', 'EventType')]
         [string]
         $EventField,
-        
+
         # Value of Event Field to filter on.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -1033,7 +1039,7 @@ function New-SysmonRegistryFilter {
         [string[]]
         $Value
     )
-    
+
     Begin {
         # Event types used to validate right type and string case
         $EventTypeMap = @{
@@ -1045,12 +1051,12 @@ function New-SysmonRegistryFilter {
             RenameValue = 'RenameValue'
             SetValue = 'SetValue'
         }
-        
+
         $Etypes = $EventTypeMap.Keys
     }
     Process {
         $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
-        
+
         if ($EventField -in 'EventType') {
             if ($Value -in $Etypes) {
                 $Value = $EventTypeMap[$Value]
@@ -1060,20 +1066,20 @@ function New-SysmonRegistryFilter {
             }
         }
         $cmdoptions = @{
-            'EventType' =  'RegistryEvent' 
-            'Condition' = $Condition 
-            'EventField' = $FieldString 
-            'Value' = $Value 
+            'EventType' =  'RegistryEvent'
+            'Condition' = $Condition
+            'EventField' = $FieldString
+            'Value' = $Value
             'OnMatch' = $OnMatch
-            
+
         }
-        
+
         switch ($PSCmdlet.ParameterSetName) {
             'Path' {
                 $cmdOptions.Add('Path',$Path)
-                New-RuleFilter @cmdOptions 
+                New-RuleFilter @cmdOptions
             }
-            
+
             'LiteralPath' {
                 $cmdOptions.Add('LiteralPath',$LiteralPath)
                 New-RuleFilter @cmdOptions
@@ -1101,7 +1107,7 @@ function New-SysmonPipeFilter {
             Position=0)]
         [ValidateScript({Test-Path -Path $_})]
         $Path,
-        
+
         # Path to XML config file.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -1110,7 +1116,7 @@ function New-SysmonPipeFilter {
         [ValidateScript({Test-Path -Path $_})]
         [Alias('PSPath')]
         $LiteralPath,
-        
+
         # Event type on match action.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -1118,7 +1124,7 @@ function New-SysmonPipeFilter {
         [ValidateSet('include', 'exclude')]
         [string]
         $OnMatch,
-        
+
         # Condition for filtering against and event field.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -1127,16 +1133,16 @@ function New-SysmonPipeFilter {
             'BeginWith', 'EndWith', 'LessThan', 'MoreThan')]
         [string]
         $Condition,
-        
+
         # Event field to filter on.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
             Position=3)]
-        [ValidateSet('Pipe', 'ProcessGuid', 'ProcessId', 
+        [ValidateSet('Pipe', 'ProcessGuid', 'ProcessId',
             'Image')]
         [string]
         $EventField,
-        
+
         # Value of Event Field to filter on.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -1144,24 +1150,24 @@ function New-SysmonPipeFilter {
         [string[]]
         $Value
     )
-    
+
     Begin {}
     Process {
         $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
         $cmdoptions = @{
-            'EventType' =  'PipeEvent' 
-            'Condition' = $Condition 
-            'EventField' = $FieldString 
-            'Value' = $Value 
+            'EventType' =  'PipeEvent'
+            'Condition' = $Condition
+            'EventField' = $FieldString
+            'Value' = $Value
             'OnMatch' = $OnMatch
-            
+
         }
         switch ($PSCmdlet.ParameterSetName) {
             'Path' {
                 $cmdOptions.Add('Path',$Path)
-                New-RuleFilter @cmdOptions 
+                New-RuleFilter @cmdOptions
             }
-            
+
             'LiteralPath' {
                 $cmdOptions.Add('LiteralPath',$LiteralPath)
                 New-RuleFilter @cmdOptions
@@ -1183,7 +1189,7 @@ function Remove-SysmonRuleFilter {
             Position=0)]
         [ValidateScript({Test-Path -Path $_})]
         $Path,
-        
+
         # Path to XML config file.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -1192,20 +1198,19 @@ function Remove-SysmonRuleFilter {
         [ValidateScript({Test-Path -Path $_})]
         [Alias('PSPath')]
         $LiteralPath,
-        
+
         # Event type to update.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
             Position=1)]
-        [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
-            'ProcessTerminate', 'ImageLoad', 'DriverLoad', 
+        [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime',
+            'ProcessTerminate', 'ImageLoad', 'DriverLoad',
             'CreateRemoteThread', 'RawAccessRead', 'ProcessAccess',
-            'FileCreateStreamHash', 'RegistryEvent', 'FileCreate',  
             'FileCreateStreamHash', 'RegistryEvent', 'FileCreate',
-            'PipeEvent')]
+            'PipeEvent', 'WmiEvent')]
         [string]
         $EventType,
-        
+
         # Event type on match action.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -1213,7 +1218,7 @@ function Remove-SysmonRuleFilter {
         [ValidateSet('include', 'exclude')]
         [string]
         $OnMatch,
-        
+
         # Condition for filtering against and event field.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -1222,14 +1227,14 @@ function Remove-SysmonRuleFilter {
             'BeginWith', 'EndWith', 'LessThan', 'MoreThan')]
         [string]
         $Condition,
-        
+
         # Event field to filter on.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
             Position=4)]
         [string]
         $EventField,
-        
+
         # Value of Event Field to filter on.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -1237,18 +1242,18 @@ function Remove-SysmonRuleFilter {
         [string[]]
         $Value
     )
-    
+
     Begin{}
     Process {
         $EvtType = $null
-        # Check if the file is a valid XML file and if not raise and error. 
+        # Check if the file is a valid XML file and if not raise and error.
         try {
             switch($psCmdlet.ParameterSetName) {
                 'Path' {
                     [xml]$Config = Get-Content -Path $Path
                     $FileLocation = (Resolve-Path -Path $Path).Path
                 }
-                
+
                 'LiteralPath' {
                     [xml]$Config = Get-Content -LiteralPath $LiteralPath
                     $FileLocation = (Resolve-Path -LiteralPath $LiteralPath).Path
@@ -1259,15 +1264,15 @@ function Remove-SysmonRuleFilter {
             Write-Error -Message 'Specified file does not appear to be a XML file.'
             return
         }
-        
+
         # Validate the XML file is a valid Sysmon file.
         if ($Config.SelectSingleNode('//Sysmon') -eq $null) {
             Write-Error -Message 'XML file is not a valid Sysmon config file.'
             return
         }
-        
+
         $Rules = $Config.SelectSingleNode('//Sysmon/EventFiltering')
-        
+
         # Select the proper condition string.
         switch ($Condition) {
             'Is' {$ConditionString = 'is'}
@@ -1281,22 +1286,22 @@ function Remove-SysmonRuleFilter {
             'MoreThan' {$ConditionString = 'more than'}
             Default {$ConditionString = 'is'}
         }
-        
+
         # Check if the event type exists if not create it.
         if ($Rules -eq '') {
             Write-Error -Message 'Rule element does not exist. This appears to not be a valid config file'
             return
         } else {
             $EvtType = $MyInvocation.MyCommand.Module.PrivateData[$EventType]
-            
+
             $EventRule = $Rules.SelectNodes("//EventFiltering/$($EvtType)")
         }
-        
+
         if($EventRule -eq $null) {
             Write-Warning -Message "No rule for $($EvtType) was found."
             return
         }
-        
+
         if($EventRule -eq $null) {
             Write-Error -Message "No rule for $($EvtType) was found."
             return
@@ -1357,7 +1362,7 @@ Get the configured filters for a specified Event Type Rule in a Sysmon configura
 .DESCRIPTION
 Get the configured filters for a specified Event Type Rule in a Sysmon configuration file.
 .EXAMPLE
-C:\PS>  Get-SysmonRuleFilter -Path C:\sysmon.xml -EventType ProcessCreate 
+C:\PS>  Get-SysmonRuleFilter -Path C:\sysmon.xml -EventType ProcessCreate
 Get the filter under the ProcessCreate Rule.
 #>
 function Get-SysmonRuleFilter {
@@ -1371,7 +1376,7 @@ function Get-SysmonRuleFilter {
             Position=0)]
         [ValidateScript({Test-Path -Path $_})]
         $Path,
-        
+
         # Path to XML config file.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -1380,20 +1385,20 @@ function Get-SysmonRuleFilter {
         [ValidateScript({Test-Path -Path $_})]
         [Alias('PSPath')]
         $LiteralPath,
-        
+
         # Event type rule to get filter for.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
             ParameterSetName='Path',
             Position=1)]
-        [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
-            'ProcessTerminate', 'ImageLoad', 'DriverLoad', 
+        [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime',
+            'ProcessTerminate', 'ImageLoad', 'DriverLoad',
             'CreateRemoteThread','RawAccessRead', 'ProcessAccess',
             'FileCreateStreamHash', 'RegistryEvent', 'FileCreate',
-            'PipeEvent')]
+            'PipeEvent', 'WmiEvent')]
         [string]
         $EventType,
-        
+
         # Event type on match action.
         [Parameter(Mandatory=$true,
             ValueFromPipelineByPropertyName=$true,
@@ -1402,11 +1407,11 @@ function Get-SysmonRuleFilter {
         [string]
         $OnMatch
     )
-    
+
     Begin{}
     Process {
         $EvtType = $null
-        # Check if the file is a valid XML file and if not raise and error. 
+        # Check if the file is a valid XML file and if not raise and error.
         try {
             switch($psCmdlet.ParameterSetName){
                 'Path'{
@@ -1423,24 +1428,24 @@ function Get-SysmonRuleFilter {
             Write-Error -Message 'Specified file does not appear to be a XML file.'
             return
         }
-        
+
         # Validate the XML file is a valid Sysmon file.
         if ($Config.SelectSingleNode('//Sysmon') -eq $null){
             Write-Error -Message 'XML file is not a valid Sysmon config file.'
             return
         }
-        
+
         $Rules = $Config.SelectSingleNode('//Sysmon/EventFiltering')
-        
+
         if ($Rules -eq '') {
             Write-Error -Message 'Rule element does not exist. This appears to not be a valid config file'
             return
         } else {
             $EvtType = $MyInvocation.MyCommand.Module.PrivateData[$EventType]
-            
+
             $EventRule = $Rules.SelectNodes("//EventFiltering/$($EvtType)")
         }
-        
+
         if($EventRule -eq $null) {
             Write-Error -Message "No rule for $($EvtType) was found."
             return
@@ -1461,7 +1466,7 @@ function Get-SysmonRuleFilter {
                             $FilterObj.pstypenames.insert(0,'Sysmon.Rule.Filter')
                             $FilterObj
                         }
-                        
+
                     }
                 }
             }
@@ -1487,7 +1492,7 @@ function Get-SysmonRuleFilter {
                                 $FilterObj.pstypenames.insert(0,'Sysmon.Rule.Filter')
                                 $FilterObj
                             }
-                            
+
                         }
                     }
                 }
@@ -1520,31 +1525,31 @@ function Get-SysmonEventData {
             ParameterSetName='ID',
             ValueFromPipelineByPropertyName=$true,
             Position=0)]
-        [ValidateSet(1,2,3,5,6,7,8,9,10,11,12,13,14,15,16,17,18,255)]
+        [ValidateSet(1,2,3,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,255)]
         [Int32[]]
         $EventId,
-        
+
         # EventType that a Rule can be written against.
         [Parameter(Mandatory=$false,
             ParameterSetName='Type',
             ValueFromPipelineByPropertyName=$true,
             Position=0)]
         [string[]]
-        [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
-            'ProcessTerminate', 'ImageLoad', 'DriverLoad', 
+        [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime',
+            'ProcessTerminate', 'ImageLoad', 'DriverLoad',
             'CreateRemoteThread', 'RawAccessRead', 'ProcessAccess', 'Error',
-            'FileCreateStreamHash', 'RegistryValueSet', 'RegistryRename', 
+            'FileCreateStreamHash', 'RegistryValueSet', 'RegistryRename',
             'RegistryAddOrDelete', 'FileCreate','ConfigChange','PipeCreated',
-            'PipeConnected')]
+            'PipeConnected', 'WmiFilter', 'WmiConsumer', 'WmiBinding')]
         $EventType,
-        
+
         # Specifies the maximum number of events that Get-WinEvent returns. Enter an integer. The default is to return all the events in the logs or files.
         [Parameter(Mandatory=$false,
             ValueFromPipelineByPropertyName=$true,
             Position=1)]
         [int]
         $MaxEvents,
-        
+
         # Specifies a path to one or more exported SysMon events in evtx format.
         [Parameter(Mandatory=$false,
             ValueFromPipeline=$true,
@@ -1554,19 +1559,19 @@ function Get-SysmonEventData {
         [ValidateNotNullOrEmpty()]
         [string[]]
         $Path,
-        
+
         # Start Date to get all event going forward.
         [Parameter(Mandatory=$false)]
         [datetime]
         $StartTime,
-        
+
         # End data for searching events.
         [Parameter(Mandatory=$false)]
         [datetime]
         $EndTime
     )
-    
-    Begin 
+
+    Begin
     {
         $EventTypeMap = @{
             ProcessCreate = 1
@@ -1586,16 +1591,19 @@ function Get-SysmonEventData {
             ConfigChange = 16
             PipeCreated = 17
             PipeConnected = 18
+            WmiFilter = 19
+            WmiConsumer = 20
+            WmiBinding = 21
             Error = 255
         }
-        
+
         $EventIdtoType = @{
             '1' = 'ProcessCreate'
             '2' = 'FileCreateTime'
             '3' = 'NetworkConnect'
             '5' = 'ProcessTerminate'
             '6' = 'DriverLoad'
-            '7' = 'ImageLoad' 
+            '7' = 'ImageLoad'
             '8' = 'CreateRemoteThread'
             '9' = 'RawAccessRead'
             '10' = 'ProcessAccess'
@@ -1607,31 +1615,34 @@ function Get-SysmonEventData {
             '16' = 'ConfigChange'
             '17' = 'PipeCreated'
             '18' = 'PipeConnected'
+            '19' = 'WmiFilter'
+            '20' = 'WmiConsumer'
+            '21' = 'WmiBinding'
             '255' = 'Error'
-            
+
         }
     }
     Process
     {
         # Hash for filtering
         $HashFilter = @{LogName='Microsoft-Windows-Sysmon/Operational'}
-        
+
         # Hash for command paramteters
         $ParamHash = @{}
-        
+
         if ($MaxEvents -gt 0)
         {
             $ParamHash.Add('MaxEvents', $MaxEvents)
-        } 
-        
+        }
+
         if ($Path -gt 0)
         {
             $ParamHash.Add('Path', $Path)
         }
-        
+
         switch ($PSCmdlet.ParameterSetName) {
             'ID' { $HashFilter.Add('Id', $EventId) }
-            'Type' {  
+            'Type' {
                 $EventIds = @()
                 foreach ($etype in $EventType)
                 {
@@ -1640,20 +1651,20 @@ function Get-SysmonEventData {
                 $HashFilter.Add('Id', $EventIds)
             }
         }
-        
+
         if ($StartTime)
         {
             $HashFilter.Add('StartTime', $StartTime)
         }
-        
+
         if ($EndTime)
         {
             $HashFilter.Add('EndTime', $EndTime)
         }
-        
+
         $ParamHash.Add('FilterHashTable',$HashFilter)
         Get-WinEvent @ParamHash | ForEach-Object {
-            [xml]$evtxml = $_.toxml() 
+            [xml]$evtxml = $_.toxml()
             $ProcInfo = [ordered]@{}
             $ProcInfo['EventId'] = $evtxml.Event.System.EventID
             $ProcInfo['EventType'] = $EventIdtoType[$evtxml.Event.System.EventID]
