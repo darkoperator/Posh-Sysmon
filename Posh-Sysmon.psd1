@@ -12,7 +12,7 @@
 RootModule = '.\Posh-SysMon.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.7.5'
+ModuleVersion = '0.7.6'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
@@ -27,7 +27,7 @@ Author = 'Carlos Perez carlos_Perez@darkoperator.com'
 CompanyName = 'Darkoperator.com'
 
 # Copyright statement for this module
-Copyright = '(c) 2017 Carlos Perez carlos_Perez@darkoperator.com. All rights reserved.'
+Copyright = '(c) 2018 Carlos Perez carlos_Perez@darkoperator.com. All rights reserved.'
 
 # Description of the functionality provided by this module
 Description = 'Module for the creation and managing of Sysinternal Sysmon configuration XML files.'
@@ -63,21 +63,21 @@ PowerShellVersion = '3.0'
 # TypesToProcess = @()
 
 # Format files (.ps1xml) to be loaded when importing this module
-FormatsToProcess = 'Format\Sysmon.ConfigOption.ps1xml', 'Format\Sysmon.Rule.ps1xml', 
+FormatsToProcess = 'Format\Sysmon.ConfigOption.ps1xml', 'Format\Sysmon.Rule.ps1xml',
                'Format\Sysmon.Rule.Filter.ps1xml'
 
 # Modules to import as nested modules of the module specified in RootModule/ModuleToProcess
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = 'Get-SysmonHashingAlgorithm', 'Get-SysmonRule', 
-               'New-SysmonConfiguration', 'New-SysmonDriverLoadFilter', 
-               'New-SysmonFileCreateFilter', 'New-SysmonImageLoadFilter', 
-               'New-SysmonNetworkConnectFilter', 'New-SysmonProcessCreateFilter', 
-               'New-SysmonProcessTerminateFilter', 'Remove-SysmonRule', 
-               'Remove-SysmonRuleFilter', 'Set-SysmonHashingAlgorithm', 
-               'Set-SysmonRule', 'Get-SysmonEventData', 'Get-SysmonRuleFilter', 
-               'New-SysmonProcessAccessFilter', 'New-SysmonFileCreateStreamHashFilter', 
+FunctionsToExport = 'Get-SysmonHashingAlgorithm', 'Get-SysmonRule',
+               'New-SysmonConfiguration', 'New-SysmonDriverLoadFilter',
+               'New-SysmonFileCreateFilter', 'New-SysmonImageLoadFilter',
+               'New-SysmonNetworkConnectFilter', 'New-SysmonProcessCreateFilter',
+               'New-SysmonProcessTerminateFilter', 'Remove-SysmonRule',
+               'Remove-SysmonRuleFilter', 'Set-SysmonHashingAlgorithm',
+               'Set-SysmonRule', 'Get-SysmonEventData', 'Get-SysmonRuleFilter',
+               'New-SysmonProcessAccessFilter', 'New-SysmonFileCreateStreamHashFilter',
                'New-SysmonRegistryFilter', 'New-SysmonFileCreateFilter',
                'New-SysmonPipeFIlter'
 
@@ -259,11 +259,40 @@ PrivateData = @{
     TargetObject = 'TargetObject'
 
     FileCreateStreamHash = 'FileCreateStreamHash'
-    RegistryEvent = 'RegistryEvent' 
+
+    RegistryEvent = 'RegistryEvent'
+
     FileCreate = 'FileCreate'
+
     Pipe = 'Pipe'
+
     PipeEvent = 'PipeEvent'
-   
+
+    WmiEvent = 'WmiEvent'
+
+    EventType = 'EventType'
+
+    EventNamespace = 'EventNamespace'
+
+    # Name given to a WMI object.
+    Name = 'Name'
+
+    # Namespace where a WMI object was created at.
+    Destination = 'Destination'
+
+    Type = 'Type'
+
+    # Query used by a WMI Filter.
+    Query = 'Query'
+
+    # Operation of a WMI component event.
+    Operation = 'Operation'
+
+    # Consumer name of a WMI binding event.
+    Consumer = 'Consumer'
+
+    # WMI Filter in a EventFilter event.
+    Filter = 'Filter'
 
     PSData = @{
 
@@ -286,7 +315,7 @@ PrivateData = @{
         # ExternalModuleDependencies = ''
 
     } # End of PSData hashtable
-    
+
 } # End of PrivateData hashtable
 
 # HelpInfo URI of this module

@@ -12,7 +12,7 @@ function New-SysmonConfiguration
         [String]
         $Path,
 
-        # Specify one or more hash algorithms used for image identification 
+        # Specify one or more hash algorithms used for image identification
         [Parameter(Mandatory=$true,
                    ValueFromPipelineByPropertyName=$true,
                    Position=1)]
@@ -20,7 +20,7 @@ function New-SysmonConfiguration
         [string[]]
         $HashingAlgorithm,
 
-        
+
 
         # Log Network Connections
         [Parameter(Mandatory=$False,
@@ -120,6 +120,13 @@ function New-SysmonConfiguration
         [Switch]
         $PipeEvent,
 
+        # WMI Permanent Event component events.
+        [Parameter(Mandatory=$False,
+                   ValueFromPipelineByPropertyName=$true,
+                   Position=16 )]
+        [Switch]
+        $WmiEvent,
+
         # Comment for purpose of the configuration file.
         [Parameter(Mandatory=$False,
                    ValueFromPipelineByPropertyName=$true)]
@@ -129,9 +136,9 @@ function New-SysmonConfiguration
         # Schema Vesion for the configuration file, default is 3.3.
         [Parameter(Mandatory=$False,
                    ValueFromPipelineByPropertyName=$true)]
-                   [ValidateSet('2.0','3.0', '3.1', '3.2','3.3')]
+                   [ValidateSet('2.0','3.0', '3.1', '3.2','3.3', '3.4')]
         [String]
-        $SchemaVersion = '3.3'
+        $SchemaVersion = '3.4'
     )
 
     Begin{}
@@ -147,36 +154,36 @@ function New-SysmonConfiguration
         }
 
         $Config = ($ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($Path))
-       
+
         # get an XMLTextWriter to create the XML
-        
+
         $XmlWriter = New-Object System.XMl.XmlTextWriter($Config,$Null)
- 
+
         # choose a pretty formatting:
         $xmlWriter.Formatting = 'Indented'
         $xmlWriter.Indentation = 1
- 
+
         # write the header
         if ($Comment)
         {
             $xmlWriter.WriteComment($Comment)
         }
         $xmlWriter.WriteStartElement('Sysmon')
-        
+
         $XmlWriter.WriteAttributeString('schemaversion', $SchemaVersion)
 
         Write-Verbose -Message "Enabling hashing algorithms : $($Hash)"
         $xmlWriter.WriteElementString('HashAlgorithms',$Hash)
-        
+
         # Enable checking revocation.
-        if ($CheckRevocation) 
+        if ($CheckRevocation)
         {
-            if ($SchemaVersion -in @('3.1','3.2','3.3'))
+            if ($SchemaVersion -in @('3.1','3.2','3.3','3.4'))
             {
                 Write-Verbose -message 'Enabling CheckRevocation.'
                 $xmlWriter.WriteElementString('CheckRevocation','')
             }
-            else 
+            else
             {
                 Write-Warning -Message 'CheckRevocation was not enabled because it is not supported in this SchemaVersion.'
             }
@@ -258,66 +265,82 @@ function New-SysmonConfiguration
         }
 
         # Log registry events.
-        if ($RegistryEvent) 
+        if ($RegistryEvent)
         {
-            if ($SchemaVersion -in @('3.2','3.3'))
+            if ($SchemaVersion -in @('3.2','3.3','3.4'))
             {
                 Write-Verbose -message 'Enabling RegistryEvent.'
                 $xmlWriter.WriteStartElement('RegistryEvent ')
                 $XmlWriter.WriteAttributeString('onmatch', 'exclude')
                 $xmlWriter.WriteFullEndElement()
             }
-            else 
+            else
             {
                 Write-Warning -Message 'RegistryEvent was not enabled because it is not supported in this SchemaVersion.'
             }
         }
 
         # Log file create events.
-        if ($FileCreate) 
+        if ($FileCreate)
         {
-            if ($SchemaVersion -in @('3.2','3.3'))
+            if ($SchemaVersion -in @('3.2','3.3','3.4'))
             {
                 Write-Verbose -message 'Enabling FileCreate.'
                 $xmlWriter.WriteStartElement('FileCreate ')
                 $XmlWriter.WriteAttributeString('onmatch', 'exclude')
                 $xmlWriter.WriteFullEndElement()
             }
-            else 
+            else
             {
                 Write-Warning -Message 'FileCreate was not enabled because it is not supported in this SchemaVersion.'
             }
         }
 
         # Log file create events.
-        if ($FileCreateStreamHash) 
+        if ($FileCreateStreamHash)
         {
-            if ($SchemaVersion -in @('3.2','3.3'))
+            if ($SchemaVersion -in @('3.2','3.3','3.4'))
             {
                 Write-Verbose -message 'Enabling FileCreateStreamHash.'
                 $xmlWriter.WriteStartElement('FileCreateStreamHash ')
                 $XmlWriter.WriteAttributeString('onmatch', 'exclude')
                 $xmlWriter.WriteFullEndElement()
             }
-            else 
+            else
             {
                 Write-Warning -Message 'FileCreateStreamHash was not enabled because it is not supported in this SchemaVersion.'
             }
         }
 
         # NamedPipes create and connect events.
-        if ($PipeEvent) 
+        if ($PipeEvent)
         {
-            if ($SchemaVersion -in @('3.2','3.3'))
+            if ($SchemaVersion -in @('3.2','3.3','3.4'))
             {
                 Write-Verbose -message 'Enabling PipeEvent.'
                 $xmlWriter.WriteStartElement('PipeEvent ')
                 $XmlWriter.WriteAttributeString('onmatch', 'exclude')
                 $xmlWriter.WriteFullEndElement()
             }
-            else 
+            els
             {
                 Write-Warning -Message 'PipeEvent was not enabled because it is not supported in this SchemaVersion.'
+            }
+        }
+
+        # NamedPipes create and connect events.
+        if ($WmiEvent)
+        {
+            if ($SchemaVersion -in @('3.4'))
+            {
+                Write-Verbose -message 'Enabling WmiEvent.'
+                $xmlWriter.WriteStartElement('WmiEvent ')
+                $XmlWriter.WriteAttributeString('onmatch', 'exclude')
+                $xmlWriter.WriteFullEndElement()
+            }
+            els
+            {
+                Write-Warning -Message 'WmiEvent was not enabled because it is not supported in this SchemaVersion.'
             }
         }
 
@@ -367,7 +390,7 @@ function Get-SysmonHashingAlgorithm
     Begin{}
     Process
     {
-        # Check if the file is a valid XML file and if not raise and error. 
+        # Check if the file is a valid XML file and if not raise and error.
         try
         {
             switch($psCmdlet.ParameterSetName)
@@ -381,7 +404,7 @@ function Get-SysmonHashingAlgorithm
             Write-Error -Message 'Specified file does not appear to be a XML file.'
             return
         }
-        
+
         # Validate the XML file is a valid Sysmon file.
         if ($Config.SelectSingleNode('//Sysmon') -eq $null)
         {
@@ -403,10 +426,10 @@ function Get-SysmonHashingAlgorithm
         }
         else
         {
-            $ObjOptions['Hashing'] = ''   
+            $ObjOptions['Hashing'] = ''
         }
 
-        #$ObjOptions['Comment'] = $Config.'#comment'   
+        #$ObjOptions['Comment'] = $Config.'#comment'
         $ConfigObj = [pscustomobject]$ObjOptions
         $ConfigObj.pstypenames.insert(0,'Sysmon.HashingAlgorithm')
         $ConfigObj
@@ -444,9 +467,9 @@ function Get-SysmonRule
         [Parameter(Mandatory=$false,
                    ValueFromPipelineByPropertyName=$true,
                    Position=1)]
-        [ValidateSet('ALL', 'NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
+        [ValidateSet('ALL', 'NetworkConnect', 'ProcessCreate', 'FileCreateTime',
                      'ProcessTerminate', 'ImageLoad', 'DriverLoad', 'ProcessAccess',
-                     'RawAccessRead','ProcessAccess', 'FileCreateStreamHash', 
+                     'RawAccessRead','ProcessAccess', 'FileCreateStreamHash',
                      'RegistryEvent', 'FileCreate', 'PipeEvent')]
         [string[]]
         $EventType = @('ALL')
@@ -455,7 +478,7 @@ function Get-SysmonRule
     Begin{}
     Process
     {
-        # Check if the file is a valid XML file and if not raise and error. 
+        # Check if the file is a valid XML file and if not raise and error.
         try
         {
             switch($psCmdlet.ParameterSetName)
@@ -469,7 +492,7 @@ function Get-SysmonRule
             Write-Error -Message 'Specified file does not appear to be a XML file.'
             return
         }
-        
+
         # Validate the XML file is a valid Sysmon file.
         if ($Config.SelectSingleNode('//Sysmon') -eq $null)
         {
@@ -488,9 +511,9 @@ function Get-SysmonRule
 
         if ($EventType -contains 'ALL')
         {
-            $TypesToParse = @('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
+            $TypesToParse = @('NetworkConnect', 'ProcessCreate', 'FileCreateTime',
                               'ProcessTerminate', 'ImageLoad', 'DriverLoad','CreateRemoteThread',
-                              'ProcessAccess', 'RawAccessRead', 'FileCreateStreamHash', 
+                              'ProcessAccess', 'RawAccessRead', 'FileCreateStreamHash',
                               'RegistryEvent', 'FileCreate', 'PipeEvent')
         }
         else
@@ -538,7 +561,7 @@ function Set-SysmonHashingAlgorithm
         [Alias('PSPath')]
         $LiteralPath,
 
-        # Specify one or more hash algorithms used for image identification 
+        # Specify one or more hash algorithms used for image identification
         [Parameter(Mandatory=$true,
                    ValueFromPipelineByPropertyName=$true,
                    Position=1)]
@@ -550,7 +573,7 @@ function Set-SysmonHashingAlgorithm
     Begin{}
     Process
     {
-        # Check if the file is a valid XML file and if not raise and error. 
+        # Check if the file is a valid XML file and if not raise and error.
         try
         {
             switch($psCmdlet.ParameterSetName)
@@ -561,7 +584,7 @@ function Set-SysmonHashingAlgorithm
                     $FileLocation = (Resolve-Path -Path $Path).Path
                 }
 
-                'LiteralPath' 
+                'LiteralPath'
                 {
                     [xml]$Config = Get-Content -LiteralPath $LiteralPath
                     $FileLocation = (Resolve-Path -LiteralPath $LiteralPath).Path
@@ -573,7 +596,7 @@ function Set-SysmonHashingAlgorithm
             Write-Error -Message 'Specified file does not appear to be a XML file.'
             return
         }
-        
+
         # Validate the XML file is a valid Sysmon file.
         if ($Config.SelectSingleNode('//Sysmon') -eq $null)
         {
@@ -586,7 +609,7 @@ function Set-SysmonHashingAlgorithm
             Write-Error -Message 'This version of Sysmon Rule file is not supported.'
             return
         }
-            
+
         Write-Verbose -Message 'Updating Hashing option.'
         if ($HashingAlgorithm -contains 'ALL')
         {
@@ -600,16 +623,16 @@ function Set-SysmonHashingAlgorithm
         # Check if Hashing Alorithm node exists.
         if($Config.SelectSingleNode('//Sysmon/HashAlgorithms') -ne $null)
         {
-            $Config.Sysmon.HashAlgorithms = $Hash    
+            $Config.Sysmon.HashAlgorithms = $Hash
         }
         else
         {
             $HashElement = $Config.CreateElement('HashAlgorithms')
             [void]$Config.Sysmon.Configuration.AppendChild($HashElement)
-            $Config.Sysmon.Configuration.Hashing = $Hash 
+            $Config.Sysmon.Configuration.Hashing = $Hash
         }
         Write-Verbose -Message 'Hashing option has been updated.'
-        
+
 
         Write-Verbose -Message "Option have been set on $($FileLocation)"
         $Config.Save($FileLocation)
@@ -646,9 +669,9 @@ function Set-SysmonRule
         [Parameter(Mandatory=$true,
                    ValueFromPipelineByPropertyName=$true,
                    Position=1)]
-        [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
+        [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime',
                      'ProcessTerminate', 'ImageLoad', 'DriverLoad', 'CreateRemoteThread',
-                     'ProcessAccess', 'RawAccessRead', 'FileCreateStreamHash', 
+                     'ProcessAccess', 'RawAccessRead', 'FileCreateStreamHash',
                      'RegistryEvent', 'FileCreate')]
         [string[]]
         $EventType,
@@ -675,10 +698,10 @@ function Set-SysmonRule
         # if no elemrnt create one either if it is schema 2.0 or 3.0.
         # If one is present we modify that one if Schema 2.0 and if Schema 3.0 and action modify.
         # If Schema 3.0 and action add we check if only is present and that it is not the same OnMatch
-        # as being specified if it is we do nothing if not we add. 
+        # as being specified if it is we do nothing if not we add.
 
 
-        # Check if the file is a valid XML file and if not raise and error. 
+        # Check if the file is a valid XML file and if not raise and error.
         try
         {
             switch($psCmdlet.ParameterSetName)
@@ -689,7 +712,7 @@ function Set-SysmonRule
                     $FileLocation = (Resolve-Path -Path $Path).Path
                 }
 
-                'LiteralPath' 
+                'LiteralPath'
                 {
                     [xml]$Config = Get-Content -LiteralPath $LiteralPath
                     $FileLocation = (Resolve-Path -LiteralPath $LiteralPath).Path
@@ -701,7 +724,7 @@ function Set-SysmonRule
             Write-Error -Message 'Specified file does not appear to be a XML file.'
             return
         }
-        
+
         # Validate the XML file is a valid Sysmon file.
         if ($Config.SelectSingleNode('//Sysmon') -eq $null)
         {
@@ -805,9 +828,9 @@ function Remove-SysmonRule
         [Parameter(Mandatory=$true,
                    ValueFromPipelineByPropertyName=$true,
                    Position=1)]
-        [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime', 
+        [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime',
                      'ProcessTerminate', 'ImageLoad', 'DriverLoad', 'CreateRemoteThread',
-                     'ProcessAccess', 'RawAccessRead', 'FileCreateStreamHash', 
+                     'ProcessAccess', 'RawAccessRead', 'FileCreateStreamHash',
                      'RegistryEvent', 'FileCreate')]
         [string[]]
         $EventType,
@@ -824,7 +847,7 @@ function Remove-SysmonRule
     Begin{}
     Process
     {
-        # Check if the file is a valid XML file and if not raise and error. 
+        # Check if the file is a valid XML file and if not raise and error.
         try
         {
             switch($psCmdlet.ParameterSetName)
@@ -835,7 +858,7 @@ function Remove-SysmonRule
                     $FileLocation = (Resolve-Path -Path $Path).Path
                 }
 
-                'LiteralPath' 
+                'LiteralPath'
                 {
                     [xml]$Config = Get-Content -LiteralPath $LiteralPath
                     $FileLocation = (Resolve-Path -LiteralPath $LiteralPath).Path
@@ -847,7 +870,7 @@ function Remove-SysmonRule
             Write-Error -Message 'Specified file does not appear to be a XML file.'
             return
         }
-        
+
         # Validate the XML file is a valid Sysmon file.
         if ($Config.SelectSingleNode('//Sysmon') -eq $null)
         {
@@ -870,7 +893,7 @@ function Remove-SysmonRule
                 Write-Verbose -Message "Removed rule for $($EventType)."
             }
         }
-        
+
         $config.Save($FileLocation)
     }
     End{}
