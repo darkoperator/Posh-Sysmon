@@ -13,14 +13,24 @@ Install-Module -Name Posh-Sysmon
 
 If you are running PS 3.0 to 4.0 you can use the PowerShell Gallery also following instruction in [PowerShell Gallery Documentation](https://msdn.microsoft.com/powershell/gallery/readme)
 
-# Change Log
-## Version 0.7.5
+## Change Log
+
+### Version 0.7.6
+
+* Support for Schema 3.4 of Sysmon v6.2
+* New function New-SysmonWmiEvent.
+* Updated Rule and Filter functions for WmiEvents.
+* Fixed where some functions did not support PipeEvents.
+
+### Version 0.7.5
+
 * Support for Schema 3.3 of Sysmon v6.
 * New function New-SysmonPipeEvent for filtering for named pipeline cration and connection events.
 * Support of PipeEvent in config creation and event type functions.
 * Several bug fixes on filtering functions when give an array of values.
 
-## Version 0.7.3
+### Version 0.7.3
+
 * Several bug fixes when creating RawAccess and ProcessOpen rules. 
 * By default the new schema is 3.2 for the latest version of Sysmon 5.0
 * New-SysmonConfiguration function has options to enable all logging for FileCreate, RegistryEvent and FileCreateStreamHash
@@ -31,50 +41,60 @@ If you are running PS 3.0 to 4.0 you can use the PowerShell Gallery also followi
 * Updated Get-SysmonRule, Set-SysmonRule, Remove-SysmonRule and Remove-SysmonRuleFilter for the new event type rules.
 * Added Online Help option for all functions.
 
-## Version 0.7.2
+### Version 0.7.2
+
 * Added missing Event Types to Get-SysmonEventData.
 
-## Version 0.7.1
+### Version 0.7.1
+
 * Fixed issue with conditions with filters with space in them.
 
-## Version 0.7
+### Version 0.7
+
 * Added support for ProcessAccess filtering added in Sysmon 4.1
 * Added function New-SysmonProcessAccess for creating ProcessAccess filters.
 * Fixed issue where command was displayed and not ran with New-SysmonDriverLoadFilter.
 * Added ProcessAccess type in Get-SysmonEventData and Get-SysmonRuleFilter.
 * In verbose output it shows with what version of Sysmon the file will be compatible with after creating it. 
 
-## Version 0.6
+### Version 0.6
+
 * Added support for Sysmon 4.0 XML schemea (Schema version 3.0)
 * One can select the version of schema to support when creating the configuration file. 
 * All functions have been updated to support the use of more than one rule as per Schema 3.0
 
-## Version 0.5
+### Version 0.5
+
 * Added Get-SysmonEventData to get the Event Data information as custom object for selected Event Types.
 * Added Get-SysmonRuleFilter to get all filters under a specific Event Type Rule.
 
-## Version 0.4
+### Version 0.4
+
 Version 3.0 is a full re-write om how rules work and new event types. This update is SysMon 3.0 only. If you wish to work on SysMon 2.0 rules I recommend you use version 0.3 version of the module.
+
 * When creating a new sysmon rule it will allow you to enable logging of event types supported.
 * Checks that it is only working with the proper XML schema for the rules.
 * Can now create specific filter for CreateRemoteThread event type.
 * Since Rules and Config got merger config functions (Get-SysmonConfigOptio, Set-SysmonConfigOption) where removed and replaced with Get-SysmonHashingAlgorithm and Set-SysmonHashingAlgorithm
 
-## Version 0.3
+### Version 0.3
+
 * Tons of fixes do to a bad re-facor.
 * Filter creation is now done by specific funtions per event type.
 * Filter creation functions are now in their own sub-module.
 
-## Version 0.2
+### Version 0.2
+
 * Validate that the file is an XML file and a valid Sysmon configuration file.
 * Change option ConfigFile to Path and LiteralPath so as to match other cmdlets that work with files.
 * Fixed typos on verbose messages and examples.
 * Functions should work better now when passing files through the pipeline using Get-ChildItem.
 
-## Version 0.1
+### Version 0.1
+
 * Initial version for Sysmon 2.0 with XML Schema 1.0
 
-# Examples
+## Examples
 
 ## Create a XML Configuration File
 
