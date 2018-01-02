@@ -1,15 +1,30 @@
-﻿# TODO:
-# * Add help and param block to Get-RuleWithFilter
-
- . "$PSScriptRoot\Filters.ps1"
- . "$PSScriptRoot\Config.ps1"
+﻿
+# Load functions
+ . "$($PSScriptRoot)\Functions\Get-SysmonEventData.ps1"
+ . "$($PSScriptRoot)\Functions\Get-SysmonHashingAlgorithm.ps1"
+ . "$($PSScriptRoot)\Functions\Get-SysmonRule.ps1"
+ . "$($PSScriptRoot)\Functions\Get-SysmonRuleFilter.ps1"
+ . "$($PSScriptRoot)\Functions\New-SysmonConfiguration.ps1"
+ . "$($PSScriptRoot)\Functions\New-SysmonCreateRemoteThreadFilter.ps1"
+ . "$($PSScriptRoot)\Functions\New-SysmonDriverLoadFilter.ps1"
+ . "$($PSScriptRoot)\Functions\New-SysmonFileCreateFilter.ps1"
+ . "$($PSScriptRoot)\Functions\New-SysmonFileCreateStreamHashFilter.ps1"
+ . "$($PSScriptRoot)\Functions\New-SysmonImageLoadFilter.ps1"
+ . "$($PSScriptRoot)\Functions\New-SysmonNetworkConnectFilter.ps1"
+ . "$($PSScriptRoot)\Functions\New-SysmonPipeFilter.ps1"
+ . "$($PSScriptRoot)\Functions\New-SysmonProcessAccessFilter.ps1"
+ . "$($PSScriptRoot)\Functions\New-SysmonProcessCreateFilter.ps1"
+ . "$($PSScriptRoot)\Functions\New-SysmonProcessTerminateFilter.ps1"
+ . "$($PSScriptRoot)\Functions\New-SysmonRawAccessReadFilter.ps1"
+ . "$($PSScriptRoot)\Functions\New-SysmonRegistryFilter.ps1"
+ . "$($PSScriptRoot)\Functions\New-SysmonWmiFilter.ps1"
+ . "$($PSScriptRoot)\Functions\Remove-SysmonRule.ps1"
+ . "$($PSScriptRoot)\Functions\Remove-SysmonRuleFilter.ps1"
+ . "$($PSScriptRoot)\Functions\Set-SysmonHashingAlgorithm.ps1"
+ . "$($PSScriptRoot)\Functions\Set-SysmonRule.ps1"
 
 # Supporteted Sysmon schema versions.
 $SysMonSupportedVersions = @(
-    '2.0',
-    '3.0',
-    '3.1',
-    '3.2',
     '3.3',
     '3.4'
  )
