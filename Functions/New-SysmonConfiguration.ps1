@@ -133,20 +133,16 @@ function New-SysmonConfiguration
         # Schema Vesion for the configuration file, default is 3.3.
         [Parameter(Mandatory=$False,
                    ValueFromPipelineByPropertyName=$true)]
-                   [ValidateSet('3.3', '3.4')]
-        [String]
-        $SchemaVersion = '3.4'
+                   [ValidateSet(4.0, 3.4)]
+        [Float]
+        $SchemaVersion = 4.0
     )
 
     Begin{}
-    Process
-    {
-        if ($HashingAlgorithm -contains 'ALL')
-        {
+    Process {
+        if ($HashingAlgorithm -contains 'ALL') {
             $Hash = '*'
-        }
-        else
-        {
+        } else {
             $Hash = $HashingAlgorithm -join ','
         }
 
@@ -173,88 +169,71 @@ function New-SysmonConfiguration
         $xmlWriter.WriteElementString('HashAlgorithms',$Hash)
 
         # Enable checking revocation.
-        if ($CheckRevocation)
-        {
-            if ($SchemaVersion -in @('3.1','3.2','3.3','3.4'))
-            {
-                Write-Verbose -message 'Enabling CheckRevocation.'
-                $xmlWriter.WriteElementString('CheckRevocation','')
-            }
-            else
-            {
-                Write-Warning -Message 'CheckRevocation was not enabled because it is not supported in this SchemaVersion.'
-            }
+        if ($CheckRevocation) {
+            Write-Verbose -message 'Enabling CheckRevocation.'
+            $xmlWriter.WriteElementString('CheckRevocation','')
         }
 
         # Create empty EventFiltering section.
         $xmlWriter.WriteStartElement('EventFiltering')
 
-        if ($NetworkConnect)
-        {
+        if ($NetworkConnect) {
             Write-Verbose -Message 'Enabling network connection logging for all connections by setting no filter and onmatch to exclude.'
             $xmlWriter.WriteStartElement('NetworkConnect')
             $XmlWriter.WriteAttributeString('onmatch', 'exclude')
             $xmlWriter.WriteFullEndElement()
         }
 
-        if ($DriverLoad)
-        {
+        if ($DriverLoad) {
             Write-Verbose -Message 'Enabling logging all driver loading by setting no filter and onmatch to exclude.'
             $xmlWriter.WriteStartElement('DriverLoad ')
             $XmlWriter.WriteAttributeString('onmatch', 'exclude')
             $xmlWriter.WriteFullEndElement()
         }
 
-        if ($ImageLoad)
-        {
+        if ($ImageLoad) {
             Write-Verbose -Message 'Enabling logging all image loading by setting no filter and onmatch to exclude.'
             $xmlWriter.WriteStartElement('ImageLoad ')
             $XmlWriter.WriteAttributeString('onmatch', 'exclude')
             $xmlWriter.WriteFullEndElement()
         }
 
-        if ($CreateRemoteThread)
-        {
+        if ($CreateRemoteThread) {
             Write-Verbose -Message 'Enabling logging all  CreateRemoteThread API actions by setting no filter and onmatch to exclude.'
             $xmlWriter.WriteStartElement('CreateRemoteThread ')
             $XmlWriter.WriteAttributeString('onmatch', 'exclude')
             $xmlWriter.WriteFullEndElement()
         }
 
-        if ($ProcessCreate)
-        {
+        if ($ProcessCreate) {
             Write-Verbose -Message 'Enabling logging all  process creation by setting no filter and onmatch to exclude.'
             $xmlWriter.WriteStartElement('ProcessCreate ')
             $XmlWriter.WriteAttributeString('onmatch', 'exclude')
             $xmlWriter.WriteFullEndElement()
         }
 
-        if ($ProcessTerminate)
-        {
+        if ($ProcessTerminate) {
             Write-Verbose -Message 'Enabling logging all  process termination by setting no filter and onmatch to exclude.'
             $xmlWriter.WriteStartElement('ProcessTerminate ')
             $XmlWriter.WriteAttributeString('onmatch', 'exclude')
             $xmlWriter.WriteFullEndElement()
         }
 
-        if ($FileCreateTime)
-        {
+        if ($FileCreateTime) {
             Write-Verbose -Message 'Enabling logging all  process creation by setting no filter and onmatch to exclude.'
             $xmlWriter.WriteStartElement('FileCreateTime ')
             $XmlWriter.WriteAttributeString('onmatch', 'exclude')
             $xmlWriter.WriteFullEndElement()
         }
 
-        if ($ProcessAccess)
-        {
+        if ($ProcessAccess) {
             Write-Verbose -Message 'Enabling logging all  process access by setting no filter and onmatch to exclude.'
             $xmlWriter.WriteStartElement('ProcessAccess ')
             $XmlWriter.WriteAttributeString('onmatch', 'exclude')
             $xmlWriter.WriteFullEndElement()
         }
 
-        if ($RawAccessRead)
-        {
+        if ($RawAccessRead) {
             Write-Verbose -Message 'Enabling logging all  process access by setting no filter and onmatch to exclude.'
             $xmlWriter.WriteStartElement('RawAccessRead ')
             $XmlWriter.WriteAttributeString('onmatch', 'exclude')
@@ -262,83 +241,43 @@ function New-SysmonConfiguration
         }
 
         # Log registry events.
-        if ($RegistryEvent)
-        {
-            if ($SchemaVersion -in @('3.2','3.3','3.4'))
-            {
-                Write-Verbose -message 'Enabling RegistryEvent.'
-                $xmlWriter.WriteStartElement('RegistryEvent ')
-                $XmlWriter.WriteAttributeString('onmatch', 'exclude')
-                $xmlWriter.WriteFullEndElement()
-            }
-            else
-            {
-                Write-Warning -Message 'RegistryEvent was not enabled because it is not supported in this SchemaVersion.'
-            }
+        if ($RegistryEvent) {
+            Write-Verbose -message 'Enabling RegistryEvent.'
+            $xmlWriter.WriteStartElement('RegistryEvent ')
+            $XmlWriter.WriteAttributeString('onmatch', 'exclude')
+            $xmlWriter.WriteFullEndElement()
         }
 
         # Log file create events.
-        if ($FileCreate)
-        {
-            if ($SchemaVersion -in @('3.2','3.3','3.4'))
-            {
-                Write-Verbose -message 'Enabling FileCreate.'
-                $xmlWriter.WriteStartElement('FileCreate ')
-                $XmlWriter.WriteAttributeString('onmatch', 'exclude')
-                $xmlWriter.WriteFullEndElement()
-            }
-            else
-            {
-                Write-Warning -Message 'FileCreate was not enabled because it is not supported in this SchemaVersion.'
-            }
+        if ($FileCreate) {
+            Write-Verbose -message 'Enabling FileCreate.'
+            $xmlWriter.WriteStartElement('FileCreate ')
+            $XmlWriter.WriteAttributeString('onmatch', 'exclude')
+            $xmlWriter.WriteFullEndElement()
         }
 
         # Log file create events.
-        if ($FileCreateStreamHash)
-        {
-            if ($SchemaVersion -in @('3.2','3.3','3.4'))
-            {
-                Write-Verbose -message 'Enabling FileCreateStreamHash.'
-                $xmlWriter.WriteStartElement('FileCreateStreamHash ')
-                $XmlWriter.WriteAttributeString('onmatch', 'exclude')
-                $xmlWriter.WriteFullEndElement()
-            }
-            else
-            {
-                Write-Warning -Message 'FileCreateStreamHash was not enabled because it is not supported in this SchemaVersion.'
-            }
+        if ($FileCreateStreamHash) {
+            Write-Verbose -message 'Enabling FileCreateStreamHash.'
+            $xmlWriter.WriteStartElement('FileCreateStreamHash ')
+            $XmlWriter.WriteAttributeString('onmatch', 'exclude')
+            $xmlWriter.WriteFullEndElement()
         }
 
         # NamedPipes create and connect events.
-        if ($PipeEvent)
-        {
-            if ($SchemaVersion -in @('3.2','3.3','3.4'))
-            {
-                Write-Verbose -message 'Enabling PipeEvent.'
-                $xmlWriter.WriteStartElement('PipeEvent ')
-                $XmlWriter.WriteAttributeString('onmatch', 'exclude')
-                $xmlWriter.WriteFullEndElement()
-            }
-            els
-            {
-                Write-Warning -Message 'PipeEvent was not enabled because it is not supported in this SchemaVersion.'
-            }
+        if ($PipeEvent) {
+            Write-Verbose -message 'Enabling PipeEvent.'
+            $xmlWriter.WriteStartElement('PipeEvent ')
+            $XmlWriter.WriteAttributeString('onmatch', 'exclude')
+            $xmlWriter.WriteFullEndElement()
         }
 
         # NamedPipes create and connect events.
-        if ($WmiEvent)
-        {
-            if ($SchemaVersion -in @('3.4'))
-            {
-                Write-Verbose -message 'Enabling WmiEvent.'
-                $xmlWriter.WriteStartElement('WmiEvent ')
-                $XmlWriter.WriteAttributeString('onmatch', 'exclude')
-                $xmlWriter.WriteFullEndElement()
-            }
-            els
-            {
-                Write-Warning -Message 'WmiEvent was not enabled because it is not supported in this SchemaVersion.'
-            }
+        if ($WmiEvent) {
+            Write-Verbose -message 'Enabling WmiEvent.'
+            $xmlWriter.WriteStartElement('WmiEvent ')
+            $XmlWriter.WriteAttributeString('onmatch', 'exclude')
+            $xmlWriter.WriteFullEndElement()
         }
 
         # End Element of EventFiltering
@@ -354,7 +293,5 @@ function New-SysmonConfiguration
         Write-Verbose -Message "Config file created as $($Config)"
         write-verbose -Message "Configuration is for Sysmon $($sysmonVerMap[$SchemaVersion])"
     }
-    End
-    {
-    }
+    End {}
 }

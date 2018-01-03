@@ -43,7 +43,8 @@ function New-SysmonImageLoadFilter {
             Position=3)]
         [ValidateSet('UtcTime', 'ProcessGuid', 'ProcessId', 'Image',
             'ImageLoaded', 'Hashes', 'Signed',
-            'Signature')]
+            'Signature', 'FileVersion',
+            'Description', 'Product', 'Company')]
         [string]
         $EventField,
 

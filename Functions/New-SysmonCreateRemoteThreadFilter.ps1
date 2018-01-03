@@ -1,6 +1,5 @@
 #  .ExternalHelp Posh-SysMon.psm1-Help.xml
-function New-SysmonCreateRemoteThreadFilter
-{
+function New-SysmonCreateRemoteThreadFilter {
     [CmdletBinding(DefaultParameterSetName = 'Path',
     HelpUri = 'https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/New-SysmonCreateRemoteThreadFilter.md')]
     Param (

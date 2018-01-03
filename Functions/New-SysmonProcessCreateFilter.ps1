@@ -46,7 +46,8 @@ function New-SysmonProcessCreateFilter
             'CommandLine', 'User', 'LogonGuid', 'LogonId',
             'TerminalSessionId', 'IntegrityLevel',
             'Hashes', 'ParentProcessGuid', 'ParentProcessId',
-            'ParentImage', 'ParentCommandLine')]
+            'ParentImage', 'ParentCommandLine', 'FileVersion',
+            'Description', 'Product', 'Company')]
         [string]
         $EventField,
 

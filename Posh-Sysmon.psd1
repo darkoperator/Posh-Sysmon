@@ -294,6 +294,14 @@ PrivateData = @{
     # WMI Filter in a EventFilter event.
     Filter = 'Filter'
 
+    FileVersion = 'FileVersion'
+
+    Description = 'Description'
+
+    Product = 'Product'
+
+    Company = 'Company'
+
     PSData = @{
 
         # Tags applied to this module. These help with module discovery in online galleries.

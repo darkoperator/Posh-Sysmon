@@ -25,8 +25,8 @@
 
 # Supporteted Sysmon schema versions.
 $SysMonSupportedVersions = @(
-    '3.3',
     '3.4'
+    '4.0'
  )
 
 # Table that maps schema version to Sysmon version.
@@ -37,6 +37,7 @@ $sysmonVerMap = @{
      '3.2' = '5.0'
      '3.3' = '6.0'
      '3.4' = '6.1, 6.2'
+     '4.0' = '7.0'
  }
 
 function Get-RuleWithFilter
