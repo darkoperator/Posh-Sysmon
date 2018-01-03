@@ -61,6 +61,24 @@ function New-SysmonProcessCreateFilter
 
     Begin {}
     Process {
+        switch($psCmdlet.ParameterSetName)
+        {
+            'Path'
+            {
+                $ConfigVer = Select-Xml -Path $Path -XPath '//Sysmon/@schemaversion'
+            }
+
+            'LiteralPath'
+            {
+                $ConfigVer = Select-Xml -LiteralPath $LiteralPath -XPath '//Sysmon/@schemaversion'
+            }
+        }
+
+        if ($ConfigVer.Node."#text" -lt 4.0 -and ($EventField -in @('FileVersion','Description', 'Product', 'Company'))) {
+            Write-Error -Message "The event field $($EventField) is not supported under this schema."
+            Return
+        }
+
         $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
         $cmdoptions = @{
             'EventType' =  'ProcessCreate'
