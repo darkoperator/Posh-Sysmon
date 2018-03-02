@@ -81,7 +81,7 @@ FunctionsToExport = 'Get-SysmonHashingAlgorithm', 'Get-SysmonRule',
                'New-SysmonRegistryFilter', 'New-SysmonFileCreateFilter',
                'New-SysmonPipeFIlter', 'New-SysmonWmiFilter', 'New-SysmonWmiFilter',
                'ConvertFrom-SysmonBinaryConfiguration', 'ConvertTo-SysmonXMLConfiguration',
-               'Get-SysmonConfiguration', 'Merge-SysmonXMLConfiguration', 'Test-SysmonConfiguration'
+               'Get-SysmonConfiguration'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()

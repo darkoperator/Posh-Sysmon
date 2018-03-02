@@ -267,7 +267,7 @@ function New-SysmonConfiguration
         # Log registry events.
         if ($RegistryEvent)
         {
-            if ($SchemaVersion -in @('3.2','3.3','3.4'))
+            if ($SchemaVersion -gt 3.2)
             {
                 Write-Verbose -message 'Enabling RegistryEvent.'
                 $xmlWriter.WriteStartElement('RegistryEvent ')
@@ -283,7 +283,7 @@ function New-SysmonConfiguration
         # Log file create events.
         if ($FileCreate)
         {
-            if ($SchemaVersion -in @('3.2','3.3','3.4'))
+            if ($SchemaVersion -gt 3.2)
             {
                 Write-Verbose -message 'Enabling FileCreate.'
                 $xmlWriter.WriteStartElement('FileCreate ')
@@ -299,7 +299,7 @@ function New-SysmonConfiguration
         # Log file create events.
         if ($FileCreateStreamHash)
         {
-            if ($SchemaVersion -in @('3.2','3.3','3.4'))
+            if ($SchemaVersion -gt 3.2)
             {
                 Write-Verbose -message 'Enabling FileCreateStreamHash.'
                 $xmlWriter.WriteStartElement('FileCreateStreamHash ')
@@ -315,14 +315,14 @@ function New-SysmonConfiguration
         # NamedPipes create and connect events.
         if ($PipeEvent)
         {
-            if ($SchemaVersion -in @('3.2','3.3','3.4'))
+            if ($SchemaVersion -gt 3.2)
             {
                 Write-Verbose -message 'Enabling PipeEvent.'
                 $xmlWriter.WriteStartElement('PipeEvent ')
                 $XmlWriter.WriteAttributeString('onmatch', 'exclude')
                 $xmlWriter.WriteFullEndElement()
             }
-            els
+            else
             {
                 Write-Warning -Message 'PipeEvent was not enabled because it is not supported in this SchemaVersion.'
             }
@@ -331,7 +331,7 @@ function New-SysmonConfiguration
         # NamedPipes create and connect events.
         if ($WmiEvent)
         {
-            if ($SchemaVersion -in @('3.4'))
+            if ($SchemaVersion -gt 3.4)
             {
                 Write-Verbose -message 'Enabling WmiEvent.'
                 $xmlWriter.WriteStartElement('WmiEvent ')

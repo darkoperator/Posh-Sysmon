@@ -107,13 +107,13 @@ function Set-SysmonRule
             {
                 if ($Rules."$($EvtType)".count -eq $null)
                 {
-                    if (($Config.Sysmon.schemaversion -eq '2.0') -or ($Config.Sysmon.schemaversion -in @('3.0', '3.1', '3.2','3.3', '3.4') -and $Action -eq 'Modify'))
+                    if (($Config.Sysmon.schemaversion -eq '2.0') -or ($Config.Sysmon.schemaversion -ge 3.0 -and $Action -eq 'Modify'))
                     {
                         Write-Verbose -Message "Setting as default action for $($EvtType) the rule on match of $($OnMatch)."
                         $RuleData.SetAttribute('onmatch',($OnMatch.ToLower()))
                         Write-Verbose -Message 'Action has been set.'
                     }
-                    elseif ($Config.Sysmon.schemaversion -in @('3.0', '3.1', '3.2','3.3', '3.4') -and $Action -eq 'Add')
+                    elseif ($Config.Sysmon.schemaversion -ge 3.0 -and $Action -eq 'Add')
                     {
                         if ($RuleData.onmatch -ne $OnMatch)
                         {
@@ -129,7 +129,7 @@ function Set-SysmonRule
                         }
                     }
                 }
-                elseif ($Config.Sysmon.schemaversion -in ('3.0', '3.1', '3.2','3.3', '3.4') -and $elements.count -eq 2)
+                elseif ($Config.Sysmon.schemaversion -ge 3.0 -and $elements.count -eq 2)
                 {
                     Write-Verbose -Message 'A rule with the specified onmatch action already exists.'
                 }

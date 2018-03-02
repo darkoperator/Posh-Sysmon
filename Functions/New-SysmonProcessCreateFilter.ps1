@@ -80,6 +80,7 @@ function New-SysmonProcessCreateFilter
         }
 
         $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
+
         $cmdoptions = @{
             'EventType' =  'ProcessCreate'
             'Condition' = $Condition
