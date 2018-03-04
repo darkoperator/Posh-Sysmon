@@ -17,8 +17,8 @@ If you are running PS 3.0 to 4.0 you can use the PowerShell Gallery also followi
 
 ### Version 1.0
 
-* Module only supports the last 2 Schema versions.
-* Support for Sysmon 7.0 Schema version 4.0 **[Breaking Change]**
+* Module only supports the last 2 Schema versions.**[Breaking Change]**
+* Support for Sysmon 7.0 Schema version 4.0
 * Added new fields for filtering introduced in Sysmon 7.0.
 * Modified organization of functions in to their own files for better management while coding.
 * Fixed typo in the enabling of rules in rule creation.
