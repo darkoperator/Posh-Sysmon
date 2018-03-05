@@ -22,8 +22,6 @@
  . "$($PSScriptRoot)\Functions\Remove-SysmonRuleFilter.ps1"
  . "$($PSScriptRoot)\Functions\Set-SysmonHashingAlgorithm.ps1"
  . "$($PSScriptRoot)\Functions\Set-SysmonRule.ps1"
- . "$($PSScriptRoot)\Functions\Test-SysmonConfiguration.ps1"
- . "$($PSScriptRoot)\Functions\Merge-SysmonXMLConfiguration.ps1"
  . "$($PSScriptRoot)\Functions\Get-SysmonConfiguration.ps1"
  . "$($PSScriptRoot)\Functions\ConvertTo-SysmonXMLConfiguration.ps1"
  . "$($PSScriptRoot)\Functions\ConvertFrom-SysmonBinaryConfiguration.ps1"
