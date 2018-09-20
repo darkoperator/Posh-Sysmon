@@ -74,7 +74,7 @@ function New-SysmonCreateRemoteThreadFilter {
         if($RuleName) {
             $cmdoptions.Add('RuleName',$RuleName)
         }
-        
+
         switch($psCmdlet.ParameterSetName) {
             'Path' {
                 $cmdOptions.Add('Path',$Path)

@@ -257,9 +257,9 @@ function New-RuleFilter
         } # If only one element this will return null, more than one this will provide a value.
         else
         {
-            if ($RuleData.count -eq $null)
+            if ($RuleData.count -eq 1)
             {
-                if ($RuleData.onmatch -eq $OnMatch)
+                if ($RuleData.Attributes."#text" -eq $OnMatch)
                 {
                     Write-Verbose -Message 'Single node.'
                     Write-Verbose -Message "Creating filters for event type $($EventType)."

@@ -81,7 +81,7 @@ function New-SysmonPipeFilter {
         if($RuleName) {
             $cmdoptions.Add('RuleName',$RuleName)
         }
-        
+
         switch ($PSCmdlet.ParameterSetName) {
             'Path' {
                 $cmdOptions.Add('Path',$Path)
