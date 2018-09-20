@@ -37,7 +37,7 @@ function Get-SysmonRuleFilter {
             'ProcessTerminate', 'ImageLoad', 'DriverLoad',
             'CreateRemoteThread','RawAccessRead', 'ProcessAccess',
             'FileCreateStreamHash', 'RegistryEvent', 'FileCreate',
-            'PipeEvent', 'WmiEvent')]
+            'PipeEvent', 'WmiEvent','RuleName')]
         [string]
         $EventType,
 

@@ -28,8 +28,8 @@
 
 # Supporteted Sysmon schema versions.
 $SysMonSupportedVersions = @(
-    '3.4'
     '4.0'
+    '4.1'
  )
 
 # Table that maps schema version to Sysmon version.
@@ -41,6 +41,7 @@ $sysmonVerMap = @{
      '3.3' = '6.0'
      '3.4' = '6.1, 6.2'
      '4.0' = '7.0'
+     '4.1' = '8.0'
  }
 
 function Get-RuleWithFilter
@@ -76,7 +77,8 @@ function Get-RuleWithFilter
             foreach ($Node in $Nodes)
             {
                 $FilterObjProps = [ordered]@{}
-                $FilterObjProps['EventField'] = $Node.Name
+                $FilterObjProps['EventField'] = $Node.LocalName
+                $FilterObjProps['RuleName'] = $Node.Name
                 $FilterObjProps['Condition'] = &{if($Node.condition -eq $null){'is'}else{$Node.condition}}
                 $FilterObjProps['Value'] =  $Node.'#text'
                 $FilterObj = New-Object -TypeName psobject -Property $FilterObjProps
@@ -178,7 +180,13 @@ function New-RuleFilter
                    ValueFromPipelineByPropertyName=$true,
                    Position=5)]
         [string[]]
-        $Value
+        $Value,
+
+        # Rule Name for the filter.
+        [Parameter(Mandatory=$false,
+            ValueFromPipelineByPropertyName=$true)]
+        [string]
+        $RuleName
     )
 
     Begin{}
@@ -261,6 +269,9 @@ function New-RuleFilter
                         Write-Verbose -Message "Creating filter for event filed $($EventField) with condition $($Condition) for value $($val)."
                         $FieldElement = $Config.CreateElement($EventField)
                         $Filter = $RuleData.AppendChild($FieldElement)
+                        if ($RuleName) {
+                            $Filter.SetAttribute('name',$RuleName)
+                        }
                         $Filter.SetAttribute('condition',$ConditionString)
                         $filter.InnerText = $val
                         $Config.Save($FileLocation)
@@ -287,6 +298,9 @@ function New-RuleFilter
                             Write-Verbose -Message "Creating filter for event filed $($EventField) with condition $($Condition) for value $($val)."
                             $FieldElement = $Config.CreateElement($EventField)
                             $Filter = $rule.AppendChild($FieldElement)
+                            if ($RuleName) {
+                                $Filter.SetAttribute('name',$RuleName)
+                            }
                             $Filter.SetAttribute('condition',$ConditionString)
                             $filter.InnerText = $val
                             $Config.Save($FileLocation)

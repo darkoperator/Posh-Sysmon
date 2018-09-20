@@ -29,7 +29,7 @@ function Remove-SysmonRule
         [ValidateSet('NetworkConnect', 'ProcessCreate', 'FileCreateTime',
                      'ProcessTerminate', 'ImageLoad', 'DriverLoad', 'CreateRemoteThread',
                      'ProcessAccess', 'RawAccessRead', 'FileCreateStreamHash',
-                     'RegistryEvent', 'FileCreate', 'PipeEvent', 'WmiEvent')]
+                     'RegistryEvent', 'FileCreate', 'PipeEvent', 'WmiEvent','RuleName')]
         [string[]]
         $EventType,
 

@@ -52,23 +52,41 @@ function New-SysmonFileCreateFilter {
             ValueFromPipelineByPropertyName=$true,
             Position=4)]
         [string[]]
-        $Value
+        $Value,
+
+        # Rule Name for the filter.
+        [Parameter(Mandatory=$false,
+            ValueFromPipelineByPropertyName=$true)]
+        [string]
+        $RuleName
     )
 
     Begin {}
     Process {
         $FieldString = $MyInvocation.MyCommand.Module.PrivateData[$EventField]
+        $cmdoptions = @{
+            'EventType' =  'FileCreateStreamHash'
+            'Condition' = $Condition
+            'EventField' = $FieldString
+            'Value' = $Value
+            'OnMatch' = $OnMatch
+        }
 
-        switch($psCmdlet.ParameterSetName) {
+        if($RuleName) {
+            $cmdoptions.Add('RuleName',$RuleName)
+        }
+
+        switch ($PSCmdlet.ParameterSetName) {
             'Path' {
-                New-RuleFilter -Path $Path -EventType FileCreateTime -Condition $Condition -EventField $FieldString -Value $Value -OnMatch $OnMatch
+                $cmdOptions.Add('Path',$Path)
+                New-RuleFilter @cmdOptions
             }
 
             'LiteralPath' {
-                New-RuleFilter -LiteralPath $LiteralPath -EventType FileCreateTime -Condition $Condition -EventField $FieldString -Value $Value -OnMatch $OnMatch
+                $cmdOptions.Add('LiteralPath',$LiteralPath)
+                New-RuleFilter @cmdOptions
             }
         }
-
     }
     End {}
 }

@@ -130,12 +130,12 @@ function New-SysmonConfiguration
         [String]
         $Comment,
 
-        # Schema Vesion for the configuration file, default is 3.3.
+        # Schema Vesion for the configuration file, default is 4.1.
         [Parameter(Mandatory=$False,
                    ValueFromPipelineByPropertyName=$true)]
-                   [ValidateSet('4.0','3.4')]
+                   [ValidateSet('4.0','4.1')]
         [string]
-        $SchemaVersion = '4.0'
+        $SchemaVersion = '4.1'
     )
 
     Begin{}

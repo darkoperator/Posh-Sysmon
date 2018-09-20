@@ -50,7 +50,13 @@ function New-SysmonCreateRemoteThreadFilter {
             ValueFromPipelineByPropertyName=$true,
             Position=4)]
         [string[]]
-        $Value
+        $Value,
+
+        # Rule Name for the filter.
+        [Parameter(Mandatory=$false,
+            ValueFromPipelineByPropertyName=$true)]
+        [string]
+        $RuleName
     )
 
     Begin { }
@@ -64,6 +70,11 @@ function New-SysmonCreateRemoteThreadFilter {
             'OnMatch' = $OnMatch
 
         }
+
+        if($RuleName) {
+            $cmdoptions.Add('RuleName',$RuleName)
+        }
+        
         switch($psCmdlet.ParameterSetName) {
             'Path' {
                 $cmdOptions.Add('Path',$Path)
