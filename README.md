@@ -3,17 +3,25 @@ PowerShell 3.0 or above module for creating and managing Sysinternals Sysmon v2.
 
 All functions in the PowerShell module include help information and example of usage that can be view using the Get-Help cmdlet.
 
-# Installation
+## Installation
+
 For installation it is highly recomended that you install from the PowerShell Gallery using the Install-Module cmdlet.
 
 On PowerShell v5 and above:
-<pre>
+
+``` Powershell
 Install-Module -Name Posh-Sysmon
-</pre>
+```
 
 If you are running PS 3.0 to 4.0 you can use the PowerShell Gallery also following instruction in [PowerShell Gallery Documentation](https://msdn.microsoft.com/powershell/gallery/readme)
 
 ## Change Log
+
+### Version 1.2
+
+* Module only supports the last 2 Schema versions.**[Breaking Change]**
+* Support for Sysmon 8.0 Schema version 4.1 RuleName
+* Fixed issue when adding a filter for a none existing rule. It will properly error now.
 
 ### Version 1.0
 
