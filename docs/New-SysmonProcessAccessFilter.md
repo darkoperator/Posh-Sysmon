@@ -1,6 +1,7 @@
 ---
 external help file: Posh-SysMon-help.xml
-online version: 
+Module Name: Posh-SysMon
+online version: https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/New-SysmonNetworkConnectFilter.md
 schema: 2.0.0
 ---
 
@@ -14,13 +15,13 @@ Create a new filter for the logging of when a running process opens another.
 ### Path (Default)
 ```
 New-SysmonProcessAccessFilter [-Path] <Object> [-OnMatch] <String> [-Condition] <String> [-EventField] <String>
- [-Value] <String[]>
+ [-Value] <String[]> [-RuleName <String>] [<CommonParameters>]
 ```
 
 ### LiteralPath
 ```
 New-SysmonProcessAccessFilter [-LiteralPath] <Object> [-OnMatch] <String> [-Condition] <String>
- [-EventField] <String> [-Value] <String[]>
+ [-EventField] <String> [-Value] <String[]> [-RuleName <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -28,7 +29,7 @@ Create a new filter for the logging of when a running process opens another.
 
 ## EXAMPLES
 
-### -------------------------- EXAMPLE 1 --------------------------
+### EXAMPLE 1
 ```
 New-SysmonProcessAccessFilter -Path .\testver31.xml -OnMatch include -Condition Contains -EventField TargetImage lsass.exe
 ```
@@ -43,7 +44,7 @@ Path to XML config file.
 ```yaml
 Type: Object
 Parameter Sets: Path
-Aliases: 
+Aliases:
 
 Required: True
 Position: 1
@@ -73,7 +74,7 @@ Event type on match action.
 ```yaml
 Type: String
 Parameter Sets: (All)
-Aliases: 
+Aliases:
 
 Required: True
 Position: 2
@@ -88,7 +89,7 @@ Condition for filtering against and event field.
 ```yaml
 Type: String
 Parameter Sets: (All)
-Aliases: 
+Aliases:
 
 Required: True
 Position: 3
@@ -103,7 +104,7 @@ Event field to filter on.
 ```yaml
 Type: String
 Parameter Sets: (All)
-Aliases: 
+Aliases:
 
 Required: True
 Position: 4
@@ -118,7 +119,7 @@ Value of Event Field to filter on.
 ```yaml
 Type: String[]
 Parameter Sets: (All)
-Aliases: 
+Aliases:
 
 Required: True
 Position: 5
@@ -127,6 +128,25 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
+### -RuleName
+Rule Name for the filter.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### CommonParameters
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable.
+For more information, see about_CommonParameters (http://go.microsoft.com/fwlink/?LinkID=113216).
+
 ## INPUTS
 
 ## OUTPUTS
@@ -134,4 +154,3 @@ Accept wildcard characters: False
 ## NOTES
 
 ## RELATED LINKS
-

@@ -1,63 +1,49 @@
 ---
-external help file: Posh-SysMon.psm1-Help.xml
-online version: 
+external help file: Posh-SysMon-help.xml
+Module Name: Posh-SysMon
+online version: https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/Remove-SysmonRule.md
 schema: 2.0.0
 ---
 
 # Remove-SysmonRule
 
 ## SYNOPSIS
-Removes on or more rules from a Sysmon XML configuration file.
+{{Fill in the Synopsis}}
 
 ## SYNTAX
 
 ### Path (Default)
 ```
-Remove-SysmonRule [-Path] <Object> [-EventType] <String[]> [-OnMatch] <String>
+Remove-SysmonRule [-Path] <Object> [-EventType] <String[]> [-OnMatch] <String> [<CommonParameters>]
 ```
 
 ### LiteralPath
 ```
-Remove-SysmonRule [-LiteralPath] <Object> [-EventType] <String[]> [-OnMatch] <String>
+Remove-SysmonRule [-LiteralPath] <Object> [-EventType] <String[]> [-OnMatch] <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Removes on or more rules from a Sysmon XML configuration file.
+{{Fill in the Description}}
 
 ## EXAMPLES
 
-### -------------------------- EXAMPLE 1 --------------------------
+### Example 1
+```powershell
+PS C:\> {{ Add example code here }}
 ```
-Remove-SysmonRule -Path .\pc_marketing.xml -EventType ImageLoad,NetworkConnect -Verbose
-VERBOSE: Removed rule for ImageLoad.
-VERBOSE: Removed rule for NetworkConnect.
-```
+
+{{ Add example description here }}
 
 ## PARAMETERS
 
-### -Path
-Path to XML config file.
-
-```yaml
-Type: Object
-Parameter Sets: Path
-Aliases: 
-
-Required: True
-Position: 0
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
 ### -EventType
-Event type to remove.
-It is case sensitive.
+{{Fill EventType Description}}
 
 ```yaml
 Type: String[]
 Parameter Sets: (All)
-Aliases: 
+Aliases:
+Accepted values: NetworkConnect, ProcessCreate, FileCreateTime, ProcessTerminate, ImageLoad, DriverLoad, CreateRemoteThread, ProcessAccess, RawAccessRead, FileCreateStreamHash, RegistryEvent, FileCreate, PipeEvent, WmiEvent, RuleName
 
 Required: True
 Position: 1
@@ -66,23 +52,8 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
-### -OnMatch
-Rule filter action on a macth of any filter under the rule.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases: 
-
-Required: True
-Position: 2
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
 ### -LiteralPath
-Path to XML config file.
+{{Fill LiteralPath Description}}
 
 ```yaml
 Type: Object
@@ -96,15 +67,55 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
+### -OnMatch
+{{Fill OnMatch Description}}
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+Accepted values: Include, Exclude
+
+Required: True
+Position: 2
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Path
+{{Fill Path Description}}
+
+```yaml
+Type: Object
+Parameter Sets: Path
+Aliases:
+
+Required: True
+Position: 0
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### CommonParameters
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable.
+For more information, see about_CommonParameters (http://go.microsoft.com/fwlink/?LinkID=113216).
+
 ## INPUTS
 
 ### System.Object
 
 ### System.String[]
 
+### System.String
+
 ## OUTPUTS
 
+### System.Object
 ## NOTES
 
 ## RELATED LINKS
+
+[https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/Remove-SysmonRule.md](https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/Remove-SysmonRule.md)
 

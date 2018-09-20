@@ -1,6 +1,7 @@
 ---
 external help file: Posh-SysMon-help.xml
-online version: 
+Module Name: Posh-SysMon
+online version: https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/Get-SysmonRule.md
 schema: 2.0.0
 ---
 
@@ -13,12 +14,12 @@ Get the configured filters for a specified Event Type Rule in a Sysmon configura
 
 ### Path (Default)
 ```
-Get-SysmonRuleFilter [-Path] <Object> [-EventType] <String> [-OnMatch] <String>
+Get-SysmonRuleFilter [-Path] <Object> [-EventType] <String> [-OnMatch] <String> [<CommonParameters>]
 ```
 
 ### LiteralPath
 ```
-Get-SysmonRuleFilter [-LiteralPath] <Object> [-OnMatch] <String>
+Get-SysmonRuleFilter [-LiteralPath] <Object> [-OnMatch] <String> [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -26,7 +27,7 @@ Get the configured filters for a specified Event Type Rule in a Sysmon configura
 
 ## EXAMPLES
 
-### -------------------------- EXAMPLE 1 --------------------------
+### EXAMPLE 1
 ```
 Get-SysmonRuleFilter -Path C:\sysmon.xml -EventType ProcessCreate
 ```
@@ -41,7 +42,7 @@ Path to XML config file.
 ```yaml
 Type: Object
 Parameter Sets: Path
-Aliases: 
+Aliases:
 
 Required: True
 Position: 1
@@ -71,7 +72,7 @@ Event type rule to get filter for.
 ```yaml
 Type: String
 Parameter Sets: Path
-Aliases: 
+Aliases:
 
 Required: True
 Position: 2
@@ -86,7 +87,7 @@ Event type on match action.
 ```yaml
 Type: String
 Parameter Sets: (All)
-Aliases: 
+Aliases:
 
 Required: True
 Position: 3
@@ -95,6 +96,10 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
+### CommonParameters
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable.
+For more information, see about_CommonParameters (http://go.microsoft.com/fwlink/?LinkID=113216).
+
 ## INPUTS
 
 ## OUTPUTS
@@ -102,4 +107,3 @@ Accept wildcard characters: False
 ## NOTES
 
 ## RELATED LINKS
-

@@ -1,13 +1,14 @@
 ---
-external help file: Posh-SysMon.psm1-Help.xml
-online version: 
+external help file: Posh-SysMon-help.xml
+Module Name: Posh-SysMon
+online version: https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/New-SysmonConfiguration.md
 schema: 2.0.0
 ---
 
 # New-SysmonConfiguration
 
 ## SYNOPSIS
-Creates a new Sysmon XML configuration file.
+{{Fill in the Synopsis}}
 
 ## SYNTAX
 
@@ -15,51 +16,136 @@ Creates a new Sysmon XML configuration file.
 New-SysmonConfiguration [-Path] <String> [-HashingAlgorithm] <String[]> [-NetworkConnect] [-DriverLoad]
  [-ImageLoad] [-CreateRemoteThread] [-FileCreateTime] [-ProcessCreate] [-ProcessTerminate] [-ProcessAccess]
  [-RawAccessRead] [-CheckRevocation] [-RegistryEvent] [-FileCreate] [-FileCreateStreamHash] [-PipeEvent]
- [-Comment <String>] [-SchemaVersion <String>]
+ [-WmiEvent] [-Comment <String>] [-SchemaVersion <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Creates a new Sysmon XML configuration file.
-Configuration options and a descriptive comment can be given when generating the XML config file.
+{{Fill in the Description}}
 
 ## EXAMPLES
 
-### -------------------------- EXAMPLE 1 --------------------------
-```
-New-SysmonConfiguration -ConfigFile .\pc_cofig.xml -HashingAlgorithm SHA1,IMPHASH -Network -ImageLoading -Comment "Config for helpdesk PCs." -Verbose
-
-VERBOSE: Enabling hashing algorithms : SHA1,IMPHASH
-VERBOSE: Enabling network connection logging.
-VERBOSE: Enabling image loading logging.
-VERBOSE: Config file created as C:\\pc_cofig.xml
+### Example 1
+```powershell
+PS C:\> {{ Add example code here }}
 ```
 
-Create a configuration file that will log all network connction, image loading and sets a descriptive comment.
+{{ Add example description here }}
 
 ## PARAMETERS
 
-### -Path
-Path to write XML config file.
+### -CheckRevocation
+{{Fill CheckRevocation Description}}
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 11
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Comment
+{{Fill Comment Description}}
 
 ```yaml
 Type: String
 Parameter Sets: (All)
-Aliases: 
+Aliases:
 
-Required: True
-Position: 0
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -CreateRemoteThread
+{{Fill CreateRemoteThread Description}}
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 5
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -DriverLoad
+{{Fill DriverLoad Description}}
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 3
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -FileCreate
+{{Fill FileCreate Description}}
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 13
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -FileCreateStreamHash
+{{Fill FileCreateStreamHash Description}}
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 14
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -FileCreateTime
+{{Fill FileCreateTime Description}}
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 6
 Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
 ### -HashingAlgorithm
-Specify one or more hash algorithms used for image identification
+{{Fill HashingAlgorithm Description}}
 
 ```yaml
 Type: String[]
 Parameter Sets: (All)
-Aliases: 
+Aliases:
+Accepted values: ALL, MD5, SHA1, SHA256, IMPHASH
 
 Required: True
 Position: 1
@@ -68,118 +154,149 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
-### -NetworkConnect
-Enable all NetworkConnect events.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases: 
-
-Required: False
-Position: 2
-Default value: False
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -DriverLoad
-Enable all DrierLoad events.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases: 
-
-Required: False
-Position: 3
-Default value: False
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
 ### -ImageLoad
-Enable all ImageLoad events.
+{{Fill ImageLoad Description}}
 
 ```yaml
 Type: SwitchParameter
 Parameter Sets: (All)
-Aliases: 
+Aliases:
 
 Required: False
 Position: 4
-Default value: False
+Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
-### -CreateRemoteThread
-Enable all CreateRemoteThread events.
+### -NetworkConnect
+{{Fill NetworkConnect Description}}
 
 ```yaml
 Type: SwitchParameter
 Parameter Sets: (All)
-Aliases: 
+Aliases:
 
 Required: False
-Position: 5
-Default value: False
+Position: 2
+Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
-### -FileCreateTime
-Enable all FileCreateTimeEvents.
+### -Path
+{{Fill Path Description}}
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: 0
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -PipeEvent
+{{Fill PipeEvent Description}}
 
 ```yaml
 Type: SwitchParameter
 Parameter Sets: (All)
-Aliases: 
+Aliases:
 
 Required: False
-Position: 6
-Default value: False
+Position: 15
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -ProcessAccess
+{{Fill ProcessAccess Description}}
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 9
+Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
 ### -ProcessCreate
-Enable all ProcessCreate events
+{{Fill ProcessCreate Description}}
 
 ```yaml
 Type: SwitchParameter
 Parameter Sets: (All)
-Aliases: 
+Aliases:
 
 Required: False
 Position: 7
-Default value: False
+Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
 ### -ProcessTerminate
-Enable all ProcessTerminate events.
+{{Fill ProcessTerminate Description}}
 
 ```yaml
 Type: SwitchParameter
 Parameter Sets: (All)
-Aliases: 
+Aliases:
 
 Required: False
 Position: 8
-Default value: False
+Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
-### -Comment
-Comment for purpose of the configuration file.
+### -RawAccessRead
+{{Fill RawAccessRead Description}}
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 10
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -RegistryEvent
+{{Fill RegistryEvent Description}}
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 12
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -SchemaVersion
+{{Fill SchemaVersion Description}}
 
 ```yaml
 Type: String
 Parameter Sets: (All)
-Aliases: 
+Aliases:
+Accepted values: 4.0, 4.1
 
 Required: False
 Position: Named
@@ -188,125 +305,24 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
-### -SchemaVersion
-Schema Vesion for the configuration file, default is 3.3.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases: 
-
-Required: False
-Position: Named
-Default value: 3.0
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -CheckRevocation
-Check for signature certificate revocation.
+### -WmiEvent
+{{Fill WmiEvent Description}}
 
 ```yaml
 Type: SwitchParameter
 Parameter Sets: (All)
-Aliases: 
+Aliases:
 
 Required: False
-Position: Named
-Default value: False
+Position: 16
+Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
-### -FileCreate
-Log File Creation events.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases: 
-
-Required: False
-Position: Named
-Default value: False
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -FileCreateStreamHash
-Log File Creation events.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases: 
-
-Required: False
-Position: Named
-Default value: False
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -ProcessAccess
-Log when a running process opens another process.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases: 
-
-Required: False
-Position: Named
-Default value: False
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -RawAccessRead
-Log raw access reads of files.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases: 
-
-Required: False
-Position: Named
-Default value: False
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -RegistryEvent
-Log Registry events.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases: 
-
-Required: False
-Position: Named
-Default value: False
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -PipeEvent
-Log NamedPipes connection and creations events.
-
-```yaml
-Type: SwitchParameter
-Parameter Sets: (All)
-Aliases: 
-
-Required: False
-Position: Named
-Default value: False
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
+### CommonParameters
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable.
+For more information, see about_CommonParameters (http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
@@ -318,7 +334,10 @@ Accept wildcard characters: False
 
 ## OUTPUTS
 
+### System.Object
 ## NOTES
 
 ## RELATED LINKS
+
+[https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/New-SysmonConfiguration.md](https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/New-SysmonConfiguration.md)
 

@@ -1,6 +1,7 @@
 ---
 external help file: Posh-SysMon-help.xml
-online version: 
+Module Name: Posh-SysMon
+online version: https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/New-SysmonProcessTerminateFilter.md
 schema: 2.0.0
 ---
 
@@ -14,13 +15,13 @@ Create a new filter for the actions against the registry.
 ### Path (Default)
 ```
 New-SysmonRegistryFilter [-Path] <Object> [-OnMatch] <String> [-Condition] <String> [-EventField] <String>
- [-Value] <String[]>
+ [-Value] <String[]> [-RuleName <String>] [<CommonParameters>]
 ```
 
 ### LiteralPath
 ```
 New-SysmonRegistryFilter [-LiteralPath] <Object> [-OnMatch] <String> [-Condition] <String>
- [-EventField] <String> [-Value] <String[]>
+ [-EventField] <String> [-Value] <String[]> [-RuleName <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -35,7 +36,7 @@ by aby of the following event types:
 * RenameValue
 * SetValue
 
-Hives in TargetObject are referenced as:
+Hives on Schema 3.2 in TargetObject are referenced as:
 * \REGISTRY\MACHINE\HARDWARE
 * \REGISTRY\USER\Security ID number
 * \REGISTRY\MACHINE\SECURITY
@@ -44,9 +45,14 @@ Hives in TargetObject are referenced as:
 * \REGISTRY\MACHINE\SOFTWARE
 * \REGISTRY\MACHINE\SAM
 
+Hives on Schema 3.3 and above in TargetObject are referenced as:
+* HKLM
+* HKCR
+* HKEY_USER
+
 ## EXAMPLES
 
-### -------------------------- EXAMPLE 1 --------------------------
+### EXAMPLE 1
 ```
 New-SysmonRegistryFilter -Path .\32config.xml -OnMatch include -Condition Contains -EventField TargetObject 'RunOnce'
 ```
@@ -61,7 +67,7 @@ Path to XML config file.
 ```yaml
 Type: Object
 Parameter Sets: Path
-Aliases: 
+Aliases:
 
 Required: True
 Position: 1
@@ -91,7 +97,7 @@ Event type on match action.
 ```yaml
 Type: String
 Parameter Sets: (All)
-Aliases: 
+Aliases:
 
 Required: True
 Position: 2
@@ -106,7 +112,7 @@ Condition for filtering against and event field.
 ```yaml
 Type: String
 Parameter Sets: (All)
-Aliases: 
+Aliases:
 
 Required: True
 Position: 3
@@ -121,7 +127,7 @@ Event field to filter on.
 ```yaml
 Type: String
 Parameter Sets: (All)
-Aliases: 
+Aliases:
 
 Required: True
 Position: 4
@@ -136,7 +142,7 @@ Value of Event Field to filter on.
 ```yaml
 Type: String[]
 Parameter Sets: (All)
-Aliases: 
+Aliases:
 
 Required: True
 Position: 5
@@ -145,6 +151,25 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
+### -RuleName
+Rule Name for the filter.
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### CommonParameters
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable.
+For more information, see about_CommonParameters (http://go.microsoft.com/fwlink/?LinkID=113216).
+
 ## INPUTS
 
 ## OUTPUTS
@@ -152,4 +177,3 @@ Accept wildcard characters: False
 ## NOTES
 
 ## RELATED LINKS
-

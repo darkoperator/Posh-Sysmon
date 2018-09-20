@@ -1,112 +1,51 @@
 ---
-external help file: Posh-SysMon.psm1-Help.xml
-online version: 
+external help file: Posh-SysMon-help.xml
+Module Name: Posh-SysMon
+online version: https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/Set-SysmonRule.md
 schema: 2.0.0
 ---
 
 # Set-SysmonRule
 
 ## SYNOPSIS
-Creates a Rule and sets its default action in a Sysmon configuration XML file.
+{{Fill in the Synopsis}}
 
 ## SYNTAX
 
 ### Path (Default)
 ```
 Set-SysmonRule [-Path] <Object> [-EventType] <String[]> [[-OnMatch] <String>] [-Action <String>]
+ [<CommonParameters>]
 ```
 
 ### LiteralPath
 ```
 Set-SysmonRule [-LiteralPath] <Object> [-EventType] <String[]> [[-OnMatch] <String>] [-Action <String>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Creates a rules for a specified Event Type and sets the default action for the rule and filters under it.
-Ir a rule alreade exists it udates the default action taken by a event type rule if one aready present.
-The default is exclude.
-This default is set for event type and affects all filters under it.
+{{Fill in the Description}}
 
 ## EXAMPLES
 
-### -------------------------- EXAMPLE 1 --------------------------
-```
-Get-GetSysmonRule -Path .\pc_cofig.xml -EventType NetworkConnect -OnMatch Exclude
-
-EventType     : NetworkConnect
- Scope         : Filtered
- DefaultAction : Exclude
- Filters       : {@{EventField=image; Condition=Is; Value=iexplorer.exe}}
-
-PS C:\> Set-SysmonRulen -Path .\pc_cofig.xml -EventType NetworkConnect -Action Include -Verbose
-VERBOSE: Setting as default action for NetworkConnect the action of Include.
-VERBOSE: Action has been set.
-
-PS C:\> Get-GetSysmonRule -Path .\pc_cofig.xml -EventType NetworkConnect
-
-
-EventType     : NetworkConnect
-Scope         : Filtered
-DefaultAction : Include
-Filters       : {@{EventField=image; Condition=Is; Value=iexplorer.exe}}
+### Example 1
+```powershell
+PS C:\> {{ Add example code here }}
 ```
 
-Change default rule action causing the filter to ignore all traffic from iexplorer.exe.
+{{ Add example description here }}
 
 ## PARAMETERS
 
-### -Path
-Path to XML config file.
-
-```yaml
-Type: Object
-Parameter Sets: Path
-Aliases: 
-
-Required: True
-Position: 0
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -EventType
-Event type to update.
-
-```yaml
-Type: String[]
-Parameter Sets: (All)
-Aliases: 
-
-Required: True
-Position: 1
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -OnMatch
-Rule filter action on a macth of any filter under the rule.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases: 
-
-Required: False
-Position: 2
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
 ### -Action
-@{Text=}
+{{Fill Action Description}}
 
 ```yaml
 Type: String
 Parameter Sets: (All)
-Aliases: 
+Aliases:
+Accepted values: Modify, Add
 
 Required: False
 Position: Named
@@ -115,8 +54,24 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
+### -EventType
+{{Fill EventType Description}}
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+Accepted values: NetworkConnect, ProcessCreate, FileCreateTime, ProcessTerminate, ImageLoad, DriverLoad, CreateRemoteThread, ProcessAccess, RawAccessRead, FileCreateStreamHash, RegistryEvent, FileCreate, PipeEvent, WmiEvent
+
+Required: True
+Position: 1
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
 ### -LiteralPath
-Path to XML config file.
+{{Fill LiteralPath Description}}
 
 ```yaml
 Type: Object
@@ -130,6 +85,41 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
+### -OnMatch
+{{Fill OnMatch Description}}
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+Accepted values: Include, Exclude
+
+Required: False
+Position: 2
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Path
+{{Fill Path Description}}
+
+```yaml
+Type: Object
+Parameter Sets: Path
+Aliases:
+
+Required: True
+Position: 0
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### CommonParameters
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable.
+For more information, see about_CommonParameters (http://go.microsoft.com/fwlink/?LinkID=113216).
+
 ## INPUTS
 
 ### System.Object
@@ -140,7 +130,10 @@ Accept wildcard characters: False
 
 ## OUTPUTS
 
+### System.Object
 ## NOTES
 
 ## RELATED LINKS
+
+[https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/Set-SysmonRule.md](https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/Set-SysmonRule.md)
 

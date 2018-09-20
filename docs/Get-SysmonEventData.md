@@ -1,6 +1,7 @@
 ---
 external help file: Posh-SysMon-help.xml
-online version: 
+Module Name: Posh-SysMon
+online version:
 schema: 2.0.0
 ---
 
@@ -14,13 +15,13 @@ Searches for specified SysMon Events and retunrs the Event Data as a custom obje
 ### ID (Default)
 ```
 Get-SysmonEventData [-EventId] <Int32[]> [[-MaxEvents] <Int32>] [-Path <String[]>] [-StartTime <DateTime>]
- [-EndTime <DateTime>]
+ [-EndTime <DateTime>] [<CommonParameters>]
 ```
 
 ### Type
 ```
 Get-SysmonEventData [[-EventType] <String[]>] [[-MaxEvents] <Int32>] [-Path <String[]>] [-StartTime <DateTime>]
- [-EndTime <DateTime>]
+ [-EndTime <DateTime>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -28,14 +29,14 @@ Searches for specified SysMon Events and retunrs the Event Data as a custom obje
 
 ## EXAMPLES
 
-### -------------------------- EXAMPLE 1 --------------------------
+### EXAMPLE 1
 ```
 Get-SysMonEventData -EventId 1 -MaxEvents 10 -EndTime (Get-Date) -StartTime (Get-Date).AddDays(-1)
 ```
 
 All process creation events in the last 24hr
 
-### -------------------------- EXAMPLE 2 --------------------------
+### EXAMPLE 2
 ```
 Get-SysMonEventData -EventId 3 -MaxEvents 20 -Path .\export.evtx
 ```
@@ -50,7 +51,7 @@ Sysmon Event ID of records to show
 ```yaml
 Type: Int32[]
 Parameter Sets: ID
-Aliases: 
+Aliases:
 
 Required: True
 Position: 1
@@ -65,7 +66,7 @@ EventType that a Rule can be written against.
 ```yaml
 Type: String[]
 Parameter Sets: Type
-Aliases: 
+Aliases:
 
 Required: False
 Position: 1
@@ -82,7 +83,7 @@ The default is to return all the events in the logs or files.
 ```yaml
 Type: Int32
 Parameter Sets: (All)
-Aliases: 
+Aliases:
 
 Required: False
 Position: 2
@@ -112,7 +113,7 @@ Start Date to get all event going forward.
 ```yaml
 Type: DateTime
 Parameter Sets: (All)
-Aliases: 
+Aliases:
 
 Required: False
 Position: Named
@@ -127,7 +128,7 @@ End data for searching events.
 ```yaml
 Type: DateTime
 Parameter Sets: (All)
-Aliases: 
+Aliases:
 
 Required: False
 Position: Named
@@ -136,6 +137,10 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### CommonParameters
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable.
+For more information, see about_CommonParameters (http://go.microsoft.com/fwlink/?LinkID=113216).
+
 ## INPUTS
 
 ## OUTPUTS
@@ -143,4 +148,3 @@ Accept wildcard characters: False
 ## NOTES
 
 ## RELATED LINKS
-

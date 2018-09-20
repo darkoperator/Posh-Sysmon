@@ -1,35 +1,36 @@
 ---
-external help file: Posh-SysMon.psm1-Help.xml
-online version: 
+external help file: Posh-SysMon-help.xml
+Module Name: Posh-SysMon
+online version: https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/New-SysmonProcessTerminateFilter.md
 schema: 2.0.0
 ---
 
 # New-SysmonProcessTerminateFilter
 
 ## SYNOPSIS
-Create a new filter for the logging of process termination.
+{{Fill in the Synopsis}}
 
 ## SYNTAX
 
 ### Path (Default)
 ```
 New-SysmonProcessTerminateFilter [-Path] <Object> [-OnMatch] <String> [-Condition] <String>
- [-EventField] <String> [-Value] <String[]>
+ [-EventField] <String> [-Value] <String[]> [-RuleName <String>] [<CommonParameters>]
 ```
 
 ### LiteralPath
 ```
 New-SysmonProcessTerminateFilter [-LiteralPath] <Object> [-OnMatch] <String> [-Condition] <String>
- [-EventField] <String> [-Value] <String[]>
+ [-EventField] <String> [-Value] <String[]> [-RuleName <String>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Create a new filter for the logging of process termination.
+{{Fill in the Description}}
 
 ## EXAMPLES
 
 ### Example 1
-```
+```powershell
 PS C:\> {{ Add example code here }}
 ```
 
@@ -37,43 +38,14 @@ PS C:\> {{ Add example code here }}
 
 ## PARAMETERS
 
-### -Path
-Path to SysMon rule XML file.
-
-```yaml
-Type: Object
-Parameter Sets: Path
-Aliases: 
-
-Required: True
-Position: 0
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
-### -OnMatch
-Rule filter action on a macth of any filter under the rule.
-
-```yaml
-Type: String
-Parameter Sets: (All)
-Aliases: 
-
-Required: True
-Position: 1
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
 ### -Condition
-Condition to use for matching the value of an eventfield.
+{{Fill Condition Description}}
 
 ```yaml
 Type: String
 Parameter Sets: (All)
-Aliases: 
+Aliases:
+Accepted values: Is, IsNot, Contains, Excludes, Image, BeginWith, EndWith, LessThan, MoreThan
 
 Required: True
 Position: 2
@@ -83,12 +55,13 @@ Accept wildcard characters: False
 ```
 
 ### -EventField
-Event Field to be evaluated.
+{{Fill EventField Description}}
 
 ```yaml
 Type: String
 Parameter Sets: (All)
-Aliases: 
+Aliases:
+Accepted values: UtcTime, ProcessGuid, ProcessId
 
 Required: True
 Position: 3
@@ -97,23 +70,8 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
-### -Value
-Value of field that will be evaluated.
-
-```yaml
-Type: String[]
-Parameter Sets: (All)
-Aliases: 
-
-Required: True
-Position: 4
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
 ### -LiteralPath
-Literal path to SysMon rule XML file.
+{{Fill LiteralPath Description}}
 
 ```yaml
 Type: Object
@@ -127,6 +85,71 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
+### -OnMatch
+{{Fill OnMatch Description}}
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+Accepted values: include, exclude
+
+Required: True
+Position: 1
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Path
+{{Fill Path Description}}
+
+```yaml
+Type: Object
+Parameter Sets: Path
+Aliases:
+
+Required: True
+Position: 0
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -RuleName
+{{Fill RuleName Description}}
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### -Value
+{{Fill Value Description}}
+
+```yaml
+Type: String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: 4
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### CommonParameters
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable.
+For more information, see about_CommonParameters (http://go.microsoft.com/fwlink/?LinkID=113216).
+
 ## INPUTS
 
 ### System.Object
@@ -137,7 +160,10 @@ Accept wildcard characters: False
 
 ## OUTPUTS
 
+### System.Object
 ## NOTES
 
 ## RELATED LINKS
+
+[https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/New-SysmonProcessTerminateFilter.md](https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/New-SysmonProcessTerminateFilter.md)
 

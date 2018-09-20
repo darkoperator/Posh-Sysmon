@@ -1,67 +1,49 @@
 ---
-external help file: Posh-SysMon.psm1-Help.xml
-online version: 
+external help file: Posh-SysMon-help.xml
+Module Name: Posh-SysMon
+online version: https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/Get-SysmonRule.md
 schema: 2.0.0
 ---
 
 # Get-SysmonRule
 
 ## SYNOPSIS
-Gets configured rules and their filters on a Sysmon XML configuration file.
-config file.
+{{Fill in the Synopsis}}
 
 ## SYNTAX
 
 ### Path (Default)
 ```
-Get-SysmonRule [-Path] <String> [[-EventType] <String[]>]
+Get-SysmonRule [-Path] <String> [[-EventType] <String[]>] [<CommonParameters>]
 ```
 
 ### LiteralPath
 ```
-Get-SysmonRule [-LiteralPath] <String> [[-EventType] <String[]>]
+Get-SysmonRule [-LiteralPath] <String> [[-EventType] <String[]>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
-Gets configured rules and their filters on a Sysmon XML configuration file.
-config file for each event type.
+{{Fill in the Description}}
 
 ## EXAMPLES
 
-### -------------------------- EXAMPLE 1 --------------------------
+### Example 1
+```powershell
+PS C:\> {{ Add example code here }}
 ```
-Get-SysmonConfigOptions -Path .\pc_cofig.xml -Verbose
 
-Hashing      : SHA1,IMPHASH
-Network      : Enabled
-ImageLoading : Enabled
-Comment      : Config for helpdesk PCs.
-```
+{{ Add example description here }}
 
 ## PARAMETERS
 
-### -Path
-Path to XML config file.
-
-```yaml
-Type: String
-Parameter Sets: Path
-Aliases: 
-
-Required: True
-Position: 0
-Default value: None
-Accept pipeline input: True (ByPropertyName)
-Accept wildcard characters: False
-```
-
 ### -EventType
-Event type to parse rules for.
+{{Fill EventType Description}}
 
 ```yaml
 Type: String[]
 Parameter Sets: (All)
-Aliases: 
+Aliases:
+Accepted values: ALL, NetworkConnect, ProcessCreate, FileCreateTime, ProcessTerminate, ImageLoad, DriverLoad, ProcessAccess, RawAccessRead, ProcessAccess, FileCreateStreamHash, RegistryEvent, FileCreate, PipeEvent, WmiEvent
 
 Required: False
 Position: 1
@@ -71,7 +53,7 @@ Accept wildcard characters: False
 ```
 
 ### -LiteralPath
-Path to XML config file.
+{{Fill LiteralPath Description}}
 
 ```yaml
 Type: String
@@ -85,15 +67,37 @@ Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
 
+### -Path
+{{Fill Path Description}}
+
+```yaml
+Type: String
+Parameter Sets: Path
+Aliases:
+
+Required: True
+Position: 0
+Default value: None
+Accept pipeline input: True (ByPropertyName)
+Accept wildcard characters: False
+```
+
+### CommonParameters
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable.
+For more information, see about_CommonParameters (http://go.microsoft.com/fwlink/?LinkID=113216).
+
 ## INPUTS
 
-### System.Object
+### System.String
 
 ### System.String[]
 
 ## OUTPUTS
 
+### System.Object
 ## NOTES
 
 ## RELATED LINKS
+
+[https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/Get-SysmonRule.md](https://github.com/darkoperator/Posh-Sysmon/blob/master/docs/Get-SysmonRule.md)
 
