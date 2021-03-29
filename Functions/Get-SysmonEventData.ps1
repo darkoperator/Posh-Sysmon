@@ -21,7 +21,7 @@ function Get-SysmonEventData {
             ParameterSetName='ID',
             ValueFromPipelineByPropertyName=$true,
             Position=0)]
-        [ValidateSet(1,2,3,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,255)]
+        [ValidateSet(1,2,3,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,255)]
         [Int32[]]
         $EventId,
 
@@ -36,7 +36,8 @@ function Get-SysmonEventData {
             'CreateRemoteThread', 'RawAccessRead', 'ProcessAccess', 'Error',
             'FileCreateStreamHash', 'RegistryValueSet', 'RegistryRename',
             'RegistryAddOrDelete', 'FileCreate','ConfigChange','PipeCreated',
-            'PipeConnected', 'WmiFilter', 'WmiConsumer', 'WmiBinding')]
+            'PipeConnected', 'WmiFilter', 'WmiConsumer', 'WmiBinding',
+            'DnsEvent', 'FileDelete', 'ClipboardChange', 'ProcessTampering')]
         $EventType,
 
         # Specifies the maximum number of events that Get-WinEvent returns. Enter an integer. The default is to return all the events in the logs or files.
@@ -90,6 +91,10 @@ function Get-SysmonEventData {
             WmiFilter = 19
             WmiConsumer = 20
             WmiBinding = 21
+            DnsEvent = 22
+            FileDelete = 23
+            ClipboardChange = 24
+            ProcessTampering = 25
             Error = 255
         }
 
@@ -114,6 +119,10 @@ function Get-SysmonEventData {
             '19' = 'WmiFilter'
             '20' = 'WmiConsumer'
             '21' = 'WmiBinding'
+            '22' = 'DnsEvent'
+            '23' = 'FileDelete'
+            '24' = 'ClipboardChange'
+            '25' = 'ProcessTampering'
             '255' = 'Error'
 
         }
